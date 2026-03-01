@@ -5,9 +5,12 @@ import { CLASSES } from '../data/classes.js';
 import { getCtx, drawCombatSprite, ENEMY_SPRITE_MAP } from '../engine/renderer.js';
 import { getCombat, getActions, getTopActions, getAnimProgress, getFleeCost, getCurrentTarget } from '../game/combat.js';
 import { STATUS_DEFS } from '../game/status-effects.js';
+import { getRandomTip } from '../data/tips.js';
 
 const PANEL_PAD = 12;
 const LINE_H = 16;
+let combatTip = '';
+let lastResultState = null;
 const TURN_BAR_H = 22;
 
 export function renderCombat(now, player) {
@@ -524,6 +527,18 @@ export function renderCombat(now, player) {
       if (g.spd) { ctx.fillText(`SPD +${g.spd}`, menuX + 10, ly); ly += 13; }
       if (g.lck) { ctx.fillText(`LCK +${g.lck}`, menuX + 10, ly); ly += 13; }
       if (g.int) { ctx.fillText(`INT +${g.int}`, menuX + 10, ly); ly += 13; }
+    }
+
+    // Show a random tip
+    if (combat.result !== lastResultState) {
+      lastResultState = combat.result;
+      combatTip = getRandomTip();
+    }
+    if (combatTip && combat.result === 'victory') {
+      ctx.fillStyle = '#445566';
+      ctx.font = '9px monospace';
+      ctx.fillText(`TIP: ${combatTip}`, menuX + 10, ly + 4);
+      ly += 14;
     }
 
     ctx.fillStyle = c.textDim;

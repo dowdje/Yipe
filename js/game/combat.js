@@ -18,6 +18,8 @@ import { recordKill, recordResistanceDiscovery } from './compendium.js';
 import { getDangerLevel, addDanger } from './danger.js';
 import { MATERIAL_DEFS } from '../data/materials.js';
 import { getAllPerkModifiers as _getAllPerkModifiers } from './perks.js';
+import { BOSS_DEFS, checkPhaseTransition } from './boss-ai.js';
+import { sfxWeakness, sfxHit, sfxCritHit, sfxEnemyDeath, sfxDamageTaken, sfxStatus, sfxHeal, sfxLevelUp, sfxBossDefeat, sfxPhaseTransition } from '../engine/audio.js';
 
 // Status application chances on elemental damage
 const STATUS_APPLY_CHANCE = {
@@ -292,6 +294,12 @@ export function startCombat(enemy) {
   combat._phaseTransitionStart = 0;
   combat.minions = [];
   combat.targetIndex = -1;
+  combat._playerElementUsage = {};
+  combat._bossHeads = null;
+  combat._bossHeadTarget = 0;
+  combat._bossWaves = null;
+  combat._bossWaveIndex = 0;
+  combat._bossShieldHP = 0;
 
   // Apply danger stat mods to enemy
   const dangerLevel = getDangerLevel(player.dangerMeter || 0);
@@ -303,6 +311,16 @@ export function startCombat(enemy) {
 
   // Increment danger on combat start
   addDanger(player, enemy.isBoss ? 5 : 2);
+
+  // Boss-specific initialization
+  if (enemy.isBoss && enemy.bossId) {
+    const bossDef = BOSS_DEFS[enemy.bossId];
+    if (bossDef) {
+      if (bossDef._initHeads) bossDef._initHeads(combat);
+      if (bossDef._initWaves) bossDef._initWaves(combat);
+      if (enemy.bossId === 'the_consultant') combat._bossShieldHP = 3;
+    }
+  }
 
   // Record elemental resistance discovery when player attacks with elemental damage
   // (handled in applyDamageTypeEffects)
@@ -552,6 +570,18 @@ function applyDamageTypeEffects(damage, damageType) {
   const resist = combat.enemy.resistances[damageType];
   if (resist === undefined) return;
 
+  // Track element usage for Manager boss Phase 3
+  if (!combat._playerElementUsage) combat._playerElementUsage = {};
+  combat._playerElementUsage[damageType] = (combat._playerElementUsage[damageType] || 0) + 1;
+
+  // Track exploit triggers for Consultant shield
+  if (resist < 0 && combat._bossShieldHP > 0) {
+    combat._bossShieldHP--;
+    if (combat._bossShieldHP <= 0) {
+      addLog('The shield shatters!');
+    }
+  }
+
   // Record resistance discovery in compendium
   if (damageType !== 'physical') {
     const player = getPlayer();
@@ -563,6 +593,7 @@ function applyDamageTypeEffects(damage, damageType) {
     combat.exploitMeter++;
     combat._weaknessFlash = true;
     combat._weaknessFlashStart = performance.now();
+    sfxWeakness();
     checkExploitThresholds();
   }
 }
@@ -706,8 +737,10 @@ function executePlayerAttack(action) {
   if (result.isImmune) {
     msg = `${enemy.name} is IMMUNE!`;
   } else if (result.isCrit) {
+    sfxCritHit();
     msg = `CRITICAL ${attackVerb}! ${result.damage} damage!`;
   } else {
+    if (result.damage > 0) sfxHit();
     msg = `${attackVerb}! ${result.damage} damage!`;
   }
 
@@ -715,6 +748,7 @@ function executePlayerAttack(action) {
     combat.exploitMeter++;
     combat._weaknessFlash = true;
     combat._weaknessFlashStart = performance.now();
+    sfxWeakness();
     msg += ' WEAKNESS!';
     checkExploitThresholds();
   }
@@ -1108,6 +1142,7 @@ function executeEnemyTurn() {
   }
 
   player.hp = Math.max(0, player.hp - damage);
+  if (damage > 0) sfxDamageTaken();
 
   if (combat.defending) {
     addLog(`${enemy.name} attacks for ${damage} (blocked)!`);
@@ -1224,8 +1259,12 @@ export function checkVictory() {
     combat.targetIndex = -1;
     if (!player.questFlags) player.questFlags = {};
     player.questFlags[`boss_${enemy.bossId}_defeated`] = true;
+    if (!player.bossesDefeated) player.bossesDefeated = [];
+    if (!player.bossesDefeated.includes(enemy.bossId)) player.bossesDefeated.push(enemy.bossId);
+    sfxBossDefeat();
     addLog(`BOSS DEFEATED! ${enemy.name} is vanquished! +${enemy.gold}G +${enemy.exp}EXP`);
   } else {
+    sfxEnemyDeath();
     addLog(`${enemy.name} defeated! +${enemy.gold}G +${enemy.exp}EXP`);
   }
   player.gold += enemy.gold;
@@ -1269,6 +1308,7 @@ export function checkVictory() {
   const levelResults = applyExpGain(player, enemy.exp);
   if (levelResults.length > 0) {
     combat.levelUpResults = levelResults;
+    sfxLevelUp();
     for (const lr of levelResults) {
       addLog(`LEVEL UP! You are now level ${lr.newLevel}!`);
       for (const spell of lr.newSpells) {

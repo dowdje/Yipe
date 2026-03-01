@@ -25,6 +25,21 @@ function resolveEnemyType(playerLevel) {
   return weightedPool[Math.floor(Math.random() * weightedPool.length)];
 }
 
+// Difficulty multiplier: 0.75 (Easy), 1.0 (Normal), 1.5 (Hard)
+let _difficultyMultiplier = 1.0;
+
+export function setDifficulty(mult) { _difficultyMultiplier = mult; }
+export function getDifficulty() { return _difficultyMultiplier; }
+
+function applyDifficultyScaling(enemy) {
+  if (_difficultyMultiplier === 1.0) return enemy;
+  enemy.hp = Math.floor(enemy.hp * _difficultyMultiplier);
+  enemy.maxHp = Math.floor(enemy.maxHp * _difficultyMultiplier);
+  enemy.atk = Math.floor(enemy.atk * _difficultyMultiplier);
+  enemy.def = Math.floor(enemy.def * _difficultyMultiplier);
+  return enemy;
+}
+
 export function spawnEnemies(enemyDefs, playerLevel = 1, useFixedTypes = false) {
   activeEnemies = (enemyDefs || []).map((def, i) => {
     // If fixedEnemies is set, use the room-defined type directly
@@ -32,21 +47,23 @@ export function spawnEnemies(enemyDefs, playerLevel = 1, useFixedTypes = false) 
     const template = ENEMY_TYPES[type];
     if (!template) {
       // Fallback to room-defined type
-      return {
+      const enemy = {
         ...structuredClone(ENEMY_TYPES[def.type] || ENEMY_TYPES.bat),
         type: def.type,
         x: def.x,
         y: def.y,
         index: i,
       };
+      return applyDifficultyScaling(enemy);
     }
-    return {
+    const enemy = {
       ...structuredClone(template),
       type,
       x: def.x,
       y: def.y,
       index: i,
     };
+    return applyDifficultyScaling(enemy);
   });
 }
 

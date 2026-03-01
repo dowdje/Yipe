@@ -3,7 +3,8 @@
   "name": "Grymhold — Town Center",
   "safe": true,
   "exits": {
-    "right": "grymhold/town_2"
+    "right": "grymhold/town_2",
+    "down": "sprawl/entrance"
   },
   "shops": [
     { "type": "general_store", "x": 3, "y": 5 }

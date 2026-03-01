@@ -1,6 +1,6 @@
 // main.js — Game initialization and loop
 
-import { GAME_STATES, TRANSITION_MS, xpForLevel } from './config.js';
+import { GAME_STATES, TRANSITION_MS, xpForLevel, ENEMY_TYPES } from './config.js';
 import { initRenderer, clear, drawTileGrid, drawPlayer, drawPlayerLerp, drawEntity, drawFade, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP } from './engine/renderer.js';
 import { initInput, consumeInput, setInputEnabled } from './engine/input.js';
 import { loadTileDefs, getTileDefs, loadRoom, getCurrentRoom, isWalkable, getExit, getEntryPosition, getActiveShops, getActiveNpcs, getActiveCampfires, isSafeRoom, initWorldPlayerRef } from './game/world.js';
@@ -21,6 +21,9 @@ import * as ITEMS_MODULE from './data/items.js';
 import * as PLAYER_MODULE from './game/player.js';
 import { CLASSES } from './data/classes.js';
 import { renderClassSelect, getClassSelectIndex, setClassSelectIndex, getSelectedClassId } from './ui/class-select-ui.js';
+import { initTitle, renderTitle, getTitleMenuIndex, setTitleMenuIndex, getSelectedTitleOption } from './ui/title-ui.js';
+import { sfxSelect, sfxNavigate } from './engine/audio.js';
+import { initEnding, renderEnding, advanceEnding } from './ui/ending-ui.js';
 // Phase 5-6 imports
 import { NPC_DEFS } from './data/npcs.js';
 import { getDialogueState, startDialogue, endDialogue, advanceDialogue, navigateDialogueChoice, renderDialogue } from './ui/dialogue-ui.js';
@@ -37,8 +40,9 @@ import { applyExpGain } from './game/leveling.js';
 
 const START_ROOM = 'grymhold/town_1';
 
-let state = GAME_STATES.OVERWORLD;
+let state = GAME_STATES.TITLE;
 let transition = null; // { phase: 'out'|'in', start, targetRoom, fromDir }
+let saveLoaded = false; // tracks whether a save has been restored into player state
 
 async function init() {
   const canvas = document.getElementById('game');
@@ -66,94 +70,108 @@ async function init() {
 
   await loadTileDefs();
 
-  // Check for saved game
+  // Show title screen first — room loading happens on menu selection
+  initTitle();
+  requestAnimationFrame(loop);
+}
+
+/** Load a saved game into player state and room */
+async function loadSavedGame() {
   const save = loadSave();
+  if (!save) return false;
 
   // Restore opened chests before loading rooms
-  if (save?.chestsOpened) {
+  if (save.chestsOpened) {
     setOpenedChests(save.chestsOpened);
   }
 
-  const roomId = save?.roomId || START_ROOM;
-  const room = await loadRoom(roomId);
+  const room = await loadRoom(save.roomId || START_ROOM);
+  setPlayerPos(save.playerX, save.playerY);
 
-  if (save) {
-    setPlayerPos(save.playerX, save.playerY);
-    // Restore player state from save
-    if (save.playerState) {
-      const player = getPlayer();
-      const ps = save.playerState;
-      player.hp = ps.hp;
-      player.maxHp = ps.maxHp;
-      player.mp = ps.mp;
-      player.maxMp = ps.maxMp;
-      player.atk = ps.atk;
-      player.def = ps.def;
-      player.spd = ps.spd;
-      player.lck = ps.lck;
-      player.gold = ps.gold;
-      player.level = ps.level;
-      player.exp = ps.exp;
-      player.inventory = ps.inventory || [];
-      player.spells = ps.spells || [];
-      player.abilities = ps.abilities || [];
-      player.classId = ps.classId || null;
+  if (save.playerState) {
+    const player = getPlayer();
+    const ps = save.playerState;
+    player.hp = ps.hp;
+    player.maxHp = ps.maxHp;
+    player.mp = ps.mp;
+    player.maxMp = ps.maxMp;
+    player.atk = ps.atk;
+    player.def = ps.def;
+    player.spd = ps.spd;
+    player.lck = ps.lck;
+    player.gold = ps.gold;
+    player.level = ps.level;
+    player.exp = ps.exp;
+    player.inventory = ps.inventory || [];
+    player.spells = ps.spells || [];
+    player.abilities = ps.abilities || [];
+    player.classId = ps.classId || null;
 
-      // INT migration for old saves
-      if (ps.int !== undefined) {
-        player.int = ps.int;
+    // INT migration for old saves
+    if (ps.int !== undefined) {
+      player.int = ps.int;
+    } else {
+      if (ps.classId === 'hacker') {
+        player.int = 8 + (ps.level - 1) * 5;
+      } else if (ps.classId === 'fixer') {
+        player.int = 3 + (ps.level - 1) * 1;
+      } else if (ps.classId === 'bruiser') {
+        player.int = 2;
       } else {
-        // Compute INT based on class + level
-        if (ps.classId === 'hacker') {
-          player.int = 8 + (ps.level - 1) * 5;
-        } else if (ps.classId === 'fixer') {
-          player.int = 3 + (ps.level - 1) * 1;
-        } else if (ps.classId === 'bruiser') {
-          player.int = 2;
-        } else {
-          player.int = 2;
-        }
-      }
-
-      // Phase 5-6 fields
-      player.materials = ps.materials || {};
-      player.questFlags = ps.questFlags || {};
-      player.activeQuests = ps.activeQuests || [];
-      player.completedQuests = ps.completedQuests || [];
-      player.questProgress = ps.questProgress || {};
-      player.perks = ps.perks || [];
-      player.compendium = ps.compendium || {};
-      player.dangerMeter = ps.dangerMeter || 0;
-      player.knownRecipes = ps.knownRecipes || [];
-      player.lastSafeRoom = ps.lastSafeRoom || null;
-      // Restore equipment — rehydrate from item IDs
-      if (ps.equipment) {
-        for (const [slot, ref] of Object.entries(ps.equipment)) {
-          if (ref && ref.id && ITEMS_MODULE.ITEMS[ref.id]) {
-            player.equipment[slot] = ITEMS_MODULE.ITEMS[ref.id];
-          } else {
-            player.equipment[slot] = null;
-          }
-        }
-      }
-      // If old save without class, prompt class selection
-      if (!player.classId) {
-        state = GAME_STATES.CLASS_SELECT;
+        player.int = 2;
       }
     }
-  } else {
-    setPlayerPos(room.playerStart.x, room.playerStart.y);
-    // New game — go to class selection
-    state = GAME_STATES.CLASS_SELECT;
-  }
 
-  requestAnimationFrame(loop);
+    // Phase 5-6 fields
+    player.materials = ps.materials || {};
+    player.questFlags = ps.questFlags || {};
+    player.activeQuests = ps.activeQuests || [];
+    player.completedQuests = ps.completedQuests || [];
+    player.questProgress = ps.questProgress || {};
+    player.perks = ps.perks || [];
+    player.compendium = ps.compendium || {};
+    player.dangerMeter = ps.dangerMeter || 0;
+    player.knownRecipes = ps.knownRecipes || [];
+    player.lastSafeRoom = ps.lastSafeRoom || null;
+    player.difficulty = ps.difficulty || 1.0;
+    player.playtime = ps.playtime || 0;
+    player.bossesDefeated = ps.bossesDefeated || [];
+    // Restore equipment — rehydrate from item IDs
+    if (ps.equipment) {
+      for (const [slot, ref] of Object.entries(ps.equipment)) {
+        if (ref && ref.id && ITEMS_MODULE.ITEMS[ref.id]) {
+          player.equipment[slot] = ITEMS_MODULE.ITEMS[ref.id];
+        } else {
+          player.equipment[slot] = null;
+        }
+      }
+    }
+    // If old save without class, prompt class selection
+    if (!player.classId) {
+      return false; // needs class select
+    }
+  }
+  return true;
+}
+
+/** Start a new game — load start room and go to class select */
+async function startNewGame() {
+  clearSave();
+  const { resetStats } = PLAYER_MODULE;
+  resetStats();
+  setOpenedChests([]);
+  const room = await loadRoom(START_ROOM);
+  setPlayerPos(room.playerStart.x, room.playerStart.y);
 }
 
 function loop(now) {
   requestAnimationFrame(loop);
 
   switch (state) {
+    case GAME_STATES.TITLE:
+      updateTitleState(now);
+      renderTitle(now);
+      break;
     case GAME_STATES.OVERWORLD:
       updateOverworld(now);
       renderOverworld(now);
@@ -196,7 +214,16 @@ function loop(now) {
     case GAME_STATES.DEBUG:
       renderDebug();
       break;
+    case GAME_STATES.ENDING:
+      renderEnding(now);
+      break;
   }
+}
+
+function updateTitleState(now) {
+  const input = consumeInput();
+  if (!input) return;
+  // Navigation handled in keydown listener
 }
 
 function updateOverworld(now) {
@@ -550,6 +577,33 @@ function handleNpcInteraction(npc) {
   } else if (npc.npcId === 'destiny') {
     if (isQuestDone(player, 'destiny_rescue')) dialogueKey = 'done';
     else if (player.questFlags?.destiny_rescued) dialogueKey = 'rescued';
+  } else if (npc.npcId === 'crystal') {
+    if (isQuestDone(player, 'crystal_keycard')) dialogueKey = 'done';
+    else if (isQuestComplete(player, 'crystal_keycard')) dialogueKey = 'quest_complete';
+    else if (isQuestActive(player, 'crystal_keycard')) dialogueKey = 'quest_active';
+  } else if (npc.npcId === 'mercedes') {
+    if (player.questFlags?.mercedes_rewarded) dialogueKey = 'done';
+    else if (player.bossesDefeated?.includes('the_alpha')) dialogueKey = 'boss_defeated';
+  } else if (npc.npcId === 'tiffany') {
+    if (isQuestDone(player, 'tiffany_antidote')) dialogueKey = 'done';
+    else if (isQuestComplete(player, 'tiffany_antidote')) dialogueKey = 'quest_complete';
+    else if (isQuestActive(player, 'tiffany_antidote')) dialogueKey = 'quest_active';
+  } else if (npc.npcId === 'angelica') {
+    if (player.questFlags?.angelica_rescued) dialogueKey = 'done';
+  } else if (npc.npcId === 'brianna') {
+    if (player.questFlags?.brianna_met) dialogueKey = 'done';
+  } else if (npc.npcId === 'valentina') {
+    if (player.questFlags?.valentina_freed) dialogueKey = 'done';
+  } else if (npc.npcId === 'mayor') {
+    const driveCount = (player.inventory || []).filter(i => i.id && i.id.startsWith('nft_drive_')).length;
+    if (driveCount >= 5 && player.questFlags?.boss_the_consultant_defeated) {
+      // Trigger ending sequence
+      const princesses = countRescuedPrincesses(player);
+      initEnding(princesses);
+      state = GAME_STATES.ENDING;
+      setInputEnabled(true);
+      return;
+    } else if (driveCount > 0) dialogueKey = 'quest_active';
   } else if (npc.npcId === 'gus') {
     const recipes = getKnownRecipes(player);
     if (recipes.length === 0) dialogueKey = 'no_recipes';
@@ -573,17 +627,62 @@ function handleDialogueChoice(npc, npcDef, dialogue, choice) {
     // Give reward if dialogue has one
     if (dialogue.reward) {
       if (dialogue.reward.gold) player.gold += dialogue.reward.gold;
-      // Mark quest as done after giving reward
-      if (npc.npcId === 'jasmine') {
-        completeQuest(player, 'jasmine_samples');
-      } else if (npc.npcId === 'destiny') {
-        if (!player.questFlags) player.questFlags = {};
-        player.questFlags.destiny_rescued = true;
-      }
+      if (!player.questFlags) player.questFlags = {};
+      // Mark quest/flag as done after giving reward
+      if (npc.npcId === 'jasmine') completeQuest(player, 'jasmine_samples');
+      else if (npc.npcId === 'destiny') player.questFlags.destiny_rescued = true;
+      else if (npc.npcId === 'crystal') completeQuest(player, 'crystal_keycard');
+      else if (npc.npcId === 'mercedes') player.questFlags.mercedes_rewarded = true;
+      else if (npc.npcId === 'tiffany') completeQuest(player, 'tiffany_antidote');
+      else if (npc.npcId === 'brianna') player.questFlags.brianna_met = true;
+      else if (npc.npcId === 'valentina') player.questFlags.valentina_freed = true;
     }
     state = GAME_STATES.OVERWORLD;
     setInputEnabled(true);
     saveAfterDelay();
+    return;
+  }
+
+  if (choice.action === 'heal') {
+    // Innkeeper: full heal
+    player.hp = player.maxHp;
+    player.mp = player.maxMp;
+    startDialogue('Innkeeper', 'You feel fully rested. HP and MP restored!', null, () => {
+      state = GAME_STATES.OVERWORLD;
+      setInputEnabled(true);
+      saveAfterDelay();
+    });
+    state = GAME_STATES.DIALOGUE;
+    return;
+  }
+
+  if (choice.action === 'openShop') {
+    const shopType = choice.shopType || 'gear_shop';
+    startShop(shopType);
+    state = GAME_STATES.SHOP;
+    setInputEnabled(false);
+    setTimeout(() => setInputEnabled(true), 200);
+    return;
+  }
+
+  if (choice.action === 'startFight') {
+    // Spawn a specific enemy for an NPC-triggered fight
+    const enemyDef = ENEMY_TYPES[choice.target];
+    if (enemyDef) {
+      const enemy = {
+        ...enemyDef,
+        type: choice.target,
+        hp: enemyDef.hp,
+        maxHp: enemyDef.hp,
+      };
+      startCombat(enemy);
+      state = GAME_STATES.COMBAT;
+      setInputEnabled(false);
+      setTimeout(() => setInputEnabled(true), 300);
+    } else {
+      state = GAME_STATES.OVERWORLD;
+      setInputEnabled(true);
+    }
     return;
   }
 
@@ -607,7 +706,9 @@ function handleDialogueChoice(npc, npcDef, dialogue, choice) {
     if (player.gold >= choice.amount) {
       player.gold -= choice.amount;
       if (!player.questFlags) player.questFlags = {};
-      player.questFlags.destiny_rescued = true;
+      // Set rescue flag based on NPC
+      if (npc.npcId === 'destiny') player.questFlags.destiny_rescued = true;
+      if (npc.npcId === 'angelica') player.questFlags.angelica_rescued = true;
       // Show reward dialogue
       const rewDialogue = npcDef.dialogue.rescued;
       if (rewDialogue) {
@@ -621,6 +722,7 @@ function handleDialogueChoice(npc, npcDef, dialogue, choice) {
       } else {
         state = GAME_STATES.OVERWORLD;
         setInputEnabled(true);
+        saveAfterDelay();
       }
     } else {
       startDialogue(npcDef.name, "You don't have enough gold.", null, () => {
@@ -744,6 +846,20 @@ function forceLevel(player, count) {
     const needed = xpForLevel(player.level) - player.exp;
     applyExpGain(player, needed);
   }
+}
+
+function countRescuedPrincesses(player) {
+  let count = 0;
+  const flags = player.questFlags || {};
+  if (flags.destiny_rescued) count++;
+  if (isQuestDone(player, 'jasmine_samples')) count++;
+  if (isQuestDone(player, 'crystal_keycard')) count++;
+  if (flags.mercedes_rewarded) count++;
+  if (flags.angelica_rescued) count++;
+  if (isQuestDone(player, 'tiffany_antidote')) count++;
+  if (flags.brianna_met) count++;
+  if (flags.valentina_freed) count++;
+  return count;
 }
 
 function saveAfterDelay() {
@@ -986,17 +1102,15 @@ function initExtraInput() {
       if (menu.confirmingQuit) {
         // Quit confirmation is active
         if (e.key === 'Enter' || e.key === ' ') {
-          // Confirm: clear save and restart at class select
+          // Confirm: clear save and return to title
           menu.confirmingQuit = false;
           resetCharMenu();
           clearSave();
           const { resetStats } = PLAYER_MODULE;
           resetStats();
           setOpenedChests([]);
-          loadRoom(START_ROOM).then(room => {
-            setPlayerPos(room.playerStart.x, room.playerStart.y);
-          });
-          state = GAME_STATES.CLASS_SELECT;
+          initTitle();
+          state = GAME_STATES.TITLE;
           setInputEnabled(true);
         } else if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'q' || e.key === 'Q') {
           menu.confirmingQuit = false;
@@ -1025,6 +1139,7 @@ function initExtraInput() {
     } else if (state === GAME_STATES.CLASS_SELECT) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
+        sfxSelect();
         confirmClassSelection();
       }
     } else if (state === GAME_STATES.DIALOGUE) {
@@ -1117,6 +1232,45 @@ function initExtraInput() {
       } else if (e.key === 'Escape' || e.key === 'Backspace') {
         closeDebug();
         state = GAME_STATES.MENU;
+      }
+    } else if (state === GAME_STATES.ENDING) {
+      e.preventDefault();
+      if (e.key === 'Enter' || e.key === ' ') {
+        const done = advanceEnding();
+        if (done) {
+          initTitle();
+          state = GAME_STATES.TITLE;
+          setInputEnabled(true);
+        }
+      }
+    } else if (state === GAME_STATES.TITLE) {
+      e.preventDefault();
+      if (e.key === 'ArrowUp') {
+        setTitleMenuIndex(getTitleMenuIndex() - 1);
+        sfxNavigate();
+      } else if (e.key === 'ArrowDown') {
+        setTitleMenuIndex(getTitleMenuIndex() + 1);
+        sfxNavigate();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        sfxSelect();
+        const option = getSelectedTitleOption();
+        if (option === 'continue') {
+          setInputEnabled(false);
+          loadSavedGame().then(success => {
+            if (success) {
+              state = GAME_STATES.OVERWORLD;
+            } else {
+              state = GAME_STATES.CLASS_SELECT;
+            }
+            setInputEnabled(true);
+          });
+        } else {
+          setInputEnabled(false);
+          startNewGame().then(() => {
+            state = GAME_STATES.CLASS_SELECT;
+            setInputEnabled(true);
+          });
+        }
       }
     } else if (state === GAME_STATES.OVERWORLD) {
       // Chest popup dismiss

@@ -5,7 +5,8 @@
   "exits": {
     "left": "grymhold/town_1",
     "right": "cave_1/room_1",
-    "down": "sewer/entrance"
+    "down": "sewer/entrance",
+    "up": "grymhold/town_3"
   },
   "shops": [
     { "type": "gear_shop", "x": 8, "y": 5 },

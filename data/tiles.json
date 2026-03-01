@@ -12,5 +12,21 @@
   "10": { "name": "stone_wall", "walkable": false, "color": "#666677" },
   "11": { "name": "sewer_wall", "walkable": false, "color": "#3D4A3D" },
   "12": { "name": "sewer_floor", "walkable": true, "color": "#5A6B5A" },
-  "13": { "name": "sewer_water", "walkable": false, "color": "#3A5A3A" }
+  "13": { "name": "sewer_water", "walkable": false, "color": "#3A5A3A" },
+  "14": { "name": "sprawl_road", "walkable": true, "color": "#666666" },
+  "15": { "name": "sprawl_fence", "walkable": false, "color": "#8B6914" },
+  "16": { "name": "sprawl_grass", "walkable": true, "color": "#558844" },
+  "17": { "name": "retail_floor", "walkable": true, "color": "#C8B898" },
+  "18": { "name": "retail_wall", "walkable": false, "color": "#AA9988" },
+  "19": { "name": "retail_shelf", "walkable": false, "color": "#7A6A5A" },
+  "20": { "name": "gym_floor", "walkable": true, "color": "#555566" },
+  "21": { "name": "gym_wall", "walkable": false, "color": "#444455" },
+  "22": { "name": "gym_equipment", "walkable": false, "color": "#333344" },
+  "23": { "name": "lab_floor", "walkable": true, "color": "#CCCCCC" },
+  "24": { "name": "lab_wall", "walkable": false, "color": "#DDDDDD" },
+  "25": { "name": "lab_tank", "walkable": false, "color": "#44AA88" },
+  "26": { "name": "island_floor", "walkable": true, "color": "#BBAA99" },
+  "27": { "name": "island_wall", "walkable": false, "color": "#556677" },
+  "28": { "name": "temple_floor", "walkable": true, "color": "#998877" },
+  "29": { "name": "temple_wall", "walkable": false, "color": "#776655" }
 }

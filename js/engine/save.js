@@ -37,6 +37,9 @@ export function saveGame(roomId, playerX, playerY, player) {
     dangerMeter: player.dangerMeter || 0,
     knownRecipes: player.knownRecipes || [],
     lastSafeRoom: player.lastSafeRoom || null,
+    difficulty: player.difficulty || 1.0,
+    playtime: player.playtime || 0,
+    bossesDefeated: player.bossesDefeated || [],
   } : null;
 
   const data = {
@@ -86,4 +89,21 @@ export function clearSave() {
   for (const key of OLD_KEYS) {
     localStorage.removeItem(key);
   }
+}
+
+export function hasSave() {
+  return !!localStorage.getItem(SAVE_KEY);
+}
+
+export function getSaveInfo() {
+  const save = loadSave();
+  if (!save || !save.playerState) return null;
+  const p = save.playerState;
+  return {
+    classId: p.classId,
+    level: p.level,
+    playtime: p.playtime || 0,
+    timestamp: save.timestamp,
+    roomId: save.roomId,
+  };
 }

@@ -84,7 +84,34 @@ export function isWalkable(x, y) {
 
 export function getExit(direction) {
   if (!currentRoom || !currentRoom.exits) return null;
-  return currentRoom.exits[direction] || null;
+  const exit = currentRoom.exits[direction];
+  if (!exit) return null;
+  // Support locked exits: { target: "room_id", locked: "key_item_id" }
+  if (typeof exit === 'object' && exit.locked) {
+    return exit; // caller checks for .locked
+  }
+  return exit;
+}
+
+export function isExitLocked(direction) {
+  if (!currentRoom || !currentRoom.exits) return null;
+  const exit = currentRoom.exits[direction];
+  if (typeof exit === 'object' && exit.locked) {
+    return exit.locked; // returns key item id needed
+  }
+  return null;
+}
+
+export function getExitTarget(direction) {
+  if (!currentRoom || !currentRoom.exits) return null;
+  const exit = currentRoom.exits[direction];
+  if (!exit) return null;
+  if (typeof exit === 'object') return exit.target;
+  return exit;
+}
+
+export function getRoomHazards() {
+  return currentRoom && currentRoom.hazards ? currentRoom.hazards : [];
 }
 
 // Returns the spawn position when entering from the given direction

@@ -31,9 +31,11 @@ Open http://localhost:8080 in your browser. That's it.
 |---|---|
 | C | Open monster compendium |
 | D | Open debug menu (temp) |
-| Q | Quit to class select (new game) |
+| Q | Quit to title screen |
 
 ## Getting Started
+
+The game starts at a **title screen**. Choose "New Game" to begin or "Continue" to load a saved game.
 
 When you start a new game, you'll choose one of three classes. Each plays very differently.
 
@@ -107,7 +109,15 @@ Bosses are powerful enemies with **multiple phases**. As you damage them, they u
 - You **cannot flee** from boss fights
 - Defeating a boss sets a permanent quest flag and clears all remaining minions
 
-**The Sewer King** — First boss. Found in the Sewer Throne room. Phase 1: bite, tail whip, submerge. Phase 2 (<60% HP): adds rat summons and toxic spray. Weak to Lightning.
+### Bosses
+
+| Boss | Location | Phases | Weakness |
+|---|---|---|---|
+| **The Sewer King** | Sewer Throne | P1: bite, tail whip, submerge. P2: rat summons, toxic spray | Lightning |
+| **The Manager** | Retail Ruins | P1: summons Retail Bots. P2: SALE MODE (double attacks). P3: scans your most-used element → immune to it | Lightning |
+| **The Alpha** | Gym District | P1: slow devastator (high ATK/DEF). P2: SUPERSET MODE (SPD doubles, DEF drops) | Ice |
+| **The Specimen** | Labs | P1: 3 independent heads (Fire/Ice/Lightning). P2: heads merge, coordinate AOE charges | Mixed |
+| **The Consultant** | Island | P1: untargetable, sends Elite Guard waves. P2: mech suit with exploit shield. P3: dirty fighting, hidden Physical weakness | Physical (P3) |
 
 ## Progression
 
@@ -139,6 +149,8 @@ Open the character menu (I) to manage equipment across 7 slots: weapon, shield, 
 | Convenience Store | Town Center | Food (HP restore), energy drinks (MP restore), status cures, Scanner |
 | Pawn Shop | East Quarter | Weapons (physical + elemental), armor, accessories |
 | Hack Shop | East Quarter | Utility spells (Heal, Health Siphon, Shield Aura, Invisibility, Resurrect) |
+| Brianna's Gear Shop | Grymhold Residential | Mid-to-late game gear (Brianna is also Princess #7) |
+| Damned Merchant | Underworld Intern Halls | Powerful cursed items with stat tradeoffs |
 
 ### Crafting
 
@@ -182,13 +194,26 @@ Every enemy you fight is recorded in the **Compendium** (press C in the characte
 
 ## Quests
 
-Talk to NPCs to receive quests. Current quests:
+Talk to NPCs to receive quests.
 
+### Main Quest
 | Quest | Giver | Objective |
 |---|---|---|
-| The NFT Drives | The Mayor | Collect 5 NFT drives from bosses |
-| Princess in Distress | Princess Destiny | Deal with the HOA enforcer (fight or pay 50G) |
-| Bio Research | Princess Jasmine | Collect 3 Bio Samples |
+| The NFT Drives | The Mayor | Collect 5 NFT drives from bosses (one per boss) |
+
+### Princess Quests (8 total)
+| Princess | Location | Quest |
+|---|---|---|
+| Destiny | Sprawl Park | Fight the HOA Enforcer or pay 50G |
+| Jasmine | Sewer Entrance | Collect 3 Bio Samples |
+| Crystal | Retail Security | Find the security keycard |
+| Mercedes | Gym Training Hall | Defeat The Alpha boss |
+| Angelica | Underworld | Pay Marvin 200G or defeat him |
+| Tiffany | Lab Holding Cells | Craft an Antidote (3 Bio Samples + 2 Toxic Goo) |
+| Brianna | Grymhold Shop | Talk to her (she's the gear shop vendor!) |
+| Valentina | Island Archives | Freed during Consultant fight |
+
+Rescuing all 8 princesses and collecting all 5 NFT drives unlocks the best ending when you return to the Mayor.
 
 ## Enemy Reference
 
@@ -229,34 +254,119 @@ Talk to NPCs to receive quests. Current quests:
 | Sewer Rat | 15 | 8 | 6 | Fire-weak. Also spawned as boss minions |
 | Toxic Slime | 35 | 12 | 5 | Fire-weak. Drops Toxic Goo |
 
+### Sprawl Enemies
+| Enemy | HP | ATK | SPD | Notes |
+|---|---|---|---|---|
+| Feral Dog | 25 | 10 | 7 | Fire-weak |
+| Feral Rat | 18 | 7 | 8 | Fire-weak |
+| Goblin Archer | 32 | 15 | 7 | Lightning-weak. Drops Scrap Metal |
+| HOA Enforcer | 80 | 18 | 5 | Physical-weak. Quest-only fight |
+
+### Retail Enemies
+| Enemy | HP | ATK | SPD | Notes |
+|---|---|---|---|---|
+| Retail Bot | 30 | 13 | 5 | Lightning-weak. Drops Scrap Metal |
+| Price Scanner | 25 | 10 | 9 | Ice-weak. Drops Spark Plug |
+| Shopping Cart Golem | 60 | 18 | 3 | Fire-weak. Drops Scrap Metal |
+| Corrupted Cashier | 45 | 16 | 6 | Physical-weak |
+
+### Gym Enemies
+| Enemy | HP | ATK | SPD | Notes |
+|---|---|---|---|---|
+| Protein Junkie | 50 | 18 | 5 | Physical-weak |
+| Swole Beast | 70 | 24 | 4 | Ice-weak. Drops Beast Hide |
+| Gym Bro | 55 | 20 | 6 | Lightning-weak |
+| Treadmill Monster | 40 | 14 | 12 | Fire-weak |
+
+### Lab Enemies
+| Enemy | HP | ATK | SPD | Notes |
+|---|---|---|---|---|
+| Lab Chimera | 80 | 22 | 5 | Fire-weak. Drops Bio Sample |
+| Bio-Mutant | 65 | 20 | 6 | Ice-weak. Drops Bio Sample |
+| Experiment Pod | 50 | 15 | 3 | Lightning-weak. Drops Circuit Board |
+| Rogue AI | 55 | 25 | 8 | Lightning-weak. Drops Spark Plug |
+
+### Island Enemies
+| Enemy | HP | ATK | SPD | Notes |
+|---|---|---|---|---|
+| Elite Guard | 90 | 28 | 6 | Lightning-weak |
+| Security Drone | 60 | 22 | 10 | Lightning-weak. Drops Spark Plug |
+| Cult Acolyte | 45 | 18 | 7 | Fire-weak |
+| Void Wraith | 120 | 35 | 8 | Physical-weak. Drops Circuit Board |
+
 ### Bosses
 | Boss | HP | ATK | DEF | Weakness | Drops |
 |---|---|---|---|---|---|
-| The Sewer King | 300 | 22 | 14 | Lightning | Beast Hide |
+| The Sewer King | 300 | 22 | 14 | Lightning | NFT Drive #1, Beast Hide |
+| The Manager | 400 | 25 | 18 | Lightning | NFT Drive #2, Scrap Metal |
+| The Alpha | 500 | 35 | 16 | Ice | NFT Drive #3, Beast Hide |
+| The Specimen | 600 | 28 | 12 | Mixed | NFT Drive #4, Circuit Board, Bio Sample |
+| The Consultant | 800 | 40 | 20 | Physical (P3) | NFT Drive #5, Legendary accessory |
 
 ## World Map
 
 ```
-Grymhold Town Center ──── East Quarter ──── Cave Entrance
-  (Convenience Store)    (Pawn Shop,          |
-          |               Hack Shop)      Deep Passage ── Dead End
-          |  (down)
-    Sewer Entrance ─── Sewer Tunnel 1 ──── Junction
-      (campfire)            |                  |
-                      Sewer Tunnel 2        Waterway
-                            |                  |
-                        Rat's Nest ──── Sewer Throne ──── Deep Sewers
-                                      (BOSS: Sewer King)
+                        Grymhold (8 rooms)
+                    ┌─ Town Center ── East Quarter ── Cave Entrance
+                    │  (Store)       (Pawn/Hack)          |
+                    │      |                          Deep Passage ── Dead End
+ Inn ── Guild ──────┘      | (down)
+ Mayor ── Blacksmith       |
+ Residential ── Outskirts  |
+  (Brianna shop)           |
+                    Sewer Entrance ─── Sewer Tunnel 1 ──── Junction
+                      (campfire)            |                  |
+                                      Sewer Tunnel 2        Waterway
+                                            |                  |
+                                        Rat's Nest ──── Sewer Throne ──── Deep Sewers
+                                                      (BOSS: Sewer King)
+
+Sprawl (10 rooms) ── accessed from Town Center (down)
+  Entrance ── Streets ── Park (Destiny) ── Alley
+                |                              |
+             Houses ── Dead End       Crossroads ── Bridge ── Retail Entrance
+                |                        |
+              Camp (campfire)          (locked until Sewer King defeated)
+
+Retail Ruins (10 rooms) ── Clothing, Electronics, Food Court, Security (Crystal),
+                           Checkouts, Escalator, Storage, Manager's Office (BOSS)
+
+Gym District (10 rooms) ── Locker Room (campfire), Main Floor, Weight Room, Cardio,
+                           Sauna, Pool, Training Hall (Mercedes), Alpha Arena (BOSS)
+
+The Labs (10 rooms) ── Entrance, Corridor (campfire), Holding Cells (Tiffany),
+                       Surgery, Server Room, Genetic Vault, Sub-Basement,
+                       Secret Lab, Antechamber, Containment (BOSS)
+
+Consultant's Island (12 rooms) ── Dock, Lobby, Lounge (campfire), Executive Hall,
+                                   Penthouse, Office (BOSS P1), Descent, Ritual Chamber,
+                                   Mech Bay (P2), Inner Sanctum (P3), Archives (Valentina),
+                                   Treasure
 
 On death:  Underworld Gate ── Intern Halls ── The Depths
-           (Marvin NPC)      (Ghost Interns)  (More Ghost Interns)
+           (Marvin, Angelica)  (Ghost Interns, Merchant)
 ```
+
+## Endings
+
+Collect all **5 NFT drives** (one from each boss) and defeat **The Consultant**, then return to the Mayor to trigger the ending sequence. Your ending title depends on how many of the 8 princesses you rescued — from "The Bare Minimum" (0 rescued) to "World's Greatest Contractor" (all 8).
+
+## Sound
+
+All sound effects are synthesized using the **Web Audio API** — no audio files needed. Sound highlights:
+- **WEAKNESS!** flash has a distinctive rising arpeggio (the most important 0.5s in the game)
+- Boss phase transitions get a dramatic rumble
+- Level ups play a triumphant jingle
+- Boss defeats get a full fanfare
 
 ## Technical Details
 
 - **16x12 tile grid**, 32px per tile, 512x384 native canvas (scales up via CSS)
+- **~70 rooms** across 8 regions + underworld
+- **~40 enemy types** and **5 bosses** with unique multi-phase AI
 - **ES modules** loaded directly by the browser - no bundler, no transpiler
 - **8x8 pixel art sprites** defined inline as palette + pixel-index arrays, pre-rendered to offscreen canvases
 - **localStorage** save system, auto-saves after every movement
+- **Web Audio API** for all sound effects (synthesized, no audio files)
 - **Tick-based combat** where SPD determines action frequency (ticks to act = floor(80/SPD))
 - All rendering is canvas 2D - no DOM elements for gameplay

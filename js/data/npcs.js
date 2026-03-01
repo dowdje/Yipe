@@ -106,4 +106,174 @@ export const NPC_DEFS = {
       },
     },
   },
+  crystal: {
+    name: 'Princess Crystal',
+    sprite: 'npc_princess',
+    dialogue: {
+      default: {
+        text: "I'm locked in this security office! Find the keycard to free me!",
+        choices: [
+          { label: 'I\'ll find it', action: 'startQuest', questId: 'crystal_keycard' },
+          { label: 'Not now', action: 'close' },
+        ],
+      },
+      quest_active: {
+        text: "Did you find the security keycard? Check the electronics department!",
+        choices: null,
+      },
+      quest_complete: {
+        text: "You found it! Thank you, brave contractor!",
+        choices: null,
+        reward: { gold: 100 },
+      },
+      done: {
+        text: "Freedom feels amazing! Good luck out there!",
+        choices: null,
+      },
+    },
+  },
+  mercedes: {
+    name: 'Princess Mercedes',
+    sprite: 'npc_princess',
+    dialogue: {
+      default: {
+        text: "The Alpha terrorizes this gym. Defeat him and I'll reward you handsomely.",
+        choices: [
+          { label: 'On it', action: 'close' },
+        ],
+      },
+      boss_defeated: {
+        text: "You defeated The Alpha! Take this reward, champion!",
+        choices: null,
+        reward: { gold: 150 },
+      },
+      done: {
+        text: "The gym is safe again. You're stronger than you look!",
+        choices: null,
+      },
+    },
+  },
+  tiffany: {
+    name: 'Princess Tiffany',
+    sprite: 'npc_princess',
+    dialogue: {
+      default: {
+        text: "I've been exposed to mutagens! I need an Antidote — craft one from Bio Samples and Toxic Goo!",
+        choices: [
+          { label: 'I\'ll craft one', action: 'startQuest', questId: 'tiffany_antidote' },
+          { label: 'Not now', action: 'close' },
+        ],
+      },
+      quest_active: {
+        text: "Please hurry with that Antidote! I need 3 Bio Samples and 2 Toxic Goo!",
+        choices: null,
+      },
+      quest_complete: {
+        text: "The Antidote works! You saved my life!",
+        choices: null,
+        reward: { gold: 250 },
+      },
+      done: {
+        text: "Feeling much better now. Science is terrifying.",
+        choices: null,
+      },
+    },
+  },
+  angelica: {
+    name: 'Princess Angelica',
+    sprite: 'npc_princess',
+    dialogue: {
+      default: {
+        text: "Marvin won't let me leave! Pay his 200g fee or defeat him for me!",
+        choices: [
+          { label: 'Pay 200g', action: 'payGold', amount: 200 },
+          { label: 'Fight Marvin', action: 'startFight', target: 'gatekeeper' },
+          { label: 'Not now', action: 'close' },
+        ],
+      },
+      rescued: {
+        text: "Thank you! Take this for your trouble.",
+        choices: null,
+        reward: { gold: 200 },
+      },
+      done: {
+        text: "The Underworld gives me the creeps. Stay safe.",
+        choices: null,
+      },
+    },
+  },
+  brianna: {
+    name: 'Princess Brianna',
+    sprite: 'npc_princess',
+    dialogue: {
+      default: {
+        text: "Welcome to my shop! ...Wait, you're collecting princesses? I AM a princess — Princess Brianna! Been running this place to fund our escape.",
+        choices: [
+          { label: 'Browse shop', action: 'openShop', shopType: 'gear_shop' },
+          { label: 'Noted!', action: 'close' },
+        ],
+      },
+      done: {
+        text: "Still running the shop! A princess has to earn a living.",
+        choices: [
+          { label: 'Browse shop', action: 'openShop', shopType: 'gear_shop' },
+          { label: 'Bye', action: 'close' },
+        ],
+        reward: { gold: 300 },
+      },
+    },
+  },
+  valentina: {
+    name: 'Princess Valentina',
+    sprite: 'npc_princess',
+    dialogue: {
+      default: {
+        text: "You freed me from The Consultant's prison! The conspiracy goes deeper than you know...",
+        choices: null,
+        reward: { gold: 0 },
+      },
+      done: {
+        text: "Be careful. They're watching everything.",
+        choices: null,
+      },
+    },
+  },
+  underworld_merchant: {
+    name: 'Damned Merchant',
+    sprite: 'npc_gear',
+    dialogue: {
+      default: {
+        text: "These items carry a curse... but power comes at a price. Interested?",
+        choices: [
+          { label: 'Browse', action: 'openShop', shopType: 'underworld_shop' },
+          { label: 'No thanks', action: 'close' },
+        ],
+      },
+    },
+  },
+  innkeeper: {
+    name: 'Innkeeper',
+    sprite: 'npc_potion',
+    dialogue: {
+      default: {
+        text: "Rest here? I'll patch you up for free.",
+        choices: [
+          { label: 'Rest', action: 'heal' },
+          { label: 'No thanks', action: 'close' },
+        ],
+      },
+    },
+  },
+  guild_master: {
+    name: 'Guild Master',
+    sprite: 'npc_wizard',
+    dialogue: {
+      default: {
+        text: "Welcome to the Contractors Guild. Check the quest board for work.",
+        choices: [
+          { label: 'View quests', action: 'close' },
+        ],
+      },
+    },
+  },
 };
