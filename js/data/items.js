@@ -1140,8 +1140,6 @@ const LOOT_TABLES = {
     { itemId: 'luck_charm', weight: 10 },
     { itemId: 'atk_ring', weight: 10 },
   ],
-};
-
   // Sprawl enemies
   feral_dog: [
     { itemId: null, weight: 82 },
