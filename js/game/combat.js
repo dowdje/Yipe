@@ -17,6 +17,7 @@ import { checkProcs } from './procs.js';
 import { recordKill, recordResistanceDiscovery } from './compendium.js';
 import { getDangerLevel, addDanger } from './danger.js';
 import { MATERIAL_DEFS } from '../data/materials.js';
+import { checkObjective } from './quests.js';
 import { getAllPerkModifiers as _getAllPerkModifiers } from './perks.js';
 import { BOSS_DEFS, checkPhaseTransition } from './boss-ai.js';
 import { sfxWeakness, sfxHit, sfxCritHit, sfxEnemyDeath, sfxDamageTaken, sfxStatus, sfxHeal, sfxLevelUp, sfxBossDefeat, sfxPhaseTransition } from '../engine/audio.js';
@@ -1261,6 +1262,23 @@ export function checkVictory() {
     player.questFlags[`boss_${enemy.bossId}_defeated`] = true;
     if (!player.bossesDefeated) player.bossesDefeated = [];
     if (!player.bossesDefeated.includes(enemy.bossId)) player.bossesDefeated.push(enemy.bossId);
+
+    // Drop NFT drive for boss kills
+    const BOSS_NFT_MAP = {
+      sewer_king: 'nft_drive_1',
+      the_manager: 'nft_drive_2',
+      the_alpha: 'nft_drive_3',
+      the_specimen: 'nft_drive_4',
+      the_consultant: 'nft_drive_5',
+    };
+    const nftId = BOSS_NFT_MAP[enemy.bossId];
+    if (nftId && ITEMS[nftId]) {
+      addToInventory(player, ITEMS[nftId]);
+      addLog(`Acquired: ${ITEMS[nftId].name}!`);
+      const questMsgs = checkObjective(player, 'collect', 'nft_drive');
+      for (const msg of questMsgs) addLog(msg);
+    }
+
     sfxBossDefeat();
     addLog(`BOSS DEFEATED! ${enemy.name} is vanquished! +${enemy.gold}G +${enemy.exp}EXP`);
   } else {

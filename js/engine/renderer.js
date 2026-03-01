@@ -19,8 +19,8 @@ export function initRenderer(canvas) {
 }
 
 function loadSprites() {
-  // Pre-render at common scales: 4x (32px tiles/overworld), 6x (48px combat)
-  const scales = [4, 6];
+  // Pre-render at common scales: 4x (64px tiles/overworld), 6x (96px combat), 8x (128px boss combat)
+  const scales = [4, 6, 8];
 
   for (const [spriteId, data] of Object.entries(SPRITE_DATA)) {
     spriteCache[spriteId] = {};
@@ -36,14 +36,14 @@ function loadSprites() {
     }
 
     for (const scale of scales) {
-      const size = 8 * scale;
+      const size = 16 * scale;
       const offscreen = document.createElement('canvas');
       offscreen.width = size;
       offscreen.height = size;
       const octx = offscreen.getContext('2d');
 
-      for (let row = 0; row < 8; row++) {
-        for (let col = 0; col < 8; col++) {
+      for (let row = 0; row < 16; row++) {
+        for (let col = 0; col < 16; col++) {
           const palIdx = data[row][col];
           if (palIdx === 0) continue; // transparent
           const [r, g, b, a] = palette[palIdx] || [255, 0, 255, 255];
@@ -94,28 +94,34 @@ export function drawTileGrid(tiles, tileDefs) {
   }
 }
 
-export function drawPlayer(x, y) {
+export function drawPlayer(x, y, classId) {
   const px = x * TILE_SIZE;
   const py = y * TILE_SIZE;
+  const spriteId = classId ? `player_${classId}` : 'player';
 
-  if (!drawSprite('player', px, py, 4)) {
-    // Fallback
-    ctx.fillStyle = COLORS.player;
-    const inset = 4;
-    ctx.fillRect(px + inset, py + inset, TILE_SIZE - inset * 2, TILE_SIZE - inset * 2);
+  if (!drawSprite(spriteId, px, py, 4)) {
+    if (!drawSprite('player', px, py, 4)) {
+      // Fallback
+      ctx.fillStyle = COLORS.player;
+      const inset = 8;
+      ctx.fillRect(px + inset, py + inset, TILE_SIZE - inset * 2, TILE_SIZE - inset * 2);
+    }
   }
 }
 
-export function drawPlayerLerp(fromX, fromY, toX, toY, t) {
+export function drawPlayerLerp(fromX, fromY, toX, toY, t, classId) {
   const x = fromX + (toX - fromX) * t;
   const y = fromY + (toY - fromY) * t;
   const px = x * TILE_SIZE;
   const py = y * TILE_SIZE;
+  const spriteId = classId ? `player_${classId}` : 'player';
 
-  if (!drawSprite('player', px, py, 4)) {
-    ctx.fillStyle = COLORS.player;
-    const inset = 4;
-    ctx.fillRect(px + inset, py + inset, TILE_SIZE - inset * 2, TILE_SIZE - inset * 2);
+  if (!drawSprite(spriteId, px, py, 4)) {
+    if (!drawSprite('player', px, py, 4)) {
+      ctx.fillStyle = COLORS.player;
+      const inset = 8;
+      ctx.fillRect(px + inset, py + inset, TILE_SIZE - inset * 2, TILE_SIZE - inset * 2);
+    }
   }
 }
 
@@ -133,6 +139,31 @@ export function drawEntity(x, y, color, inset = 6, spriteId = null) {
 
 export function drawCombatSprite(spriteId, x, y) {
   if (spriteId && drawSprite(spriteId, x, y, 6)) {
+    return true;
+  }
+  return false;
+}
+
+export function drawBossEntity(x, y, color, spriteId = null) {
+  const px = x * TILE_SIZE;
+  const py = y * TILE_SIZE;
+  const size = TILE_SIZE * 2; // 2×2 tiles
+
+  if (spriteId) {
+    const cached = spriteCache[spriteId];
+    if (cached && cached[8]) {
+      ctx.drawImage(cached[8], px, py);
+      return;
+    }
+  }
+
+  ctx.fillStyle = color;
+  const inset = 8;
+  ctx.fillRect(px + inset, py + inset, size - inset * 2, size - inset * 2);
+}
+
+export function drawBossCombatSprite(spriteId, x, y) {
+  if (spriteId && drawSprite(spriteId, x, y, 8)) {
     return true;
   }
   return false;

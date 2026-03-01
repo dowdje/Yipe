@@ -1,7 +1,7 @@
 // main.js — Game initialization and loop
 
 import { GAME_STATES, TRANSITION_MS, xpForLevel, ENEMY_TYPES, GRID_COLS, GRID_ROWS } from './config.js';
-import { initRenderer, clear, drawTileGrid, drawPlayer, drawPlayerLerp, drawEntity, drawFade, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP } from './engine/renderer.js';
+import { initRenderer, clear, drawTileGrid, drawPlayer, drawPlayerLerp, drawEntity, drawBossEntity, drawFade, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP } from './engine/renderer.js';
 import { initInput, consumeInput, setInputEnabled } from './engine/input.js';
 import { loadTileDefs, getTileDefs, loadRoom, getCurrentRoom, isWalkable, getExit, getEntryPosition, getActiveShops, getActiveNpcs, getActiveCampfires, isSafeRoom, initWorldPlayerRef, getShopAt, getNpcAt, getCampfireAt, getChestAt } from './game/world.js';
 import { getPlayer, setPlayerPos, tryMove, updateMovement, getMoveTween, equipItem, unequipSlot, removeFromInventory, initClass, grantAbilitiesUpToLevel, addToInventory } from './game/player.js';
@@ -33,16 +33,19 @@ import { openCrafting, closeCrafting, getCraftState, navigateCraft, setCraftMess
 import { getAvailablePerks, applyPerk, isPerkLevel } from './game/perks.js';
 import { openPerkSelection, closePerkSelection, getPerkState, navigatePerk, selectPerk, cancelPerkConfirm, renderPerkSelection } from './ui/perk-ui.js';
 import { openCompendium, closeCompendium, getCompendiumState, navigateCompendium, renderCompendium } from './ui/compendium-ui.js';
+import { openControls, closeControls, navigateControls, renderControls } from './ui/controls-ui.js';
 import { startQuest, checkObjective, isQuestActive, isQuestComplete, isQuestDone, completeQuest } from './game/quests.js';
 import { openDebug, closeDebug, getDebugState, navigateDebug, getSelectedDebugOption, setDebugMessage, renderDebug } from './ui/debug-ui.js';
 import { MATERIAL_DEFS } from './data/materials.js';
 import { applyExpGain } from './game/leveling.js';
+import { openJournal, closeJournal, getJournalState, navigateJournal, renderJournal } from './ui/journal-ui.js';
 
 const START_ROOM = 'grymhold/town_1';
 
 let state = GAME_STATES.TITLE;
 let transition = null; // { phase: 'out'|'in', start, targetRoom, fromDir }
 let saveLoaded = false; // tracks whether a save has been restored into player state
+let previousRoomId = null; // tracks last room for zone-change danger reduction
 
 async function init() {
   const canvas = document.getElementById('game');
@@ -86,6 +89,7 @@ async function loadSavedGame() {
   }
 
   const room = await loadRoom(save.roomId || START_ROOM);
+  previousRoomId = save.roomId || START_ROOM;
   setPlayerPos(save.playerX, save.playerY);
 
   if (save.playerState) {
@@ -161,6 +165,7 @@ async function startNewGame() {
   resetStats();
   setOpenedChests([]);
   const room = await loadRoom(START_ROOM);
+  previousRoomId = START_ROOM;
   setPlayerPos(room.playerStart.x, room.playerStart.y);
 }
 
@@ -210,6 +215,12 @@ function loop(now) {
       break;
     case GAME_STATES.COMPENDIUM:
       renderCompendium(getPlayer());
+      break;
+    case GAME_STATES.CONTROLS:
+      renderControls();
+      break;
+    case GAME_STATES.JOURNAL:
+      renderJournal(getPlayer());
       break;
     case GAME_STATES.DEBUG:
       renderDebug();
@@ -354,15 +365,20 @@ function renderOverworld(now) {
   // Draw enemies
   const enemies = getActiveEnemies();
   for (const enemy of enemies) {
-    drawEntity(enemy.x, enemy.y, enemy.color, 6, ENEMY_SPRITE_MAP[enemy.type]);
+    if (enemy.size === 2) {
+      drawBossEntity(enemy.x, enemy.y, enemy.color, ENEMY_SPRITE_MAP[enemy.type]);
+    } else {
+      drawEntity(enemy.x, enemy.y, enemy.color, 6, ENEMY_SPRITE_MAP[enemy.type]);
+    }
   }
 
   const tween = getMoveTween(now);
   if (tween) {
-    drawPlayerLerp(tween.fromX, tween.fromY, tween.toX, tween.toY, tween.t);
+    const pl = getPlayer();
+    drawPlayerLerp(tween.fromX, tween.fromY, tween.toX, tween.toY, tween.t, pl.classId);
   } else {
     const p = getPlayer();
-    drawPlayer(p.x, p.y);
+    drawPlayer(p.x, p.y, p.classId);
   }
 
   const p = getPlayer();
@@ -405,6 +421,14 @@ async function updateTransition(now) {
     } else {
       addDanger(p, 1);
     }
+
+    // Reduce danger when changing zones (e.g., leaving sewers → sprawl)
+    const prevArea = previousRoomId ? previousRoomId.split('/')[0] : null;
+    const newArea = transition.targetRoom.split('/')[0];
+    if (prevArea && newArea && prevArea !== newArea) {
+      reduceDanger(p, 20);
+    }
+    previousRoomId = transition.targetRoom;
 
     // Save
     saveGame(transition.targetRoom, pos.x, pos.y, p);
@@ -449,11 +473,15 @@ function renderTransition(now) {
   // Draw enemies
   const enemies = getActiveEnemies();
   for (const enemy of enemies) {
-    drawEntity(enemy.x, enemy.y, enemy.color, 6, ENEMY_SPRITE_MAP[enemy.type]);
+    if (enemy.size === 2) {
+      drawBossEntity(enemy.x, enemy.y, enemy.color, ENEMY_SPRITE_MAP[enemy.type]);
+    } else {
+      drawEntity(enemy.x, enemy.y, enemy.color, 6, ENEMY_SPRITE_MAP[enemy.type]);
+    }
   }
 
   const p = getPlayer();
-  drawPlayer(p.x, p.y);
+  drawPlayer(p.x, p.y, p.classId);
   drawHud(p, room.name);
 
   const elapsed = now - transition.start;
@@ -1199,6 +1227,10 @@ function initExtraInput() {
         // Open compendium
         openCompendium(getPlayer());
         state = GAME_STATES.COMPENDIUM;
+      } else if (e.key === 'k' || e.key === 'K') {
+        // Open controls
+        openControls();
+        state = GAME_STATES.CONTROLS;
       } else if (e.key === 'i' || e.key === 'I' || e.key === 'Escape') {
         // Close character menu
         resetCharMenu();
@@ -1292,6 +1324,32 @@ function initExtraInput() {
         state = GAME_STATES.MENU;
         setInputEnabled(false);
       }
+    } else if (state === GAME_STATES.JOURNAL) {
+      e.preventDefault();
+      if (e.key === 'ArrowLeft') {
+        navigateJournal(-1, 0);
+      } else if (e.key === 'ArrowRight') {
+        navigateJournal(1, 0);
+      } else if (e.key === 'ArrowUp') {
+        navigateJournal(0, -1);
+      } else if (e.key === 'ArrowDown') {
+        navigateJournal(0, 1);
+      } else if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'j' || e.key === 'J') {
+        closeJournal();
+        state = GAME_STATES.OVERWORLD;
+        setInputEnabled(true);
+      }
+    } else if (state === GAME_STATES.CONTROLS) {
+      e.preventDefault();
+      if (e.key === 'ArrowUp') {
+        navigateControls(-1);
+      } else if (e.key === 'ArrowDown') {
+        navigateControls(1);
+      } else if (e.key === 'Escape' || e.key === 'Backspace') {
+        closeControls();
+        state = GAME_STATES.MENU;
+        setInputEnabled(false);
+      }
     } else if (state === GAME_STATES.DEBUG) {
       e.preventDefault();
       if (e.key === 'ArrowUp') {
@@ -1360,6 +1418,11 @@ function initExtraInput() {
         state = GAME_STATES.MENU;
         setInputEnabled(false);
         resetCharMenu();
+      } else if (e.key === 'j' || e.key === 'J') {
+        e.preventDefault();
+        openJournal();
+        state = GAME_STATES.JOURNAL;
+        setInputEnabled(false);
       }
     }
   });

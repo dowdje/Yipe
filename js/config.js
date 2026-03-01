@@ -1,6 +1,6 @@
 // config.js — Game constants and configuration
 
-export const TILE_SIZE = 32;
+export const TILE_SIZE = 64;
 export const GRID_COLS = 16;
 export const GRID_ROWS = 12;
 export const CANVAS_WIDTH = TILE_SIZE * GRID_COLS;  // 512
@@ -20,7 +20,9 @@ export const GAME_STATES = {
   PERK: 'PERK',
   COMPENDIUM: 'COMPENDIUM',
   DEBUG: 'DEBUG',
+  CONTROLS: 'CONTROLS',
   ENDING: 'ENDING',
+  JOURNAL: 'JOURNAL',
 };
 
 export const MOVE_TWEEN_MS = 100;
@@ -29,54 +31,54 @@ export const TRANSITION_MS = 200;
 export const DEATH_FEE_PER_LEVEL = 10;
 
 export const COLORS = {
-  background: '#111111',
-  player: '#FFD700',
+  background: '#0a0a12',
+  player: '#00ffcc',
   hud: {
-    bg: 'rgba(0, 0, 0, 0.7)',
+    bg: 'rgba(5, 5, 15, 0.85)',
     text: '#FFFFFF',
-    hp: '#22CC44',
-    hpBg: '#442222',
-    mp: '#4488FF',
-    mpBg: '#222244',
-    gold: '#FFD700',
+    hp: '#00ff88',
+    hpBg: '#1a332a',
+    mp: '#00aaff',
+    mpBg: '#1a2244',
+    gold: '#ffcc00',
   },
   combat: {
-    bg: '#1a1a2e',
-    panel: '#16213e',
-    panelBorder: '#0f3460',
+    bg: '#0a0a18',
+    panel: '#0d1020',
+    panelBorder: '#1a2555',
     text: '#FFFFFF',
-    textDim: '#888899',
-    enemyHp: '#CC3333',
-    enemyHpBg: '#442222',
-    menuSelect: '#FFD700',
-    menuNormal: '#AAAABB',
-    logText: '#CCCCDD',
-    flash: 'rgba(255, 255, 255, 0.6)',
+    textDim: '#7788aa',
+    enemyHp: '#ff2244',
+    enemyHpBg: '#331122',
+    menuSelect: '#00ffcc',
+    menuNormal: '#7788aa',
+    logText: '#aabbdd',
+    flash: 'rgba(0, 255, 200, 0.5)',
   },
   shop: {
-    bg: '#1a1a2e',
-    panel: '#16213e',
-    panelBorder: '#0f3460',
+    bg: '#0a0a18',
+    panel: '#0d1020',
+    panelBorder: '#1a2555',
     text: '#FFFFFF',
-    textDim: '#888899',
-    gold: '#FFD700',
-    menuSelect: '#FFD700',
-    menuNormal: '#AAAABB',
-    bought: '#22CC44',
-    noGold: '#CC3333',
+    textDim: '#7788aa',
+    gold: '#ffcc00',
+    menuSelect: '#00ffcc',
+    menuNormal: '#7788aa',
+    bought: '#00ff88',
+    noGold: '#ff2244',
   },
   item: {
     common: '#FFFFFF',
-    unique: '#FFD700',
+    unique: '#ffcc00',
   },
   rarity: {
     common: '#FFFFFF',
-    uncommon: '#4CAF50',
-    rare: '#2196F3',
-    legendary: '#FFD700',
-    unique: '#FFD700',
+    uncommon: '#00ff88',
+    rare: '#00aaff',
+    legendary: '#ff00cc',
+    unique: '#ffcc00',
   },
-  proc: '#BB66FF',
+  proc: '#cc00ff',
 };
 
 export const DAMAGE_TYPES = {

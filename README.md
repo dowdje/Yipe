@@ -24,6 +24,7 @@ Open http://localhost:8080 in your browser. That's it.
 | Escape / Backspace | Back / close menu |
 | Tab | Toggle buy/sell in shops |
 | I | Open character menu |
+| J | Open journal (quests, NFT drives, princesses) |
 
 ### Character Menu Shortcuts
 
@@ -107,7 +108,8 @@ Bosses are powerful enemies with **multiple phases**. As you damage them, they u
 - Bosses can **summon minions** — use Left/Right arrows to switch targets between the boss and its minions
 - Some bosses can **submerge** or go untargetable — attack minions while waiting, or you'll waste your turn
 - You **cannot flee** from boss fights
-- Defeating a boss sets a permanent quest flag and clears all remaining minions
+- Defeating a boss sets a permanent quest flag, clears all remaining minions, and drops an **NFT Drive** quest item
+- Bosses appear as **2×2 tiles** on the overworld and render larger in combat
 
 ### Bosses
 
@@ -170,7 +172,7 @@ The **Danger Meter** in the HUD tracks how long you've been away from town.
 | Critical | Red | +20% stats | +35% |
 | Meltdown | Dark Red | +30% stats | +50% |
 
-Danger increases when entering rooms (+1) and fighting (+2). It **resets to 0** when you return to town. **Campfires** reduce danger by 15 and restore 50% HP/MP.
+Danger increases when entering rooms (+1) and fighting (+2). It **resets to 0** when you return to town. **Campfires** reduce danger by 15 and restore 50% HP/MP. **Changing zones** (e.g., leaving the sewers for the sprawl) reduces danger by 20.
 
 Higher danger means tougher enemies but better loot. Push your luck or play it safe.
 
@@ -200,6 +202,13 @@ Every enemy you fight is recorded in the **Compendium** (press C in the characte
 - Kill count per enemy type
 - Discovered elemental resistances (revealed one by one as you attack with each element)
 - Full stat reveal at 5 kills
+
+## Journal
+
+Press **J** during overworld exploration to open the Journal. It has three tabs:
+- **Quests** — active and completed quests with progress bars
+- **NFT Drives** — 5 collection slots showing which bosses you've defeated
+- **Princesses** — tracks all 8 princess rescue statuses
 
 ## Quests
 
@@ -370,11 +379,12 @@ All sound effects are synthesized using the **Web Audio API** — no audio files
 
 ## Technical Details
 
-- **16x12 tile grid**, 32px per tile, 512x384 native canvas (scales up via CSS)
+- **16x12 tile grid**, 64px per tile, 1024x768 native canvas (scales via CSS)
 - **~70 rooms** across 8 regions + underworld
 - **~40 enemy types** and **5 bosses** with unique multi-phase AI
+- **Bosses render as 2×2 tiles** on the overworld (128px) and at 8× scale in combat (128px)
 - **ES modules** loaded directly by the browser - no bundler, no transpiler
-- **8x8 pixel art sprites** defined inline as palette + pixel-index arrays, pre-rendered to offscreen canvases
+- **16×16 pixel art sprites** defined inline as palette + pixel-index arrays, pre-rendered to offscreen canvases at 4× (overworld), 6× (combat), and 8× (boss combat)
 - **localStorage** save system, auto-saves after every movement
 - **Web Audio API** for all sound effects (synthesized, no audio files)
 - **Tick-based combat** where SPD determines action frequency (ticks to act = floor(80/SPD))

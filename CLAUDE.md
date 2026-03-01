@@ -20,7 +20,7 @@ Save data is in localStorage under key `gridlock_save_v1`.
 ## Architecture
 
 ### State Machine
-`main.js` has a single `state` variable switching on `GAME_STATES`. 14 states: `TITLE`, `OVERWORLD`, `TRANSITION`, `COMBAT`, `DIALOGUE`, `MENU`, `SHOP`, `DEATH`, `CLASS_SELECT`, `CRAFTING`, `PERK`, `COMPENDIUM`, `DEBUG`, `ENDING`. Each state has its own update + render path in the game loop, and key handlers in `initExtraInput()`. Game starts at `TITLE`.
+`main.js` has a single `state` variable switching on `GAME_STATES`. 15 states: `TITLE`, `OVERWORLD`, `TRANSITION`, `COMBAT`, `DIALOGUE`, `MENU`, `SHOP`, `DEATH`, `CLASS_SELECT`, `CRAFTING`, `PERK`, `COMPENDIUM`, `DEBUG`, `ENDING`, `JOURNAL`. Each state has its own update + render path in the game loop, and key handlers in `initExtraInput()`. Game starts at `TITLE`.
 
 ### Module Pattern
 All state is in module-level variables (not classes). Modules export getter functions (`getPlayer()`, `getCombat()`, etc.) returning mutable objects. No build step — ES modules loaded directly by browser.
@@ -29,10 +29,10 @@ All state is in module-level variables (not classes). Modules export getter func
 Cross-module refs are wired via init functions called in `main.js`: `initItemsRef()`, `initPlayerRef()`, `initSpellsRef()`, `initShopSpellsRef()`, `initCharItemsRef()`, `initWorldPlayerRef()`, `initBossAiRef()`.
 
 ### Canvas Rendering
-- Native resolution: 512x384 (16 cols × 12 rows, 32px tiles)
-- CSS scales to 1024x768 / 1536x1152 based on viewport
+- Native resolution: 1024x768 (16 cols × 12 rows, 64px tiles)
+- CSS scales based on viewport
 - All drawing through `renderer.js` primitives; UI modules draw directly via `getCtx()`
-- 8×8 pixel art sprites defined inline in `js/data/sprites.js`, pre-rendered to offscreen canvases at 4× (overworld) and 6× (combat)
+- 16×16 pixel art sprites defined inline in `js/data/sprites.js`, pre-rendered to offscreen canvases at 4× (overworld), 6× (combat), and 8× (boss combat)
 
 ### Room Format
 Room JSON files live in `data/rooms/{region}/{room}.json`. Regions: `grymhold`, `caves`, `underworld`, `sewer`, `sprawl`, `retail`, `gym`, `labs`, `island`. Fields:
@@ -87,7 +87,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 ### Engine
 | File | Purpose |
 |---|---|
-| `js/main.js` | Game loop, all state transitions, cross-module wiring, input routing, NPC dialogue handlers (~1300 lines) |
+| `js/main.js` | Game loop, all state transitions, cross-module wiring, input routing, NPC dialogue handlers, journal state, zone-change danger reduction (~1400 lines) |
 | `js/engine/input.js` | Keyboard (WASD/arrows) + click-to-move |
 | `js/engine/renderer.js` | Canvas primitives, sprite cache, tile/entity/player drawing |
 | `js/engine/save.js` | localStorage save/load with migration support. Exports `hasSave()`, `getSaveInfo()` for title screen |
@@ -100,7 +100,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 | `js/game/world.js` | Room loading/caching, tile collision, exits (incl. key/lock doors via isExitLocked), NPC/campfire/shop tracking, room hazards |
 | `js/game/combat.js` | Full combat engine (~1400 lines): timeline, damage calc, abilities, status effects, procs, material drops, compendium recording, boss target system, minion management, phase transitions |
 | `js/game/boss-ai.js` | Boss definitions (BOSS_DEFS) for 5 bosses (Sewer King, The Manager, The Alpha, The Specimen, The Consultant), phase system, weighted ability selection, cooldowns, minion spawning, wave system, multi-head system, executeBossTurn() |
-| `js/game/enemies.js` | Enemy spawning with level-based scaling + fixedEnemies mode for dungeons + difficulty multiplier (setDifficulty/getDifficulty/applyDifficultyScaling) + roaming enemy system (spawnRandomEnemy/moveRoamingEnemies/getRoamingEnemyCount) |
+| `js/game/enemies.js` | Enemy spawning with level-based scaling + fixedEnemies mode for dungeons + difficulty multiplier (setDifficulty/getDifficulty/applyDifficultyScaling) + roaming enemy system (spawnRandomEnemy/moveRoamingEnemies/getRoamingEnemyCount) + boss 2×2 tile size (size=2 for isBoss enemies, getEnemyAt checks all 4 tiles) |
 | `js/game/stats.js` | Effective stat computation: base + equipment + status effects + perk multipliers |
 | `js/game/leveling.js` | EXP gain, level-up with class-specific stat growth |
 | `js/game/status-effects.js` | 10 status effects (burn, chill, paralyze, poison, enfeeble, ATK/DEF up, haste, regen, shield) |
@@ -130,6 +130,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 | `js/ui/crafting-ui.js` | Blacksmith crafting interface |
 | `js/ui/perk-ui.js` | Perk selection modal |
 | `js/ui/compendium-ui.js` | Monster compendium viewer |
+| `js/ui/journal-ui.js` | Journal UI: 3 tabs (Quests with progress bars, NFT Drive collection slots, Princess rescue tracking). Opened with J key from overworld |
 | `js/ui/debug-ui.js` | TEMP: cheat menu for playtesting (+level, +gold, etc.) |
 
 ## Conventions
@@ -182,7 +183,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 - **INT stat** — boosts Hacker ability damage and spell scaling (not Bruiser/Fixer abilities)
 - **Abilities are free** — no MP cost. Balance comes from enemy pressure, not resource management
 - **Equipment serialization** — save stores equipment as `{ id }` refs, rehydrated from `ITEMS` on load
-- **Danger meter** — increments on room transitions (+1) and combat (+2/+5), resets in safe rooms, reduced by campfires (-15)
+- **Danger meter** — increments on room transitions (+1) and combat (+2/+5), resets in safe rooms, reduced by campfires (-15), reduced by 20 when changing zones (area prefix before `/` differs)
 - **Death flow** — defeat → death screen → underworld/gate → pay fee (level×10 gold) or fight Marvin or grind ghost interns → revive at last safe room with full heal
 - **Perk selection** — triggers after combat victory if player leveled to a perk milestone (5, 10, 15…50). Cannot be skipped.
 - **Recipe discovery** — recipes appear in crafting UI when player has ≥1 of any required material
@@ -190,7 +191,8 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 - **Difficulty scaling** — enemies.js applies a difficulty multiplier (0.75/1.0/1.5) to enemy HP/ATK/DEF on spawn
 - **Roaming enemies** — in non-safe rooms, each player move has a 12% chance to spawn a random enemy ≥4 tiles away (max 3 alive). Roaming enemies chase the player 1 tile per move via greedy Manhattan pathfinding. Walking into one or it reaching you triggers combat. Static (room-defined) enemies never move. Roaming enemies scale with player level via `resolveEnemyType()`. The `roaming: true` flag on the enemy object distinguishes them from static enemies.
 - **Key/lock doors** — exits can be `{ target, locked: "key_item_id" }`, checked against player inventory in world.js
-- **Boss tracking** — `player.bossesDefeated` array tracks bossId strings; quest flags set as `boss_{bossId}_defeated`
+- **Boss tracking** — `player.bossesDefeated` array tracks bossId strings; quest flags set as `boss_{bossId}_defeated`. Bosses drop NFT drive items on defeat (BOSS_NFT_MAP in combat.js) and call `checkObjective('collect', 'nft_drive')` for quest progress
+- **Boss 2×2 size** — bosses spawn with `size: 2`, occupy 4 tiles on overworld, render at 128px (scale 8) in combat. `getEnemyAt()` and `moveRoamingEnemies()` handle multi-tile collision
 - **Ending trigger** — Mayor NPC with 5 NFT drives + Consultant defeated → ending sequence with princess-count variants
 - **Audio** — Web Audio API, lazy-initialized on first user interaction. All SFX are synthesized (no audio files).
 - `debug-ui.js` is a temporary playtesting tool. Remove before release.

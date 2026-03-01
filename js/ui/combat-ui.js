@@ -2,16 +2,16 @@
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT, COLORS, xpForLevel, DAMAGE_TYPE_COLORS, RESISTANCE_LABELS } from '../config.js';
 import { CLASSES } from '../data/classes.js';
-import { getCtx, drawCombatSprite, ENEMY_SPRITE_MAP } from '../engine/renderer.js';
+import { getCtx, drawCombatSprite, drawBossCombatSprite, ENEMY_SPRITE_MAP } from '../engine/renderer.js';
 import { getCombat, getActions, getTopActions, getAnimProgress, getFleeCost, getCurrentTarget } from '../game/combat.js';
 import { STATUS_DEFS } from '../game/status-effects.js';
 import { getRandomTip } from '../data/tips.js';
 
-const PANEL_PAD = 12;
-const LINE_H = 16;
+const PANEL_PAD = 24;
+const LINE_H = 28;
 let combatTip = '';
 let lastResultState = null;
-const TURN_BAR_H = 22;
+const TURN_BAR_H = 40;
 
 export function renderCombat(now, player) {
   const ctx = getCtx();
@@ -29,8 +29,8 @@ export function renderCombat(now, player) {
   renderTurnOrderBar(ctx, combat, player, c);
 
   // --- Top area: enemy + player display (shifted down by turn bar) ---
-  const topY = TURN_BAR_H + 4;
-  const topH = 174;
+  const topY = TURN_BAR_H + 16;
+  const topH = 348;
 
   // Enemy panel (left half)
   const enemyPanelX = PANEL_PAD;
@@ -40,15 +40,16 @@ export function renderCombat(now, player) {
 
   drawPanel(ctx, enemyPanelX, enemyPanelY, enemyPanelW, enemyPanelH, c);
 
-  // Enemy sprite
-  const spriteSize = 48;
+  // Enemy sprite — bosses render larger (128px vs 96px)
+  const isBoss = !!enemy.bossId;
+  const spriteSize = isBoss ? 128 : 96;
   let spriteX = enemyPanelX + enemyPanelW / 2 - spriteSize / 2;
-  let spriteY = enemyPanelY + 18;
+  let spriteY = isBoss ? enemyPanelY + 12 : enemyPanelY + 32;
 
   // Shake animation when player hits enemy
   const anim = getAnimProgress(now);
   if (anim && anim.type === 'playerHit') {
-    const shake = Math.sin(anim.t * Math.PI * 6) * 4 * (1 - anim.t);
+    const shake = Math.sin(anim.t * Math.PI * 6) * 8 * (1 - anim.t);
     spriteX += shake;
   }
 
@@ -58,9 +59,16 @@ export function renderCombat(now, player) {
   }
 
   const enemySpriteId = ENEMY_SPRITE_MAP[enemy.type];
-  if (!enemySpriteId || !drawCombatSprite(enemySpriteId, spriteX, spriteY)) {
-    ctx.fillStyle = enemy.color;
-    ctx.fillRect(spriteX, spriteY, spriteSize, spriteSize);
+  if (isBoss) {
+    if (!enemySpriteId || !drawBossCombatSprite(enemySpriteId, spriteX, spriteY)) {
+      ctx.fillStyle = enemy.color;
+      ctx.fillRect(spriteX, spriteY, spriteSize, spriteSize);
+    }
+  } else {
+    if (!enemySpriteId || !drawCombatSprite(enemySpriteId, spriteX, spriteY)) {
+      ctx.fillStyle = enemy.color;
+      ctx.fillRect(spriteX, spriteY, spriteSize, spriteSize);
+    }
   }
 
   ctx.globalAlpha = 1.0;
@@ -69,7 +77,7 @@ export function renderCombat(now, player) {
   if (combat._bossUntargetable) {
     ctx.save();
     ctx.fillStyle = '#4488AA';
-    ctx.font = 'bold 10px monospace';
+    ctx.font = 'bold 16px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('SUBMERGED', spriteX + spriteSize / 2, spriteY + spriteSize / 2);
@@ -78,36 +86,36 @@ export function renderCombat(now, player) {
 
   // Enemy name + target indicator
   ctx.fillStyle = c.text;
-  ctx.font = '12px monospace';
+  ctx.font = '20px monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   const hasMinions = combat.minions && combat.minions.length > 0;
   const bossTargeted = combat.targetIndex === -1;
   const namePrefix = (hasMinions && bossTargeted) ? '▸ ' : '';
-  ctx.fillText(namePrefix + enemy.name, enemyPanelX + enemyPanelW / 2, spriteY + spriteSize + 4);
+  ctx.fillText(namePrefix + enemy.name, enemyPanelX + enemyPanelW / 2, spriteY + spriteSize + 8);
 
   // Enemy HP bar
-  const ehpY = spriteY + spriteSize + 18;
-  const ehpW = enemyPanelW - 40;
-  const ehpX = enemyPanelX + 20;
-  drawHpBar(ctx, ehpX, ehpY, ehpW, 10, enemy.hp, enemy.maxHp, c.enemyHp, c.enemyHpBg);
+  const ehpY = spriteY + spriteSize + 32;
+  const ehpW = enemyPanelW - 80;
+  const ehpX = enemyPanelX + 40;
+  drawHpBar(ctx, ehpX, ehpY, ehpW, 18, enemy.hp, enemy.maxHp, c.enemyHp, c.enemyHpBg);
   ctx.fillStyle = c.textDim;
-  ctx.font = '10px monospace';
-  ctx.fillText(`${enemy.hp}/${enemy.maxHp}`, enemyPanelX + enemyPanelW / 2, ehpY + 13);
+  ctx.font = '16px monospace';
+  ctx.fillText(`${enemy.hp}/${enemy.maxHp}`, enemyPanelX + enemyPanelW / 2, ehpY + 24);
 
   // Enemy status icons (below HP)
   if (combat.enemyStatuses && combat.enemyStatuses.length > 0) {
-    renderStatusIcons(ctx, combat.enemyStatuses, enemyPanelX + enemyPanelW / 2, ehpY + 25, true);
+    renderStatusIcons(ctx, combat.enemyStatuses, enemyPanelX + enemyPanelW / 2, ehpY + 45, true);
   }
 
   // Resistance indicators (below HP bar + status icons)
-  const resYBase = ehpY + (combat.enemyStatuses && combat.enemyStatuses.length > 0 ? 38 : 28);
+  const resYBase = ehpY + (combat.enemyStatuses && combat.enemyStatuses.length > 0 ? 70 : 50);
   if (enemy.resistances) {
     const resY = resYBase;
-    ctx.font = '9px monospace';
+    ctx.font = '14px monospace';
     const types = ['physical', 'fire', 'ice', 'lightning'];
     const labels = ['PHY', 'FIR', 'ICE', 'LTN'];
-    const resW = enemyPanelW - 40;
+    const resW = enemyPanelW - 80;
     const segW = resW / 4;
 
     for (let i = 0; i < types.length; i++) {
@@ -121,51 +129,51 @@ export function renderCombat(now, player) {
         ctx.textAlign = 'center';
         ctx.fillText(labels[i], rx + segW / 2, resY);
         ctx.fillStyle = info.color;
-        ctx.fillText(info.symbol, rx + segW / 2, resY + 10);
+        ctx.fillText(info.symbol, rx + segW / 2, resY + 18);
       } else {
         ctx.fillStyle = c.textDim;
         ctx.textAlign = 'center';
         ctx.fillText(labels[i], rx + segW / 2, resY);
-        ctx.fillText('???', rx + segW / 2, resY + 10);
+        ctx.fillText('???', rx + segW / 2, resY + 18);
       }
     }
   }
 
   // Exploit meter (below resistance indicators)
   if (combat.exploitMeter > 0 || combat.exploitDoubleTurns > 0) {
-    const emY = resYBase + 24;
-    const emW = enemyPanelW - 40;
+    const emY = resYBase + 44;
+    const emW = enemyPanelW - 80;
     ctx.textAlign = 'left';
     ctx.fillStyle = '#CC9933';
-    ctx.font = '9px monospace';
+    ctx.font = '14px monospace';
     ctx.fillText('EXPLOIT', ehpX, emY);
 
     // Segmented bar: 10 segments
-    const barX = ehpX + 48;
-    const barW = emW - 48;
+    const barX = ehpX + 90;
+    const barW = emW - 90;
     const segCount = 10;
     const segW = barW / segCount;
     for (let i = 0; i < segCount; i++) {
       const sx = barX + i * segW;
       ctx.fillStyle = i < combat.exploitMeter ? '#FFAA33' : '#332211';
-      ctx.fillRect(sx, emY - 2, segW - 1, 8);
+      ctx.fillRect(sx, emY - 4, segW - 2, 14);
       // Threshold markers at 3, 6, 10
       if (i === 2 || i === 5 || i === 9) {
         ctx.strokeStyle = '#FFD700';
         ctx.lineWidth = 1;
-        ctx.strokeRect(sx + segW - 1.5, emY - 3, 1, 10);
+        ctx.strokeRect(sx + segW - 3, emY - 5, 2, 18);
       }
     }
   }
 
   // Minion list (below enemy panel when minions exist)
   if (combat.minions && combat.minions.length > 0) {
-    let minionY = resYBase + 40;
+    let minionY = resYBase + 76;
     ctx.textAlign = 'left';
     ctx.fillStyle = '#CC6644';
-    ctx.font = '9px monospace';
+    ctx.font = '14px monospace';
     ctx.fillText('MINIONS:', ehpX, minionY);
-    minionY += 12;
+    minionY += 22;
 
     for (let mi = 0; mi < combat.minions.length; mi++) {
       const minion = combat.minions[mi];
@@ -173,23 +181,23 @@ export function renderCombat(now, player) {
       const prefix = targeted ? '▸' : ' ';
 
       ctx.fillStyle = targeted ? '#FFD700' : c.textDim;
-      ctx.font = '9px monospace';
+      ctx.font = '14px monospace';
       ctx.fillText(`${prefix}${minion.name}`, ehpX, minionY);
 
       // Small HP bar for minion
-      const mhpW = 40;
-      const mhpX = ehpX + 75;
-      drawHpBar(ctx, mhpX, minionY - 4, mhpW, 6, minion.hp, minion.maxHp, '#CC6644', '#331111');
-      minionY += 12;
+      const mhpW = 80;
+      const mhpX = ehpX + 140;
+      drawHpBar(ctx, mhpX, minionY - 6, mhpW, 10, minion.hp, minion.maxHp, '#CC6644', '#331111');
+      minionY += 22;
     }
   }
 
   // Target hint
   if (combat.minions && combat.minions.length > 0 && combat.turn === 'player' && !combat.result) {
     ctx.fillStyle = c.textDim;
-    ctx.font = '8px monospace';
+    ctx.font = '14px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('← → Switch Target', enemyPanelX + enemyPanelW / 2, enemyPanelY + enemyPanelH - 6);
+    ctx.fillText('← → Switch Target', enemyPanelX + enemyPanelW / 2, enemyPanelY + enemyPanelH - 12);
   }
 
   ctx.textAlign = 'left';
@@ -203,32 +211,32 @@ export function renderCombat(now, player) {
   drawPanel(ctx, playerPanelX, playerPanelY, playerPanelW, playerPanelH, c);
 
   // Player info
-  let infoY = playerPanelY + 10;
-  const infoX = playerPanelX + 12;
+  let infoY = playerPanelY + 20;
+  const infoX = playerPanelX + 24;
 
   // Class name
   const cls = player.classId ? CLASSES[player.classId] : null;
   const className = cls ? cls.name.toUpperCase() : 'Hero';
   ctx.fillStyle = cls ? cls.color : c.text;
-  ctx.font = '12px monospace';
+  ctx.font = '20px monospace';
   ctx.fillText(`Lv ${player.level}  ${className}`, infoX, infoY);
-  infoY += 18;
+  infoY += 32;
 
   // Player HP
   ctx.fillStyle = c.text;
-  ctx.font = '11px monospace';
+  ctx.font = '18px monospace';
   ctx.fillText('HP', infoX, infoY);
-  const phpW = playerPanelW - 60;
-  drawHpBar(ctx, infoX + 22, infoY - 2, phpW, 10, player.hp, player.maxHp, COLORS.hud.hp, COLORS.hud.hpBg);
-  ctx.fillText(`${player.hp}/${player.maxHp}`, infoX + 24 + phpW + 2, infoY);
-  infoY += 15;
+  const phpW = playerPanelW - 110;
+  drawHpBar(ctx, infoX + 40, infoY - 4, phpW, 18, player.hp, player.maxHp, COLORS.hud.hp, COLORS.hud.hpBg);
+  ctx.fillText(`${player.hp}/${player.maxHp}`, infoX + 44 + phpW + 4, infoY);
+  infoY += 28;
 
   // Player MP (with flash on defend)
   ctx.fillText('MP', infoX, infoY);
-  const mpBarX = infoX + 22;
-  const mpBarY = infoY - 2;
-  drawHpBar(ctx, mpBarX, mpBarY, phpW, 10, player.mp, player.maxMp, COLORS.hud.mp, COLORS.hud.mpBg);
-  ctx.fillText(`${player.mp}/${player.maxMp}`, infoX + 24 + phpW + 2, infoY);
+  const mpBarX = infoX + 40;
+  const mpBarY = infoY - 4;
+  drawHpBar(ctx, mpBarX, mpBarY, phpW, 18, player.mp, player.maxMp, COLORS.hud.mp, COLORS.hud.mpBg);
+  ctx.fillText(`${player.mp}/${player.maxMp}`, infoX + 44 + phpW + 4, infoY);
 
   // MP flash overlay
   if (combat._mpFlash) {
@@ -237,16 +245,16 @@ export function renderCombat(now, player) {
     const alpha = (1 - flashT) * 0.6;
     if (alpha > 0.01) {
       ctx.fillStyle = `rgba(68, 255, 68, ${alpha})`;
-      ctx.fillRect(mpBarX, mpBarY, phpW, 10);
+      ctx.fillRect(mpBarX, mpBarY, phpW, 18);
     }
   }
-  infoY += 16;
+  infoY += 30;
 
   // Player status icons (below MP bar)
   if (combat.playerStatuses && combat.playerStatuses.length > 0) {
     ctx.textAlign = 'left';
     renderStatusIcons(ctx, combat.playerStatuses, infoX, infoY, false);
-    infoY += 14;
+    infoY += 26;
   }
 
   // Class resource display
@@ -254,37 +262,37 @@ export function renderCombat(now, player) {
     const resType = cls.resource.type;
     if (resType === 'pump') {
       ctx.fillStyle = '#FF6644';
-      ctx.font = '10px monospace';
+      ctx.font = '16px monospace';
       ctx.fillText('PUMP', infoX, infoY);
       const pumpW = phpW;
       const segCount = 10;
       const segW = pumpW / segCount;
       for (let i = 0; i < segCount; i++) {
-        const sx = infoX + 38 + i * segW;
+        const sx = infoX + 72 + i * segW;
         ctx.fillStyle = i < (combat.classResource || 0) ? '#FF4444' : '#331111';
-        ctx.fillRect(sx, infoY - 2, segW - 1, 8);
+        ctx.fillRect(sx, infoY - 4, segW - 2, 14);
       }
       ctx.fillStyle = '#FF6644';
-      ctx.fillText(`${combat.classResource || 0}/10`, infoX + 40 + pumpW + 2, infoY);
-      infoY += 14;
+      ctx.fillText(`${combat.classResource || 0}/10`, infoX + 76 + pumpW + 4, infoY);
+      infoY += 26;
     } else if (resType === 'combo') {
       ctx.fillStyle = '#44DD44';
-      ctx.font = '10px monospace';
+      ctx.font = '16px monospace';
       ctx.fillText('COMBO', infoX, infoY);
       for (let i = 0; i < 5; i++) {
-        const cx = infoX + 46 + i * 16;
-        const cy2 = infoY + 2;
+        const cx = infoX + 86 + i * 30;
+        const cy2 = infoY + 4;
         ctx.beginPath();
-        ctx.arc(cx, cy2, 5, 0, Math.PI * 2);
+        ctx.arc(cx, cy2, 9, 0, Math.PI * 2);
         ctx.fillStyle = i < (combat.classResource || 0) ? '#44FF44' : '#113311';
         ctx.fill();
         ctx.strokeStyle = '#44DD44';
         ctx.lineWidth = 1;
         ctx.stroke();
       }
-      infoY += 14;
+      infoY += 26;
     } else if (resType === 'overclock') {
-      ctx.font = '10px monospace';
+      ctx.font = '16px monospace';
       if (combat._overclockElement && combat._overclockTurns > 0) {
         const ocColor = DAMAGE_TYPE_COLORS[combat._overclockElement] || '#FFFFFF';
         ctx.fillStyle = ocColor;
@@ -294,24 +302,24 @@ export function renderCombat(now, player) {
         ctx.fillStyle = c.textDim;
         ctx.fillText('OC: ---', infoX, infoY);
       }
-      infoY += 14;
+      infoY += 26;
     }
   }
 
   // Stats
   ctx.fillStyle = c.textDim;
-  ctx.font = '10px monospace';
+  ctx.font = '16px monospace';
   ctx.fillText(`ATK ${player.atk}  DEF ${player.def}  INT ${player.int || 2}`, infoX, infoY);
-  infoY += 13;
+  infoY += 24;
   ctx.fillText(`SPD ${player.spd}  LCK ${player.lck}`, infoX, infoY);
-  infoY += 14;
+  infoY += 26;
 
   // EXP bar
   const expNeeded = xpForLevel(player.level);
   ctx.fillStyle = c.textDim;
-  ctx.font = '10px monospace';
+  ctx.font = '16px monospace';
   ctx.fillText('EXP', infoX, infoY);
-  drawHpBar(ctx, infoX + 28, infoY - 2, phpW - 6, 8, player.exp, expNeeded, '#9944CC', '#332244');
+  drawHpBar(ctx, infoX + 52, infoY - 4, phpW - 12, 14, player.exp, expNeeded, '#9944CC', '#332244');
 
   // Flash overlay when enemy hits player
   if (anim && anim.type === 'enemyHit') {
@@ -331,10 +339,10 @@ export function renderCombat(now, player) {
 
       ctx.save();
       ctx.fillStyle = `rgba(255, 200, 50, ${alpha})`;
-      ctx.font = 'bold 24px monospace';
+      ctx.font = 'bold 40px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('WEAKNESS!', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+      ctx.fillText('WEAKNESS!', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 40);
       ctx.restore();
     }
   }
@@ -350,10 +358,10 @@ export function renderCombat(now, player) {
 
       ctx.save();
       ctx.fillStyle = `rgba(255, 100, 100, ${alpha})`;
-      ctx.font = 'bold 18px monospace';
+      ctx.font = 'bold 32px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('PHASE SHIFT!', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+      ctx.fillText('PHASE SHIFT!', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 40);
       ctx.restore();
     }
   }
@@ -368,7 +376,7 @@ export function renderCombat(now, player) {
 
   drawPanel(ctx, logPanelX, bottomY, logPanelW, logPanelH, c);
 
-  ctx.font = '11px monospace';
+  ctx.font = '18px monospace';
   const logLines = combat.log.slice(-4);
   for (let i = 0; i < logLines.length; i++) {
     // Color-code damage type mentions
@@ -402,7 +410,7 @@ export function renderCombat(now, player) {
       ctx.fillStyle = '#4CAF50';
     }
     ctx.textAlign = 'left';
-    ctx.fillText(line, logPanelX + 8, bottomY + 14 + i * LINE_H, logPanelW - 16);
+    ctx.fillText(line, logPanelX + 16, bottomY + 26 + i * LINE_H, logPanelW - 32);
   }
 
   // Action menu (right)
@@ -416,41 +424,41 @@ export function renderCombat(now, player) {
     if (combat.subMenu) {
       // Sub-menu rendering
       const items = combat.subMenuItems;
-      ctx.font = '10px monospace';
+      ctx.font = '16px monospace';
       ctx.fillStyle = c.textDim;
       const label = combat.subMenu.charAt(0).toUpperCase() + combat.subMenu.slice(1) + 's';
-      ctx.fillText(label + ':', menuX + 8, bottomY + 10);
+      ctx.fillText(label + ':', menuX + 16, bottomY + 20);
 
-      ctx.font = '11px monospace';
-      const maxVisible = Math.floor((menuH - 30) / 16);
+      ctx.font = '18px monospace';
+      const maxVisible = Math.floor((menuH - 56) / 30);
       const start = Math.max(0, combat.subMenuIndex - maxVisible + 1);
       const visible = items.slice(start, start + maxVisible);
 
       for (let i = 0; i < visible.length; i++) {
         const item = visible[i];
         const realIdx = start + i;
-        const ay = bottomY + 24 + i * 16;
+        const ay = bottomY + 44 + i * 30;
         let dispLabel = item.name;
         if (item.type === 'item' && item.qty > 1) dispLabel += ` x${item.qty}`;
 
         if (realIdx === combat.subMenuIndex) {
           ctx.fillStyle = c.menuSelect;
-          ctx.fillText(`\u25B8${dispLabel}`, menuX + 6, ay);
+          ctx.fillText(`\u25B8${dispLabel}`, menuX + 12, ay);
         } else {
           ctx.fillStyle = c.menuNormal;
-          ctx.fillText(` ${dispLabel}`, menuX + 6, ay);
+          ctx.fillText(` ${dispLabel}`, menuX + 12, ay);
         }
       }
 
       ctx.fillStyle = c.textDim;
-      ctx.font = '9px monospace';
-      ctx.fillText('Esc: Back', menuX + 8, bottomY + menuH - 8);
+      ctx.font = '14px monospace';
+      ctx.fillText('Esc: Back', menuX + 16, bottomY + menuH - 16);
     } else {
       // Top-level actions
       const actions = getTopActions();
-      ctx.font = '11px monospace';
+      ctx.font = '18px monospace';
       for (let i = 0; i < actions.length; i++) {
-        const ay = bottomY + 12 + i * 17;
+        const ay = bottomY + 22 + i * 32;
         let actionLabel = actions[i];
 
         // Show flee gold cost
@@ -458,14 +466,14 @@ export function renderCombat(now, player) {
           const cost = getFleeCost();
           if (i === combat.menuIndex) {
             ctx.fillStyle = c.menuSelect;
-            ctx.fillText(`\u25B8 ${actionLabel}`, menuX + 8, ay);
+            ctx.fillText(`\u25B8 ${actionLabel}`, menuX + 16, ay);
             ctx.fillStyle = '#CC9933';
-            ctx.fillText(`(-${cost}g)`, menuX + 62, ay);
+            ctx.fillText(`(-${cost}g)`, menuX + 120, ay);
           } else {
             ctx.fillStyle = c.menuNormal;
-            ctx.fillText(`  ${actionLabel}`, menuX + 8, ay);
+            ctx.fillText(`  ${actionLabel}`, menuX + 16, ay);
             ctx.fillStyle = '#887744';
-            ctx.fillText(`(-${cost}g)`, menuX + 62, ay);
+            ctx.fillText(`(-${cost}g)`, menuX + 120, ay);
           }
           continue;
         }
@@ -476,57 +484,57 @@ export function renderCombat(now, player) {
           const dtColor = DAMAGE_TYPE_COLORS[dt] || '#AAAAAA';
           if (i === combat.menuIndex) {
             ctx.fillStyle = c.menuSelect;
-            ctx.fillText(`\u25B8 ${actionLabel}`, menuX + 8, ay);
+            ctx.fillText(`\u25B8 ${actionLabel}`, menuX + 16, ay);
             ctx.fillStyle = dtColor;
-            ctx.fillText(`[${dt.slice(0, 3).toUpperCase()}]`, menuX + 80, ay);
+            ctx.fillText(`[${dt.slice(0, 3).toUpperCase()}]`, menuX + 150, ay);
           } else {
             ctx.fillStyle = c.menuNormal;
-            ctx.fillText(`  ${actionLabel}`, menuX + 8, ay);
+            ctx.fillText(`  ${actionLabel}`, menuX + 16, ay);
             ctx.fillStyle = dtColor;
-            ctx.fillText(`[${dt.slice(0, 3).toUpperCase()}]`, menuX + 80, ay);
+            ctx.fillText(`[${dt.slice(0, 3).toUpperCase()}]`, menuX + 150, ay);
           }
         } else {
           if (i === combat.menuIndex) {
             ctx.fillStyle = c.menuSelect;
-            ctx.fillText(`\u25B8 ${actionLabel}`, menuX + 8, ay);
+            ctx.fillText(`\u25B8 ${actionLabel}`, menuX + 16, ay);
           } else {
             ctx.fillStyle = c.menuNormal;
-            ctx.fillText(`  ${actionLabel}`, menuX + 8, ay);
+            ctx.fillText(`  ${actionLabel}`, menuX + 16, ay);
           }
         }
       }
     }
   } else if (combat.result) {
     ctx.fillStyle = c.text;
-    ctx.font = '12px monospace';
-    let ly = bottomY + 14;
+    ctx.font = '20px monospace';
+    let ly = bottomY + 26;
 
     // Show loot drops
     if (combat.lootDrops && combat.lootDrops.length > 0) {
       const isUnique = combat.lootRarity === 'unique';
       ctx.fillStyle = isUnique ? COLORS.item.unique : c.text;
-      ctx.font = '11px monospace';
+      ctx.font = '18px monospace';
       const prefix = isUnique ? 'RARE: ' : 'Got: ';
-      ctx.fillText(`${prefix}${combat.lootDrops[0]}`, menuX + 10, ly);
-      ly += 16;
+      ctx.fillText(`${prefix}${combat.lootDrops[0]}`, menuX + 20, ly);
+      ly += 30;
     }
 
     if (combat.levelUpResults && combat.levelUpResults.length > 0) {
       const lr = combat.levelUpResults[0];
       ctx.fillStyle = '#FFD700';
-      ctx.font = '12px monospace';
-      ctx.fillText('LEVEL UP!', menuX + 10, ly);
+      ctx.font = '20px monospace';
+      ctx.fillText('LEVEL UP!', menuX + 20, ly);
       ctx.fillStyle = c.text;
-      ctx.font = '10px monospace';
-      ly += 16;
+      ctx.font = '16px monospace';
+      ly += 30;
       const g = lr.statGains;
-      if (g.hp) { ctx.fillText(`HP +${g.hp}`, menuX + 10, ly); ly += 13; }
-      if (g.mp) { ctx.fillText(`MP +${g.mp}`, menuX + 10, ly); ly += 13; }
-      if (g.atk) { ctx.fillText(`ATK +${g.atk}`, menuX + 10, ly); ly += 13; }
-      if (g.def) { ctx.fillText(`DEF +${g.def}`, menuX + 10, ly); ly += 13; }
-      if (g.spd) { ctx.fillText(`SPD +${g.spd}`, menuX + 10, ly); ly += 13; }
-      if (g.lck) { ctx.fillText(`LCK +${g.lck}`, menuX + 10, ly); ly += 13; }
-      if (g.int) { ctx.fillText(`INT +${g.int}`, menuX + 10, ly); ly += 13; }
+      if (g.hp) { ctx.fillText(`HP +${g.hp}`, menuX + 20, ly); ly += 24; }
+      if (g.mp) { ctx.fillText(`MP +${g.mp}`, menuX + 20, ly); ly += 24; }
+      if (g.atk) { ctx.fillText(`ATK +${g.atk}`, menuX + 20, ly); ly += 24; }
+      if (g.def) { ctx.fillText(`DEF +${g.def}`, menuX + 20, ly); ly += 24; }
+      if (g.spd) { ctx.fillText(`SPD +${g.spd}`, menuX + 20, ly); ly += 24; }
+      if (g.lck) { ctx.fillText(`LCK +${g.lck}`, menuX + 20, ly); ly += 24; }
+      if (g.int) { ctx.fillText(`INT +${g.int}`, menuX + 20, ly); ly += 24; }
     }
 
     // Show a random tip
@@ -536,25 +544,25 @@ export function renderCombat(now, player) {
     }
     if (combatTip && combat.result === 'victory') {
       ctx.fillStyle = '#445566';
-      ctx.font = '9px monospace';
-      ctx.fillText(`TIP: ${combatTip}`, menuX + 10, ly + 4);
-      ly += 14;
+      ctx.font = '14px monospace';
+      ctx.fillText(`TIP: ${combatTip}`, menuX + 20, ly + 8);
+      ly += 26;
     }
 
     ctx.fillStyle = c.textDim;
-    ctx.font = '10px monospace';
-    ctx.fillText('Press Enter', menuX + 10, ly + 4);
+    ctx.font = '16px monospace';
+    ctx.fillText('Press Enter', menuX + 20, ly + 8);
   } else {
     ctx.fillStyle = c.textDim;
-    ctx.font = '11px monospace';
-    ctx.fillText('Waiting...', menuX + 10, bottomY + 14);
+    ctx.font = '18px monospace';
+    ctx.fillText('Waiting...', menuX + 20, bottomY + 26);
   }
 }
 
 // --- Turn Order Bar ---
 
 function renderTurnOrderBar(ctx, combat, player, c) {
-  const barY = 2;
+  const barY = 4;
   const barH = TURN_BAR_H;
   const barX = PANEL_PAD;
   const barW = CANVAS_WIDTH - PANEL_PAD * 2;
@@ -568,16 +576,16 @@ function renderTurnOrderBar(ctx, combat, player, c) {
 
   // Label
   ctx.fillStyle = c.textDim;
-  ctx.font = '9px monospace';
+  ctx.font = '14px monospace';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
-  ctx.fillText('TURN', barX + 4, barY + 7);
+  ctx.fillText('TURN', barX + 8, barY + 12);
 
   const timeline = combat.timeline || [];
-  const slotW = 52;
-  const slotH = 14;
-  const startX = barX + 36;
-  const slotY = barY + 4;
+  const slotW = 100;
+  const slotH = 26;
+  const startX = barX + 68;
+  const slotY = barY + 7;
   const maxSlots = Math.min(timeline.length, 8);
 
   // Get class color for player
@@ -587,7 +595,7 @@ function renderTurnOrderBar(ctx, combat, player, c) {
 
   for (let i = 0; i < maxSlots; i++) {
     const entry = timeline[i];
-    const sx = startX + i * (slotW + 4);
+    const sx = startX + i * (slotW + 8);
     const isPlayer = entry.entity === 'player';
     const isCurrent = i === 0;
 
@@ -607,16 +615,16 @@ function renderTurnOrderBar(ctx, combat, player, c) {
     }
 
     // Color indicator square
-    const indicatorSize = 8;
+    const indicatorSize = 14;
     ctx.fillStyle = isPlayer ? playerColor : enemyColor;
-    ctx.fillRect(sx + 3, slotY + 3, indicatorSize, indicatorSize);
+    ctx.fillRect(sx + 5, slotY + 6, indicatorSize, indicatorSize);
 
     // Label
     ctx.fillStyle = isCurrent ? '#FFFFFF' : c.textDim;
-    ctx.font = isCurrent ? 'bold 9px monospace' : '9px monospace';
+    ctx.font = isCurrent ? 'bold 14px monospace' : '14px monospace';
     ctx.textAlign = 'left';
     const label = isPlayer ? 'You' : (combat.enemy ? combat.enemy.name.slice(0, 5) : '???');
-    ctx.fillText(label, sx + 14, slotY + 3);
+    ctx.fillText(label, sx + 24, slotY + 6);
   }
 
   ctx.textAlign = 'left';
@@ -627,8 +635,8 @@ function renderTurnOrderBar(ctx, combat, player, c) {
 function renderStatusIcons(ctx, statuses, x, y, centered) {
   if (!statuses || statuses.length === 0) return;
 
-  ctx.font = '10px monospace';
-  const iconSpacing = 28;
+  ctx.font = '16px monospace';
+  const iconSpacing = 50;
   const totalW = statuses.length * iconSpacing;
   let startX = centered ? x - totalW / 2 : x;
 

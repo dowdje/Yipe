@@ -68,6 +68,7 @@ export function spawnEnemies(enemyDefs, playerLevel = 1, useFixedTypes = false) 
       y: def.y,
       index: i,
     };
+    if (template.isBoss) enemy.size = 2;
     return applyDifficultyScaling(enemy);
   });
 }
@@ -77,7 +78,13 @@ export function getActiveEnemies() {
 }
 
 export function getEnemyAt(x, y) {
-  return activeEnemies.find(e => e.x === x && e.y === y) || null;
+  return activeEnemies.find(e => {
+    if (e.size === 2) {
+      // 2×2 boss occupies (x,y), (x+1,y), (x,y+1), (x+1,y+1)
+      return x >= e.x && x <= e.x + 1 && y >= e.y && y <= e.y + 1;
+    }
+    return e.x === x && e.y === y;
+  }) || null;
 }
 
 export function removeEnemy(enemy) {
@@ -141,20 +148,44 @@ export function moveRoamingEnemies(playerX, playerY, isWalkableFn, getEntityAt) 
 
       const key = `${nx},${ny}`;
 
-      // Landing on the player is valid — triggers combat
-      if (nx === playerX && ny === playerY) {
-        enemy.x = nx;
-        enemy.y = ny;
-        pendingMoves.add(key);
-        if (!collider) collider = enemy;
-        break;
-      }
+      if (enemy.size === 2) {
+        // 2×2 boss: check all 4 tiles for walkability and collision
+        const tiles = [[nx,ny],[nx+1,ny],[nx,ny+1],[nx+1,ny+1]];
+        const hitsPlayer = tiles.some(([tx,ty]) => tx === playerX && ty === playerY);
+        const allWalkable = tiles.every(([tx,ty]) => isWalkableFn(tx,ty));
+        const anyBlocked = tiles.some(([tx,ty]) => {
+          const ent = getEntityAt(tx,ty);
+          return ent && ent !== enemy;
+        });
+        const anyPending = tiles.some(([tx,ty]) => pendingMoves.has(`${tx},${ty}`));
 
-      if (isWalkableFn(nx, ny) && !getEntityAt(nx, ny) && !pendingMoves.has(key)) {
-        enemy.x = nx;
-        enemy.y = ny;
-        pendingMoves.add(key);
-        break;
+        if (hitsPlayer) {
+          enemy.x = nx; enemy.y = ny;
+          for (const [tx,ty] of tiles) pendingMoves.add(`${tx},${ty}`);
+          if (!collider) collider = enemy;
+          break;
+        }
+        if (allWalkable && !anyBlocked && !anyPending) {
+          enemy.x = nx; enemy.y = ny;
+          for (const [tx,ty] of tiles) pendingMoves.add(`${tx},${ty}`);
+          break;
+        }
+      } else {
+        // Landing on the player is valid — triggers combat
+        if (nx === playerX && ny === playerY) {
+          enemy.x = nx;
+          enemy.y = ny;
+          pendingMoves.add(key);
+          if (!collider) collider = enemy;
+          break;
+        }
+
+        if (isWalkableFn(nx, ny) && !getEntityAt(nx, ny) && !pendingMoves.has(key)) {
+          enemy.x = nx;
+          enemy.y = ny;
+          pendingMoves.add(key);
+          break;
+        }
       }
     }
   }
