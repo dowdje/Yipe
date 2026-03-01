@@ -481,6 +481,7 @@ function exitCombat() {
   const combat = getCombat();
   const result = combat.result;
   const levelUpResults = combat.levelUpResults;
+  const defeatedBossId = combat.enemy?.bossId || null;
 
   endCombat();
 
@@ -490,8 +491,35 @@ function exitCombat() {
     setInputEnabled(false);
     setTimeout(() => setInputEnabled(true), 500);
   } else {
-    // Check if player leveled to a perk level
+    // Check for boss weapon reward (Sewer King)
     const player = getPlayer();
+    if (defeatedBossId === 'sewer_king' && !player.questFlags?.sewer_king_weapon_chosen) {
+      if (!player.questFlags) player.questFlags = {};
+      startDialogue('Sewer King\'s Hoard', 'Among the Sewer King\'s spoils, you find three elemental weapons. Choose one:', [
+        { label: 'Welding Torch (Fire)', action: 'reward_weapon', weaponId: 'welding_torch' },
+        { label: 'Cryo Spray (Ice)', action: 'reward_weapon', weaponId: 'cryo_spray' },
+        { label: 'Taser (Lightning)', action: 'reward_weapon', weaponId: 'taser' },
+      ], (choice) => {
+        if (choice && choice.action === 'reward_weapon') {
+          const weaponDef = ITEMS_MODULE.ITEMS[choice.weaponId];
+          if (weaponDef) {
+            addToInventory(player, weaponDef);
+            player.questFlags.sewer_king_weapon_chosen = true;
+            startDialogue('Sewer King\'s Hoard', `You take the ${weaponDef.name}!`, null, () => {
+              state = GAME_STATES.OVERWORLD;
+              setInputEnabled(true);
+              saveAfterDelay();
+            });
+            state = GAME_STATES.DIALOGUE;
+          }
+        }
+      });
+      state = GAME_STATES.DIALOGUE;
+      setInputEnabled(false);
+      setTimeout(() => setInputEnabled(true), 200);
+      return;
+    }
+
     let perkShown = false;
     if (levelUpResults && levelUpResults.length > 0) {
       for (const lr of levelUpResults) {

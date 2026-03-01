@@ -123,7 +123,8 @@ export const CLASS_ABILITIES = {
         }
         combat._backstabUsed = true;
         const stats = getEffectiveStats(player);
-        const damage = Math.floor(Math.max(1, stats.atk - enemy.def) * 2.0) + Math.floor(Math.random() * 3);
+        const weaponPower = (player.equipment?.weapon?.power) || 0;
+        const damage = Math.floor(Math.max(1, stats.atk + weaponPower - enemy.def) * 2.0) + Math.floor(Math.random() * 3);
         enemy.hp = Math.max(0, enemy.hp - damage);
         combat.classResource = Math.min((combat.classResource || 0) + 1, 5);
         log(`Backstab! ${damage} damage! CP ${combat.classResource}/5`);

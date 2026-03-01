@@ -496,7 +496,7 @@ export const SHOP_TYPES = {
   gear_shop: {
     name: 'Pawn Shop',
     color: '#DD8844',
-    inventory: ['lead_pipe', 'baseball_bat', 'welding_torch', 'cryo_spray', 'taser', 'wooden_shield', 'chain_mail', 'swift_boots', 'hacker_hoodie', 'luck_charm', 'focus_chip'],
+    inventory: ['lead_pipe', 'baseball_bat', 'wooden_shield', 'chain_mail', 'swift_boots', 'hacker_hoodie', 'luck_charm', 'focus_chip'],
   },
   spell_shop: {
     name: 'Hack Shop',
