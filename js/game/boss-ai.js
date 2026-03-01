@@ -1,6 +1,7 @@
 // boss-ai.js — Boss definitions, AI, phase system, minion spawning
 
 import { ENEMY_TYPES, getResistanceMultiplier } from '../config.js';
+import { sfxPhaseTransition } from '../engine/audio.js';
 
 // --- Boss Definitions ---
 
@@ -572,8 +573,6 @@ function executeMinionAttacks(combat, player, addLog) {
 }
 
 // --- Phase Transition ---
-
-import { sfxPhaseTransition } from '../engine/audio.js';
 
 export function checkPhaseTransition(boss, combat, addLog) {
   const bossDef = BOSS_DEFS[boss.bossId];
