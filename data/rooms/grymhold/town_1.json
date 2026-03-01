@@ -1,11 +1,12 @@
 {
   "id": "grymhold/town_1",
   "name": "Grymhold — Town Center",
+  "safe": true,
   "exits": {
     "right": "grymhold/town_2"
   },
   "shops": [
-    { "type": "potion_shop", "x": 3, "y": 5 }
+    { "type": "general_store", "x": 3, "y": 5 }
   ],
   "playerStart": { "x": 8, "y": 6 },
   "tiles": [

@@ -8,6 +8,9 @@
   "enemies": [
     { "type": "goblin", "x": 8, "y": 3 }
   ],
+  "chests": [
+    { "x": 11, "y": 3, "loot": [{ "itemId": "lukewarm_pizza", "qty": 3 }, { "itemId": "baseball_bat", "chance": 0.7 }], "gold": 30 }
+  ],
   "tiles": [
     [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
     [7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7],

@@ -9,5 +9,8 @@
   "7": { "name": "cave_wall", "walkable": false, "color": "#3D3D3D" },
   "8": { "name": "cave_floor","walkable": true,  "color": "#777777" },
   "9": { "name": "chest",  "walkable": true,  "color": "#CC8833" },
-  "10": { "name": "stone_wall", "walkable": false, "color": "#666677" }
+  "10": { "name": "stone_wall", "walkable": false, "color": "#666677" },
+  "11": { "name": "sewer_wall", "walkable": false, "color": "#3D4A3D" },
+  "12": { "name": "sewer_floor", "walkable": true, "color": "#5A6B5A" },
+  "13": { "name": "sewer_water", "walkable": false, "color": "#3A5A3A" }
 }

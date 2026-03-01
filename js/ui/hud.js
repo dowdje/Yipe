@@ -1,7 +1,9 @@
 // hud.js — HUD overlay with player stats
 
-import { CANVAS_WIDTH, COLORS, TILE_SIZE } from '../config.js';
+import { CANVAS_WIDTH, COLORS, TILE_SIZE, xpForLevel } from '../config.js';
+import { CLASSES } from '../data/classes.js';
 import { getCtx } from '../engine/renderer.js';
+import { getDangerLevel } from '../game/danger.js';
 
 const HUD_HEIGHT = 28;
 const BAR_WIDTH = 60;
@@ -46,9 +48,43 @@ export function drawHud(player, locationName) {
   ctx.fillText(`G:${player.gold}`, x, cy);
   x += 50;
 
-  // Level
-  ctx.fillStyle = COLORS.hud.text;
+  // Level + class
+  const cls = player.classId ? CLASSES[player.classId] : null;
+  const clsAbbr = cls ? cls.name.slice(0, 3).toUpperCase() : '';
+  ctx.fillStyle = cls ? cls.color : COLORS.hud.text;
   ctx.fillText(`Lv:${player.level}`, x, cy);
+  x += 38;
+  if (clsAbbr) {
+    ctx.fillText(clsAbbr, x, cy);
+    x += 30;
+  } else {
+    x += 4;
+  }
+
+  // EXP
+  const expNeeded = xpForLevel(player.level);
+  ctx.fillStyle = '#9944CC';
+  ctx.fillText(`EXP`, x, cy);
+  x += 26;
+  drawBar(ctx, x, cy - BAR_HEIGHT / 2, 40, BAR_HEIGHT, player.exp, expNeeded, '#9944CC', '#332244');
+  x += 44;
+
+  // Danger meter (compact)
+  const dangerLevel = getDangerLevel(player.dangerMeter || 0);
+  if (player.dangerMeter > 0) {
+    ctx.fillStyle = dangerLevel.color;
+    ctx.font = '9px monospace';
+    ctx.fillText(dangerLevel.name.slice(0, 4).toUpperCase(), x, cy - 2);
+    x += 30;
+    // Small bar
+    const dangerW = 24;
+    const dangerRatio = Math.min(1, (player.dangerMeter || 0) / 60);
+    ctx.fillStyle = '#333333';
+    ctx.fillRect(x, cy - BAR_HEIGHT / 2, dangerW, BAR_HEIGHT);
+    ctx.fillStyle = dangerLevel.color;
+    ctx.fillRect(x, cy - BAR_HEIGHT / 2, dangerW * dangerRatio, BAR_HEIGHT);
+    x += dangerW + 6;
+  }
 
   // Location name — right-aligned
   ctx.fillStyle = COLORS.hud.text;

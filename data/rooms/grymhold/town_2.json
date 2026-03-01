@@ -1,12 +1,15 @@
 {
   "id": "grymhold/town_2",
   "name": "Grymhold — East Quarter",
+  "safe": true,
   "exits": {
     "left": "grymhold/town_1",
-    "right": "cave_1/room_1"
+    "right": "cave_1/room_1",
+    "down": "sewer/entrance"
   },
   "shops": [
-    { "type": "gear_shop", "x": 8, "y": 5 }
+    { "type": "gear_shop", "x": 8, "y": 5 },
+    { "type": "spell_shop", "x": 4, "y": 5 }
   ],
   "playerStart": { "x": 8, "y": 6 },
   "tiles": [

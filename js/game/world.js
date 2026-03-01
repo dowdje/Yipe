@@ -2,11 +2,19 @@
 
 import { GRID_COLS, GRID_ROWS, SHOP_TYPES } from '../config.js';
 import { spawnEnemies } from './enemies.js';
+import { spawnChests, getChestAt as _getChestAt } from './chests.js';
+import { resetDanger } from './danger.js';
 
 let tileDefs = {};
 let currentRoom = null;
 const roomCache = {};
 let activeShops = [];
+let activeNpcs = [];
+let activeCampfires = [];
+
+// Lazy player level getter to avoid circular deps
+let _getPlayerLevel = null;
+export function initWorldPlayerRef(fn) { _getPlayerLevel = fn; }
 
 // Map room IDs to file paths
 function roomIdToPath(id) {
@@ -33,7 +41,12 @@ export async function loadRoom(roomId) {
   }
 
   // Re-spawn enemies each time a room is loaded (caves stay dangerous)
-  spawnEnemies(currentRoom.enemies);
+  // Player level is passed for level-scaling; defaults to 1 if not available
+  const playerLevel = _getPlayerLevel ? _getPlayerLevel() : 1;
+  spawnEnemies(currentRoom.enemies, playerLevel, currentRoom.fixedEnemies === true);
+
+  // Spawn chests
+  spawnChests(currentRoom.chests, currentRoom.id);
 
   // Load shop NPCs
   activeShops = (currentRoom.shops || []).map(def => ({
@@ -41,6 +54,18 @@ export async function loadRoom(roomId) {
     color: SHOP_TYPES[def.type]?.color || '#FFFFFF',
     name: SHOP_TYPES[def.type]?.name || 'Shop',
   }));
+
+  // Load NPCs
+  activeNpcs = (currentRoom.npcs || []).map(def => ({ ...def }));
+
+  // Load campfires
+  activeCampfires = (currentRoom.campfires || []).map(def => ({ ...def }));
+
+  // Safe rooms (towns) reset danger
+  if (currentRoom.safe) {
+    const pLevel = _getPlayerLevel ? _getPlayerLevel() : 1;
+    // resetDanger is called from main.js since we need the player object
+  }
 
   return currentRoom;
 }
@@ -114,4 +139,28 @@ export function getActiveShops() {
 
 export function getShopAt(x, y) {
   return activeShops.find(s => s.x === x && s.y === y) || null;
+}
+
+export function getChestAt(x, y) {
+  return _getChestAt(x, y);
+}
+
+export function getActiveNpcs() {
+  return activeNpcs;
+}
+
+export function getNpcAt(x, y) {
+  return activeNpcs.find(n => n.x === x && n.y === y) || null;
+}
+
+export function getActiveCampfires() {
+  return activeCampfires;
+}
+
+export function getCampfireAt(x, y) {
+  return activeCampfires.find(c => c.x === x && c.y === y) || null;
+}
+
+export function isSafeRoom() {
+  return currentRoom && currentRoom.safe === true;
 }

@@ -11,6 +11,9 @@
     { "type": "slime", "x": 11, "y": 6 },
     { "type": "goblin", "x": 7, "y": 8 }
   ],
+  "chests": [
+    { "x": 13, "y": 5, "loot": [{ "itemId": "cheap_energy_drink", "qty": 1 }, { "itemId": "iron_boots", "chance": 0.5 }], "gold": 15 }
+  ],
   "tiles": [
     [7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 7],
     [7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 7],

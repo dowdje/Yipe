@@ -1,59 +1,186 @@
-# Claude Rules for Quest of Grymhold
+# Claude Rules for GRIDLOCK
+
+## Overview
+
+GRIDLOCK is a retro tile-based RPG built with vanilla JS + HTML5 Canvas. No build step, no npm, no frameworks. Serve the root directory with any HTTP server and open `index.html`.
+
+The game has 3 classes (Bruiser, Fixer, Hacker), tick-based combat, equipment with proc effects, a crafting system, NPC dialogue, quests, a danger meter, perks every 5 levels, an underworld death system, and a monster compendium.
+
+**Current state:** Phases 1–6 complete, Phase 7 in progress (7A done: boss engine + Sewer King + sewer dungeon). 16 rooms exist (2 town, 3 cave, 3 underworld, 8 sewer). The design doc (`GRIDLOCK-implementation-design.md`) targets ~80–90 rooms across 8 regions.
+
+## How to Run
+
+```bash
+python3 -m http.server 8080
+# open http://localhost:8080
+```
+
+Save data is in localStorage under key `gridlock_save_v1`.
 
 ## Architecture
 
-### Game State Machine
-The game loop in `main.js` switches on state: `OVERWORLD`, `TRANSITION`, `COMBAT`, `SHOP`. Each state has its own update and render function. State transitions happen via direct assignment to `state` variable.
+### State Machine
+`main.js` has a single `state` variable switching on `GAME_STATES`. 12 states: `OVERWORLD`, `TRANSITION`, `COMBAT`, `DIALOGUE`, `MENU`, `SHOP`, `DEATH`, `CLASS_SELECT`, `CRAFTING`, `PERK`, `COMPENDIUM`, `DEBUG`. Each state has its own update + render path in the game loop, and key handlers in `initExtraInput()`.
 
 ### Module Pattern
-All game modules are ES modules with no build step. State is stored in module-level variables (not classes). Modules export getter functions (e.g., `getPlayer()`, `getCombat()`, `getShopState()`) that return mutable state objects.
+All state is in module-level variables (not classes). Modules export getter functions (`getPlayer()`, `getCombat()`, etc.) returning mutable objects. No build step — ES modules loaded directly by browser.
 
-### Room Format
-Room JSON files live in `data/rooms/{region}/{room}.json`. Each room has:
-- `id` — room identifier matching file path (e.g., `"grymhold/town_1"`)
-- `name` — display name shown in HUD
-- `tiles` — 12x16 2D array of tile IDs (rows x cols)
-- `exits` — object mapping direction (`left`/`right`/`up`/`down`) to target room ID
-- `playerStart` — `{x, y}` spawn position
-- `enemies` (optional) — array of `{ type, x, y }` enemy spawn definitions
-- `shops` (optional) — array of `{ type, x, y }` shop NPC definitions
-
-### Entity Interaction Pattern
-Enemies and shop NPCs use the same bump-to-interact model:
-1. Entity is placed at a tile position in room JSON
-2. `tryMove()` in `player.js` checks for entity at destination tile
-3. Returns `{ type: 'combat'|'shop', ... }` on collision
-4. `main.js` handles the result by entering the appropriate state
+### Circular Dependency Handling
+Cross-module refs are wired via init functions called in `main.js`: `initItemsRef()`, `initPlayerRef()`, `initSpellsRef()`, `initShopSpellsRef()`, `initCharItemsRef()`, `initWorldPlayerRef()`, `initBossAiRef()`.
 
 ### Canvas Rendering
-- Native resolution: 512x384 (16 cols x 12 rows, 32px tiles)
-- All drawing goes through `renderer.js` primitives
-- UI overlays (combat, shop) draw directly via `getCtx()` — full canvas replacement, not DOM
+- Native resolution: 512x384 (16 cols × 12 rows, 32px tiles)
+- CSS scales to 1024x768 / 1536x1152 based on viewport
+- All drawing through `renderer.js` primitives; UI modules draw directly via `getCtx()`
+- 8×8 pixel art sprites defined inline in `js/data/sprites.js`, pre-rendered to offscreen canvases at 4× (overworld) and 6× (combat)
+
+### Room Format
+Room JSON files live in `data/rooms/{region}/{room}.json`. Fields:
+- `id` — matches file path (e.g., `"grymhold/town_1"`)
+- `name` — display name in HUD
+- `tiles` — 12×16 2D array of tile IDs (rows × cols)
+- `exits` — `{ left?, right?, up?, down? }` → target room ID
+- `playerStart` — `{x, y}` spawn position
+- `enemies` — `[{ type, x, y }]`
+- `shops` — `[{ type, x, y }]` (types: `general_store`, `gear_shop`, `spell_shop`)
+- `chests` — `[{ x, y, loot: [{ itemId, qty }], gold }]`
+- `npcs` — `[{ npcId, x, y }]`
+- `campfires` — `[{ x, y }]`
+- `safe` — boolean (towns reset danger meter)
+- `fixedEnemies` — boolean (use exact enemy types from room JSON instead of level-scaled spawns)
+
+### Entity Interaction
+Bump-to-interact: `tryMove()` in `player.js` checks destination tile for shops, NPCs, campfires, chests, enemies. Returns `{ type: 'combat'|'shop'|'npc'|'campfire'|'chest' }`. `main.js` handles the result.
+
+### Combat System
+Tick-based timeline: `ticksToAct = floor(80/SPD)`. Faster entities act more frequently. 8 upcoming turns pre-computed and displayed.
+
+**Boss fights:** Boss AI dispatched from `boss-ai.js` via `executeBossTurn()`. Bosses have HP-threshold phases, weighted ability selection with cooldowns, submerge (untargetable) state, and can summon minions. Target cycling (left/right arrows) lets player choose between boss and minions. Boss definitions in `BOSS_DEFS` table.
+
+Key formulas:
+- Player attack: `max(1, ATK + weaponPower + rand(0-4) - 2 - enemyDEF) × resistMult × exploitMult × critMult`
+- Enemy attack: `max(1, enemyATK - playerDEF) + 1 + floor(rand × 4)`
+- Defend: 35% DR (regular), 50% DR (Bruiser Flex)
+- Crit: base 5% + 0.5% per LCK, ×1.75 damage
+- Flee: always succeeds, costs 10% gold
+
+### Save System
+Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves full player state including all Phase 5-6 fields (materials, quests, perks, compendium, danger, recipes, equipment as item IDs).
+
+## Key Files
+
+### Config & Data
+| File | Purpose |
+|---|---|
+| `js/config.js` | All constants: tile size, game states, enemy types (16 incl. sewer_king/sewer_rat/toxic_slime), player defaults, colors, shop inventories, damage types, resistances, rarity colors, danger thresholds, level scaling |
+| `js/data/classes.js` | 3 classes: Bruiser (Pump resource), Fixer (Combo Points), Hacker (Overclock) |
+| `js/data/class-abilities.js` | All class combat abilities with damage formulas. Hacker abilities use `stats.int` |
+| `js/data/items.js` | Full item DB: consumables, weapons, armor, accessories, crafted, uniques. Also `rollLoot()` and `rollUniqueLoot()` |
+| `js/data/spells.js` | 5 utility spells (Heal, Health Siphon, Shield Aura, Invisibility, Resurrect) |
+| `js/data/perks.js` | Perk table: 10 milestones (Lv 5–50), 3-4 options each |
+| `js/data/quests.js` | Quest definitions (main + 2 side quests) |
+| `js/data/npcs.js` | NPC definitions + dialogue trees (5 NPCs) |
+| `js/data/materials.js` | 8 crafting materials |
+| `js/data/sprites.js` | 8×8 inline pixel art + palettes |
+
+### Engine
+| File | Purpose |
+|---|---|
+| `js/main.js` | Game loop, all state transitions, cross-module wiring, input routing (~1130 lines) |
+| `js/engine/input.js` | Keyboard (WASD/arrows) + click-to-move |
+| `js/engine/renderer.js` | Canvas primitives, sprite cache, tile/entity/player drawing |
+| `js/engine/save.js` | localStorage save/load with migration support |
+
+### Game Logic
+| File | Purpose |
+|---|---|
+| `js/game/player.js` | Player state, movement tween, inventory, equip/unequip |
+| `js/game/world.js` | Room loading/caching, tile collision, exits, NPC/campfire/shop tracking |
+| `js/game/combat.js` | Full combat engine (~1400 lines): timeline, damage calc, abilities, status effects, procs, material drops, compendium recording, boss target system, minion management, phase transitions |
+| `js/game/boss-ai.js` | Boss definitions (BOSS_DEFS), phase system, weighted ability selection, cooldowns, minion spawning, executeBossTurn() |
+| `js/game/enemies.js` | Enemy spawning with level-based scaling + fixedEnemies mode for dungeons |
+| `js/game/stats.js` | Effective stat computation: base + equipment + status effects + perk multipliers |
+| `js/game/leveling.js` | EXP gain, level-up with class-specific stat growth |
+| `js/game/status-effects.js` | 10 status effects (burn, chill, paralyze, poison, enfeeble, ATK/DEF up, haste, regen, shield) |
+| `js/game/shop.js` | Shop state, buy/sell logic |
+| `js/game/chests.js` | Chest loot + persistent opened-chest tracking |
+| `js/game/danger.js` | Danger meter: 5 thresholds, enemy stat/loot modifiers |
+| `js/game/procs.js` | Equipment proc framework: 6 effect types (applyStatus, bonusDamage, healPercent, healFlat, damageReflect, selfBuff) |
+| `js/game/crafting.js` | 7 recipes, material checking, recipe discovery |
+| `js/game/perks.js` | Perk selection, application, stat modifier queries |
+| `js/game/quests.js` | Quest tracking, objective checking |
+| `js/game/compendium.js` | Monster kill tracking, resistance discovery |
+| `js/game/underworld.js` | Death fee calculation |
+
+### UI (all render via canvas, no DOM)
+| File | Purpose |
+|---|---|
+| `js/ui/hud.js` | Overworld HUD: HP/MP bars, gold, level, EXP bar, danger meter |
+| `js/ui/combat-ui.js` | Combat screen: sprites, timeline bar, actions, log, status icons |
+| `js/ui/shop-ui.js` | Shop screen: buy/sell, item comparison, rarity colors |
+| `js/ui/character-ui.js` | 4-panel menu: Equipment, Stats, Items, Abilities |
+| `js/ui/class-select-ui.js` | New game class picker |
+| `js/ui/chest-ui.js` | Chest loot popup |
+| `js/ui/death-ui.js` | Death screen |
+| `js/ui/dialogue-ui.js` | NPC dialogue with typewriter text + choices |
+| `js/ui/crafting-ui.js` | Blacksmith crafting interface |
+| `js/ui/perk-ui.js` | Perk selection modal |
+| `js/ui/compendium-ui.js` | Monster compendium viewer |
+| `js/ui/debug-ui.js` | TEMP: cheat menu for playtesting (+level, +gold, etc.) |
 
 ## Conventions
 
 ### Adding New Enemies
-1. Add type definition to `ENEMY_TYPES` in `config.js` (name, color, stats, gold, exp)
-2. Add spawn entry to room JSON `enemies` array
+1. Add to `ENEMY_TYPES` in `config.js` (name, color, hp, maxHp, atk, def, spd, gold, exp, resistances, materialDrops)
+2. Add to `ENEMY_SCALING` if it should appear in level-scaled spawns
+3. Add sprite data to `sprites.js` + mapping to `ENEMY_SPRITE_MAP`
+4. Place in room JSON `enemies` array
 
-### Adding New Shop Items
-1. Add item definition to `SHOP_ITEMS` in `shop.js` (name, cost, desc, apply callback)
-2. Add item ID to the relevant `SHOP_TYPES` inventory array in `config.js`
+### Adding New Bosses
+1. Add to `ENEMY_TYPES` in `config.js` with `isBoss: true, bossId: 'boss_id'`
+2. Add boss definition to `BOSS_DEFS` in `js/game/boss-ai.js` with phases, abilities, transition callbacks
+3. Add sprite data to `sprites.js` + mapping to `ENEMY_SPRITE_MAP`
+4. Create boss room JSON with the boss as sole enemy and `fixedEnemies: true`
+5. Boss rooms should have no flee option (handled in combat.js via `isBoss` flag)
+
+### Adding New Items
+1. Add to `ITEMS` object in `js/data/items.js`
+2. Required fields: `id`, `name`, `type` (consumable/weapon/helm/chest/boots/shield/accessory), `cost`, `desc`
+3. Equipment: add `slot`, `power`/`defense`, optional `bonus: { atk, def, spd, lck, int }`, `damageType`, `rarity`, `proc`
+4. Add to shop inventory in `config.js` `SHOP_TYPES` if purchasable
+5. Stackable consumables: `stackable: true`, `use: (player) => string`
 
 ### Adding New Rooms
-1. Create JSON file in `data/rooms/{region}/{name}.json`
-2. Link it via `exits` in adjacent rooms
-3. Add `enemies` and/or `shops` arrays as needed
+1. Create JSON in `data/rooms/{region}/{name}.json`
+2. Link via `exits` in adjacent rooms (bidirectional)
+3. Tile IDs: 0=void, 1=grass, 2=wall, 3=water, 4=path, 5=door, 6=floor, 7=cave_wall, 8=cave_floor, 9=chest, 10=stone_wall, 11=sewer_wall, 12=sewer_floor, 13=sewer_water
+4. Grid is 16 cols × 12 rows
 
-### Adding New Tile Types
-1. Add entry to `data/tiles.json` with next available numeric ID
-2. Use the ID in room tile grids
+### Adding New NPCs
+1. Add definition to `js/data/npcs.js` with dialogue tree
+2. Place in room JSON `npcs` array: `{ npcId, x, y }`
+3. Handle dialogue callbacks in `handleDialogueChoice()` in `main.js`
+
+### Adding New Quests
+1. Add to `QUEST_DEFS` in `js/data/quests.js`
+2. Add NPC dialogue triggers (quest start/progress/complete variants)
+3. Wire objective checking in combat.js (defeat) or main.js (interact/collect)
+
+### Adding New Crafting Recipes
+1. Add to `RECIPES` in `js/game/crafting.js`
+2. Add result item to `js/data/items.js`
+3. Ensure required materials exist in `js/data/materials.js`
 
 ## Important Notes
 
-- **No build step** — just serve the directory with any static HTTP server
-- **Save data** is in localStorage under key `grymhold_save` — clear it to reset
-- `START_ROOM` constant in `main.js` controls the spawn point and death-respawn destination
-- Combat log keeps last 4 messages (see `addLog()` in `combat.js`)
-- Shop message feedback auto-clears after 1500ms
-- Death penalty: 50% gold loss (rounded down), HP/MP fully restored, transition to town_1
+- **No build step** — serve directory, open in browser
+- **No npm** — do not create package.json or suggest installing packages
+- **INT stat** — boosts Hacker ability damage and spell scaling (not Bruiser/Fixer abilities)
+- **Abilities are free** — no MP cost. Balance comes from enemy pressure, not resource management
+- **Equipment serialization** — save stores equipment as `{ id }` refs, rehydrated from `ITEMS` on load
+- **Danger meter** — increments on room transitions (+1) and combat (+2/+5), resets in safe rooms, reduced by campfires (-15)
+- **Death flow** — defeat → death screen → underworld/gate → pay fee (level×10 gold) or fight Marvin or grind ghost interns → revive at last safe room with full heal
+- **Perk selection** — triggers after combat victory if player leveled to a perk milestone (5, 10, 15…50). Cannot be skipped.
+- **Recipe discovery** — recipes appear in crafting UI when player has ≥1 of any required material
+- **Compendium** — resistance revealed per-element on hit. Full reveal at 5 kills.
+- `debug-ui.js` is a temporary playtesting tool. Remove before release.
