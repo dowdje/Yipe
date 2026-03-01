@@ -1,0 +1,13 @@
+{
+  "0": { "name": "void",   "walkable": false, "color": "#000000" },
+  "1": { "name": "grass",  "walkable": true,  "color": "#44AA44" },
+  "2": { "name": "wall",   "walkable": false, "color": "#555555" },
+  "3": { "name": "water",  "walkable": false, "color": "#3366CC", "raftable": true },
+  "4": { "name": "path",   "walkable": true,  "color": "#C8B070" },
+  "5": { "name": "door",   "walkable": true,  "color": "#8B5A2B" },
+  "6": { "name": "floor",  "walkable": true,  "color": "#AAAAAA" },
+  "7": { "name": "cave_wall", "walkable": false, "color": "#3D3D3D" },
+  "8": { "name": "cave_floor","walkable": true,  "color": "#777777" },
+  "9": { "name": "chest",  "walkable": true,  "color": "#CC8833" },
+  "10": { "name": "stone_wall", "walkable": false, "color": "#666677" }
+}
