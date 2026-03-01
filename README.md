@@ -174,6 +174,15 @@ Danger increases when entering rooms (+1) and fighting (+2). It **resets to 0** 
 
 Higher danger means tougher enemies but better loot. Push your luck or play it safe.
 
+### Roaming Enemies
+
+In non-safe rooms, enemies can **spawn randomly** as you explore. Each step you take has a chance to spawn a roaming enemy at least 4 tiles away. These enemies **chase you** — moving one tile toward you with each step you take. If one catches you (or you walk into it), combat begins.
+
+- Up to 3 roaming enemies can be alive at once
+- They scale with your level, so higher-level players face tougher roaming spawns
+- Safe rooms (towns, camps) never have random spawns
+- Static enemies placed in rooms still behave as before — they don't move
+
 ## Death & The Underworld
 
 When you die, you don't just respawn - you're sent to **The Underworld**.

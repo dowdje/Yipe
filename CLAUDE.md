@@ -100,7 +100,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 | `js/game/world.js` | Room loading/caching, tile collision, exits (incl. key/lock doors via isExitLocked), NPC/campfire/shop tracking, room hazards |
 | `js/game/combat.js` | Full combat engine (~1400 lines): timeline, damage calc, abilities, status effects, procs, material drops, compendium recording, boss target system, minion management, phase transitions |
 | `js/game/boss-ai.js` | Boss definitions (BOSS_DEFS) for 5 bosses (Sewer King, The Manager, The Alpha, The Specimen, The Consultant), phase system, weighted ability selection, cooldowns, minion spawning, wave system, multi-head system, executeBossTurn() |
-| `js/game/enemies.js` | Enemy spawning with level-based scaling + fixedEnemies mode for dungeons + difficulty multiplier (setDifficulty/getDifficulty/applyDifficultyScaling) |
+| `js/game/enemies.js` | Enemy spawning with level-based scaling + fixedEnemies mode for dungeons + difficulty multiplier (setDifficulty/getDifficulty/applyDifficultyScaling) + roaming enemy system (spawnRandomEnemy/moveRoamingEnemies/getRoamingEnemyCount) |
 | `js/game/stats.js` | Effective stat computation: base + equipment + status effects + perk multipliers |
 | `js/game/leveling.js` | EXP gain, level-up with class-specific stat growth |
 | `js/game/status-effects.js` | 10 status effects (burn, chill, paralyze, poison, enfeeble, ATK/DEF up, haste, regen, shield) |
@@ -188,6 +188,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 - **Recipe discovery** — recipes appear in crafting UI when player has ≥1 of any required material
 - **Compendium** — resistance revealed per-element on hit. Full reveal at 5 kills. Classified notes unlock at 100% region discovery.
 - **Difficulty scaling** — enemies.js applies a difficulty multiplier (0.75/1.0/1.5) to enemy HP/ATK/DEF on spawn
+- **Roaming enemies** — in non-safe rooms, each player move has a 12% chance to spawn a random enemy ≥4 tiles away (max 3 alive). Roaming enemies chase the player 1 tile per move via greedy Manhattan pathfinding. Walking into one or it reaching you triggers combat. Static (room-defined) enemies never move. Roaming enemies scale with player level via `resolveEnemyType()`. The `roaming: true` flag on the enemy object distinguishes them from static enemies.
 - **Key/lock doors** — exits can be `{ target, locked: "key_item_id" }`, checked against player inventory in world.js
 - **Boss tracking** — `player.bossesDefeated` array tracks bossId strings; quest flags set as `boss_{bossId}_defeated`
 - **Ending trigger** — Mayor NPC with 5 NFT drives + Consultant defeated → ending sequence with princess-count variants

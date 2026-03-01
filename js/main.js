@@ -1,11 +1,11 @@
 // main.js — Game initialization and loop
 
-import { GAME_STATES, TRANSITION_MS, xpForLevel, ENEMY_TYPES } from './config.js';
+import { GAME_STATES, TRANSITION_MS, xpForLevel, ENEMY_TYPES, GRID_COLS, GRID_ROWS } from './config.js';
 import { initRenderer, clear, drawTileGrid, drawPlayer, drawPlayerLerp, drawEntity, drawFade, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP } from './engine/renderer.js';
 import { initInput, consumeInput, setInputEnabled } from './engine/input.js';
-import { loadTileDefs, getTileDefs, loadRoom, getCurrentRoom, isWalkable, getExit, getEntryPosition, getActiveShops, getActiveNpcs, getActiveCampfires, isSafeRoom, initWorldPlayerRef } from './game/world.js';
+import { loadTileDefs, getTileDefs, loadRoom, getCurrentRoom, isWalkable, getExit, getEntryPosition, getActiveShops, getActiveNpcs, getActiveCampfires, isSafeRoom, initWorldPlayerRef, getShopAt, getNpcAt, getCampfireAt, getChestAt } from './game/world.js';
 import { getPlayer, setPlayerPos, tryMove, updateMovement, getMoveTween, equipItem, unequipSlot, removeFromInventory, initClass, grantAbilitiesUpToLevel, addToInventory } from './game/player.js';
-import { getActiveEnemies } from './game/enemies.js';
+import { getActiveEnemies, getEnemyAt, spawnRandomEnemy, moveRoamingEnemies, getRoamingEnemyCount, RANDOM_SPAWN_CHANCE, MAX_RANDOM_ENEMIES, MIN_SPAWN_DISTANCE } from './game/enemies.js';
 import { getCombat, startCombat, selectAction, updateCombatAnim, endCombat, getActions, getTopActions, closeSubMenu, navigateSubMenu, initItemsRef, initSpellsRef, initPlayerRef, initBossAiRef, cycleTarget } from './game/combat.js';
 import * as BOSS_AI from './game/boss-ai.js';
 import { startShop, getShopState, buyItem, sellItem, toggleShopMode, updateShopMessage, endShop, initShopSpellsRef } from './game/shop.js';
@@ -245,6 +245,49 @@ function updateOverworld(now) {
       const pp = getPlayer();
       saveGame(room.id, pp.x, pp.y, pp);
     }, 120);
+
+    // Roaming enemy logic (non-safe rooms only)
+    if (!isSafeRoom()) {
+      // Helper: returns any blocking entity at (x,y) excluding player
+      const entityAt = (x, y) =>
+        getEnemyAt(x, y) || getShopAt(x, y) || getNpcAt(x, y) || getCampfireAt(x, y) || getChestAt(x, y);
+
+      // Move existing roaming enemies toward player
+      const chaser = moveRoamingEnemies(player.x, player.y, isWalkable, entityAt);
+      if (chaser) {
+        // A roaming enemy reached the player — start combat
+        startCombat(chaser);
+        state = GAME_STATES.COMBAT;
+        setInputEnabled(false);
+        setTimeout(() => setInputEnabled(true), 300);
+        return;
+      }
+
+      // Roll for a new random spawn
+      if (Math.random() < RANDOM_SPAWN_CHANCE && getRoamingEnemyCount() < MAX_RANDOM_ENEMIES) {
+        const exits = room.exits || {};
+        const validTiles = [];
+        for (let ty = 0; ty < GRID_ROWS; ty++) {
+          for (let tx = 0; tx < GRID_COLS; tx++) {
+            // Must be walkable
+            if (!isWalkable(tx, ty)) continue;
+            // Must be far enough from player
+            const dist = Math.abs(tx - player.x) + Math.abs(ty - player.y);
+            if (dist < MIN_SPAWN_DISTANCE) continue;
+            // Must not be occupied
+            if (entityAt(tx, ty)) continue;
+            // Must not be on an exit edge
+            if ((tx === 0 && exits.left) || (tx === GRID_COLS - 1 && exits.right) ||
+                (ty === 0 && exits.up) || (ty === GRID_ROWS - 1 && exits.down)) continue;
+            validTiles.push({ x: tx, y: ty });
+          }
+        }
+        if (validTiles.length > 0) {
+          const tile = validTiles[Math.floor(Math.random() * validTiles.length)];
+          spawnRandomEnemy(player.level, tile.x, tile.y);
+        }
+      }
+    }
   } else if (result && result.type === 'shop') {
     // Shop NPC collision — enter shop
     startShop(result.shop);
