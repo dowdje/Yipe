@@ -16,7 +16,9 @@
   "chests": [
     { "x": 8, "y": 10, "loot": [{ "itemId": "gas_station_burrito", "qty": 3 }], "gold": 25 }
   ],
-  "npcs": [],
+  "npcs": [
+    { "npcId": "angelica", "x": 8, "y": 9 }
+  ],
   "campfires": [],
   "tiles": [
     [0, 0, 0, 10, 10, 10, 6, 6, 6, 6, 10, 10, 10, 0, 0, 0],

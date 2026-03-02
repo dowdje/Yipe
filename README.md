@@ -31,6 +31,7 @@ Open http://localhost:8080 in your browser. That's it.
 | Key | Action |
 |---|---|
 | C | Open monster compendium |
+| S | Salvage selected equipment/item for materials + gold |
 | D | Open debug menu (temp) |
 | Q | Quit to title screen |
 
@@ -133,16 +134,18 @@ Defeat enemies to earn EXP. When you level up:
 
 ### Equipment
 
-Equipment comes in five rarities:
+Equipment comes in seven rarities:
 - **Common** (white)
 - **Uncommon** (green)
 - **Rare** (blue)
-- **Legendary** (gold)
-- **Unique** (red) - rare drops from enemies (2% chance)
+- **Epic** (purple) - rare drops from high-level enemies (Lv 16+)
+- **Legendary** (magenta)
+- **Masterwork** (orange) - craft-only endgame items (Lv 21+)
+- **Unique** (gold) - rare drops from enemies (2% chance)
 
 Some equipment has **proc effects** - special abilities that trigger on hit, on crit, or when taking damage.
 
-Open the character menu (I) to manage equipment across 7 slots: weapon, shield, helm, chest, boots, and 2 accessories.
+Open the character menu (I) to manage equipment across 7 slots: weapon, shield, helm, chest, boots, and 2 accessories. Press **S** to salvage the selected item for crafting materials and gold.
 
 ### Shops
 
@@ -160,6 +163,19 @@ Find **Gus the Blacksmith** NPC to access the forge. Craft powerful equipment fr
 
 Materials drop from specific enemies - Slimes drop Toxic Goo, Goblins drop Scrap Metal, Cave Trolls drop Beast Hide, etc. Recipes are automatically discovered when you collect at least one of any required material.
 
+**Masterwork recipes** (Omega Edge, Colossus Armor) require rare materials like Cryo Core and Circuit Board plus significant gold investment.
+
+### Salvage System
+
+Don't need an item? Press **S** in the character menu to salvage it for crafting materials and gold:
+- Common/Uncommon items: 1 common material + 25g
+- Rare/Unique/Epic items: 1 uncommon + 1 common material + 40g
+- Legendary/Masterwork items: 1 rare + 1 uncommon material + 50g
+
+### Stat Training
+
+The **Guild Master** in Grymhold offers permanent stat training. For escalating gold costs (200g base, doubling each purchase per stat), you can permanently increase ATK, DEF, SPD, INT, or LCK by +1. A great gold sink for late-game characters.
+
 ### The Danger Meter
 
 The **Danger Meter** in the HUD tracks how long you've been away from town.
@@ -168,9 +184,9 @@ The **Danger Meter** in the HUD tracks how long you've been away from town.
 |---|---|---|---|
 | Safe | Green | None | None |
 | Sketchy | Yellow | None | +10% |
-| Dangerous | Orange | +10% stats | +20% |
-| Critical | Red | +20% stats | +35% |
-| Meltdown | Dark Red | +30% stats | +50% |
+| Dangerous | Orange | +30% stats | +20% |
+| Critical | Red | +60% stats | +35% |
+| Meltdown | Dark Red | +90% stats | +50% |
 
 Danger increases when entering rooms (+1) and fighting (+2). It **resets to 0** when you return to town. **Campfires** reduce danger by 15 and restore 50% HP/MP. **Changing zones** (e.g., leaving the sewers for the sprawl) reduces danger by 20.
 
@@ -232,6 +248,10 @@ Talk to NPCs to receive quests.
 | Valentina | Island Archives | Freed during Consultant fight |
 
 Rescuing all 8 princesses and collecting all 5 NFT drives unlocks the best ending when you return to the Mayor.
+
+### The Royal Court
+
+Rescued princesses gather in the **Royal Court** (Grymhold Outskirts, town_8). Each princess has a unique appearance and post-rescue dialogue with flavor text and hints. Visit them to see your progress!
 
 ## Enemy Reference
 
@@ -330,10 +350,10 @@ Rescuing all 8 princesses and collecting all 5 NFT drives unlocks the best endin
                     │      |                          Deep Passage ── Dead End
  Inn ── Guild ──────┘      | (down)
  Mayor ── Blacksmith       |
- Residential ── Outskirts  |
-  (Brianna shop)           |
+ Residential ── Royal Court  |
+  (Brianna shop)  (princesses) |
                     Sewer Entrance ─── Sewer Tunnel 1 ──── Junction
-                      (campfire)            |                  |
+                  (campfire, Jasmine)        |                  |
                                       Sewer Tunnel 2        Waterway
                                             |                  |
                                         Rat's Nest ──── Sewer Throne ──── Deep Sewers
@@ -362,7 +382,7 @@ Consultant's Island (12 rooms) ── Dock, Lobby, Lounge (campfire), Executive 
                                    Treasure
 
 On death:  Underworld Gate ── Intern Halls ── The Depths
-           (Marvin, Angelica)  (Ghost Interns, Merchant)
+           (Marvin)           (Ghost Interns, Merchant)  (Angelica)
 ```
 
 ## Endings

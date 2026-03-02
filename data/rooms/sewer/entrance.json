@@ -10,6 +10,9 @@
     { "type": "sewer_rat", "x": 5, "y": 4 },
     { "type": "sewer_rat", "x": 10, "y": 7 }
   ],
+  "npcs": [
+    { "npcId": "jasmine", "x": 13, "y": 3 }
+  ],
   "campfires": [
     { "x": 3, "y": 3 }
   ],

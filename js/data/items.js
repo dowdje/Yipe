@@ -9,7 +9,7 @@ export const ITEMS = {
     name: 'Gas Station Burrito',
     type: 'consumable',
     slot: null,
-    cost: 5,
+    cost: 10,
     desc: 'Restore 10 HP',
     rarity: 'common',
     stackable: true,
@@ -24,7 +24,7 @@ export const ITEMS = {
     name: 'Lukewarm Pizza',
     type: 'consumable',
     slot: null,
-    cost: 15,
+    cost: 30,
     desc: 'Restore 25 HP',
     rarity: 'common',
     stackable: true,
@@ -39,7 +39,7 @@ export const ITEMS = {
     name: 'Double Gridlock Burger',
     type: 'consumable',
     slot: null,
-    cost: 35,
+    cost: 70,
     desc: 'Restore 60 HP',
     rarity: 'common',
     stackable: true,
@@ -54,7 +54,7 @@ export const ITEMS = {
     name: 'Protein Shake',
     type: 'consumable',
     slot: null,
-    cost: 60,
+    cost: 120,
     desc: 'Restore 100 HP',
     rarity: 'common',
     stackable: true,
@@ -69,7 +69,7 @@ export const ITEMS = {
     name: 'Artisanal Kale Wrap',
     type: 'consumable',
     slot: null,
-    cost: 100,
+    cost: 200,
     desc: 'Restore 180 HP',
     rarity: 'common',
     stackable: true,
@@ -84,7 +84,7 @@ export const ITEMS = {
     name: 'Full Spread Feast',
     type: 'consumable',
     slot: null,
-    cost: 400,
+    cost: 800,
     desc: 'Fully restore HP and MP',
     rarity: 'common',
     stackable: true,
@@ -101,7 +101,7 @@ export const ITEMS = {
     name: 'Cheap Energy Drink',
     type: 'consumable',
     slot: null,
-    cost: 15,
+    cost: 30,
     desc: 'Restore 10 MP',
     rarity: 'common',
     stackable: true,
@@ -116,7 +116,7 @@ export const ITEMS = {
     name: 'Name Brand Energy Drink',
     type: 'consumable',
     slot: null,
-    cost: 50,
+    cost: 100,
     desc: 'Restore 35 MP',
     rarity: 'common',
     stackable: true,
@@ -131,7 +131,7 @@ export const ITEMS = {
     name: 'Dubious Nootropic',
     type: 'consumable',
     slot: null,
-    cost: 180,
+    cost: 360,
     desc: 'Fully restore MP',
     rarity: 'common',
     stackable: true,
@@ -148,7 +148,7 @@ export const ITEMS = {
     name: 'Antidote Gummy',
     type: 'consumable',
     slot: null,
-    cost: 20,
+    cost: 40,
     desc: 'Cure Poison & Enfeeble',
     rarity: 'common',
     stackable: true,
@@ -169,7 +169,7 @@ export const ITEMS = {
     name: 'Ice Pack',
     type: 'consumable',
     slot: null,
-    cost: 20,
+    cost: 40,
     desc: 'Cure Burn',
     rarity: 'common',
     stackable: true,
@@ -186,7 +186,7 @@ export const ITEMS = {
     name: 'Hand Warmer',
     type: 'consumable',
     slot: null,
-    cost: 20,
+    cost: 40,
     desc: 'Cure Chill & Paralyze',
     rarity: 'common',
     stackable: true,
@@ -209,7 +209,7 @@ export const ITEMS = {
     name: 'Scanner',
     type: 'consumable',
     slot: null,
-    cost: 40,
+    cost: 80,
     desc: 'Reveal monster resistances',
     rarity: 'common',
     stackable: true,
@@ -230,7 +230,7 @@ export const ITEMS = {
     slot: 'weapon',
     power: 3,
     damageType: 'physical',
-    cost: 50,
+    cost: 100,
     desc: 'A heavy lead pipe. ATK +3',
     rarity: 'common',
     stackable: false,
@@ -242,7 +242,7 @@ export const ITEMS = {
     slot: 'weapon',
     power: 2,
     damageType: 'physical',
-    cost: 40,
+    cost: 80,
     desc: 'Aluminum. Dented. ATK +2',
     rarity: 'common',
     stackable: false,
@@ -279,7 +279,7 @@ export const ITEMS = {
     type: 'shield',
     slot: 'shield',
     defense: 1,
-    cost: 35,
+    cost: 70,
     desc: 'A basic wooden shield. DEF +1',
     rarity: 'common',
     stackable: false,
@@ -292,7 +292,7 @@ export const ITEMS = {
     type: 'armor',
     slot: 'helm',
     defense: 1,
-    cost: 25,
+    cost: 50,
     desc: 'Light head protection. DEF +1',
     rarity: 'common',
     stackable: false,
@@ -303,7 +303,7 @@ export const ITEMS = {
     type: 'armor',
     slot: 'chest',
     defense: 2,
-    cost: 75,
+    cost: 150,
     desc: 'Linked metal rings. DEF +2',
     rarity: 'common',
     stackable: false,
@@ -314,7 +314,7 @@ export const ITEMS = {
     type: 'armor',
     slot: 'boots',
     defense: 1,
-    cost: 30,
+    cost: 60,
     desc: 'Heavy iron boots. DEF +1',
     rarity: 'common',
     stackable: false,
@@ -326,7 +326,7 @@ export const ITEMS = {
     slot: 'boots',
     defense: 0,
     bonus: { spd: 1 },
-    cost: 55,
+    cost: 110,
     desc: 'Light and quick. SPD +1',
     rarity: 'common',
     stackable: false,
@@ -403,7 +403,7 @@ export const ITEMS = {
     slot: 'chest',
     defense: 1,
     bonus: { int: 3 },
-    cost: 85,
+    cost: 170,
     desc: 'Comfy and smart. DEF +1, INT +3',
     rarity: 'uncommon',
     stackable: false,
@@ -428,7 +428,7 @@ export const ITEMS = {
     type: 'accessory',
     slot: 'accessory1',
     bonus: { int: 3 },
-    cost: 40,
+    cost: 80,
     desc: 'Sharpens the mind. INT +3',
     rarity: 'uncommon',
     stackable: false,
@@ -450,7 +450,7 @@ export const ITEMS = {
     type: 'accessory',
     slot: 'accessory1',
     bonus: { atk: 1 },
-    cost: 25,
+    cost: 50,
     desc: 'A ring of strength. ATK +1',
     rarity: 'common',
     stackable: false,
@@ -461,7 +461,7 @@ export const ITEMS = {
     type: 'accessory',
     slot: 'accessory2',
     bonus: { lck: 2 },
-    cost: 22,
+    cost: 44,
     desc: 'A lucky trinket. LCK +2',
     rarity: 'common',
     stackable: false,
@@ -994,7 +994,7 @@ export const ITEMS = {
     power: 20,
     damageType: 'physical',
     bonus: { def: -3 },
-    cost: 200,
+    cost: 400,
     desc: 'Devastating ATK but weakens defense. ATK +20, DEF -3',
     rarity: 'rare',
     stackable: false,
@@ -1006,7 +1006,7 @@ export const ITEMS = {
     slot: 'helm',
     defense: 8,
     bonus: { spd: -2 },
-    cost: 180,
+    cost: 360,
     desc: 'Incredible defense, but slows you down. DEF +8, SPD -2',
     rarity: 'rare',
     stackable: false,
@@ -1017,7 +1017,7 @@ export const ITEMS = {
     type: 'accessory',
     slot: 'accessory1',
     bonus: { atk: 4, lck: 3 },
-    cost: 250,
+    cost: 500,
     desc: 'Drains life from enemies. ATK +4, LCK +3',
     rarity: 'rare',
     stackable: false,
@@ -1029,7 +1029,7 @@ export const ITEMS = {
     type: 'accessory',
     slot: 'accessory2',
     bonus: { atk: 6, int: 4, def: -4 },
-    cost: 220,
+    cost: 440,
     desc: 'Maximum offense, paper defense. ATK +6, INT +4, DEF -4',
     rarity: 'rare',
     stackable: false,
@@ -1041,9 +1041,95 @@ export const ITEMS = {
     slot: 'boots',
     defense: 0,
     bonus: { spd: 5, def: -2 },
-    cost: 190,
+    cost: 380,
     desc: 'Blazing speed, no protection. SPD +5, DEF -2',
     rarity: 'rare',
+    stackable: false,
+  },
+
+  // --- Epic Items (T4: Lv 16+) ---
+  void_reaper: {
+    id: 'void_reaper',
+    name: 'Void Reaper',
+    type: 'weapon',
+    slot: 'weapon',
+    power: 22,
+    damageType: 'physical',
+    cost: 0,
+    desc: 'A scythe that cuts between dimensions. ATK +22',
+    flavorText: 'Reality screams where it swings.',
+    rarity: 'epic',
+    stackable: false,
+    proc: { trigger: 'onHit', chance: 0.15, effect: 'applyStatus', status: 'enfeeble' },
+  },
+  inferno_blade: {
+    id: 'inferno_blade',
+    name: 'Inferno Blade',
+    type: 'weapon',
+    slot: 'weapon',
+    power: 28,
+    damageType: 'fire',
+    cost: 0,
+    desc: 'Forged in the core of a dying sun. ATK +28',
+    flavorText: 'Even its shadow burns.',
+    rarity: 'epic',
+    stackable: false,
+    proc: { trigger: 'onHit', chance: 0.25, effect: 'applyStatus', status: 'burn' },
+  },
+  titan_plate: {
+    id: 'titan_plate',
+    name: 'Titan Plate',
+    type: 'armor',
+    slot: 'chest',
+    defense: 18,
+    bonus: { atk: 3 },
+    cost: 0,
+    desc: 'Armor of the ancient titans. DEF +18, ATK +3',
+    flavorText: 'Mountains tremble at its weight.',
+    rarity: 'epic',
+    stackable: false,
+  },
+  circuit_crown_mk2: {
+    id: 'circuit_crown_mk2',
+    name: 'Circuit Crown Mk2',
+    type: 'armor',
+    slot: 'helm',
+    defense: 12,
+    bonus: { int: 10 },
+    cost: 0,
+    desc: 'Neural interface v2. DEF +12, INT +10',
+    flavorText: 'Your thoughts move at light speed.',
+    rarity: 'epic',
+    stackable: false,
+  },
+
+  // --- Masterwork Items (T5: Lv 21+, craft-only) ---
+  omega_edge: {
+    id: 'omega_edge',
+    name: 'Omega Edge',
+    type: 'weapon',
+    slot: 'weapon',
+    power: 35,
+    damageType: 'physical',
+    bonus: { atk: 5, spd: 3 },
+    cost: 0,
+    desc: 'The final word in bladed combat. ATK +35(+5), SPD +3',
+    flavorText: 'There is nothing beyond this edge.',
+    rarity: 'masterwork',
+    stackable: false,
+    proc: { trigger: 'onCrit', chance: 0.35, effect: 'bonusDamage', value: 25 },
+  },
+  colossus_armor: {
+    id: 'colossus_armor',
+    name: 'Colossus Armor',
+    type: 'armor',
+    slot: 'chest',
+    defense: 24,
+    bonus: { def: 5, atk: 3, spd: -2 },
+    cost: 0,
+    desc: 'Impenetrable fortress of steel. DEF +24(+5), ATK +3, SPD -2',
+    flavorText: 'You ARE the wall.',
+    rarity: 'masterwork',
     stackable: false,
   },
 };
@@ -1053,7 +1139,7 @@ const UNIQUE_LOOT_TABLE = [
   { minLevel: 1,  maxLevel: 5,  items: ['goblins_fang', 'slime_shield'] },
   { minLevel: 6,  maxLevel: 10, items: ['frostbite_ring', 'shadow_cloak'] },
   { minLevel: 11, maxLevel: 15, items: ['flame_brand', 'crystal_helm'] },
-  { minLevel: 16, maxLevel: 20, items: ['void_blade', 'aegis_of_valor'] },
+  { minLevel: 16, maxLevel: 20, items: ['void_blade', 'aegis_of_valor', 'void_reaper', 'inferno_blade', 'titan_plate', 'circuit_crown_mk2'] },
   { minLevel: 21, maxLevel: 999, items: ['doombringer', 'crown_of_eternity'] },
 ];
 
@@ -1283,10 +1369,75 @@ const LOOT_TABLES = {
   ],
 };
 
+// --- Salvage system ---
+const SALVAGE_MATERIALS = {
+  common: ['scrap_metal', 'beast_hide', 'toxic_goo'],
+  uncommon: ['fuel_cell', 'spark_plug', 'bio_sample'],
+  rare: ['cryo_core', 'circuit_board'],
+};
+
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getSalvageTier(item) {
+  const r = item.rarity;
+  if (r === 'common' || r === 'uncommon') return 1;
+  if (r === 'rare' || r === 'unique') return 3;
+  if (r === 'epic') return 3;
+  if (r === 'legendary' || r === 'masterwork') return 5;
+  return 1;
+}
+
+export function salvageItem(player, item) {
+  const tier = getSalvageTier(item);
+  const materials = [];
+  let gold = 0;
+
+  if (tier <= 2) {
+    // T1-2: 1 common material + 25g
+    const mat = pickRandom(SALVAGE_MATERIALS.common);
+    player.materials[mat] = (player.materials[mat] || 0) + 1;
+    materials.push(mat);
+    gold = 25;
+  } else if (tier <= 4) {
+    // T3-4: 1 uncommon + 1 common + 40g
+    const umat = pickRandom(SALVAGE_MATERIALS.uncommon);
+    const cmat = pickRandom(SALVAGE_MATERIALS.common);
+    player.materials[umat] = (player.materials[umat] || 0) + 1;
+    player.materials[cmat] = (player.materials[cmat] || 0) + 1;
+    materials.push(umat, cmat);
+    gold = 40;
+  } else {
+    // T5: 1 rare + 1 uncommon + 50g
+    const rmat = pickRandom(SALVAGE_MATERIALS.rare);
+    const umat = pickRandom(SALVAGE_MATERIALS.uncommon);
+    player.materials[rmat] = (player.materials[rmat] || 0) + 1;
+    player.materials[umat] = (player.materials[umat] || 0) + 1;
+    materials.push(rmat, umat);
+    gold = 50;
+  }
+
+  player.gold += gold;
+
+  // Remove from inventory
+  const idx = player.inventory.findIndex(i => i.id === item.id);
+  if (idx >= 0) {
+    if (player.inventory[idx].qty > 1) {
+      player.inventory[idx].qty--;
+    } else {
+      player.inventory.splice(idx, 1);
+    }
+  }
+
+  const matNames = materials.map(m => m.replace(/_/g, ' ')).join(', ');
+  return `Salvaged ${item.name}: +${gold}g, ${matNames}`;
+}
+
 const UNIQUE_DROP_CHANCE = 0.02;
 
-export function rollLoot(enemyType, playerLevel = 1) {
-  if (Math.random() < UNIQUE_DROP_CHANCE) {
+export function rollLoot(enemyType, playerLevel = 1, lootMod = 0) {
+  if (Math.random() < UNIQUE_DROP_CHANCE + lootMod * 0.02) {
     const unique = rollUnique(playerLevel);
     if (unique) return { item: unique, rarity: 'unique' };
   }
@@ -1294,10 +1445,16 @@ export function rollLoot(enemyType, playerLevel = 1) {
   const table = LOOT_TABLES[enemyType];
   if (!table) return null;
 
-  const totalWeight = table.reduce((sum, e) => sum + e.weight, 0);
+  // lootMod reduces null weight, making drops more likely at high danger
+  const adjusted = table.map(e => ({
+    ...e,
+    weight: e.itemId === null ? Math.max(10, e.weight * (1 - lootMod)) : e.weight,
+  }));
+
+  const totalWeight = adjusted.reduce((sum, e) => sum + e.weight, 0);
   let roll = Math.random() * totalWeight;
 
-  for (const entry of table) {
+  for (const entry of adjusted) {
     roll -= entry.weight;
     if (roll <= 0) {
       if (!entry.itemId) return null;

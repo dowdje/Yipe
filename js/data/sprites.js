@@ -1,1303 +1,2309 @@
-// sprites.js — 8x8 inline pixel sprite data
-// Each sprite is an 8x8 array of palette indices (0 = transparent)
+// sprites.js — 16x16 inline pixel sprite data (cyberpunk aesthetic)
+// Each sprite is a 16x16 array of palette indices (0 = transparent)
 
 // Palettes: arrays of [r, g, b, a]
 export const PALETTES = {
   player: [
-    [0, 0, 0, 0],       // 0: transparent
-    [255, 215, 0, 255],  // 1: gold (body)
-    [200, 160, 0, 255],  // 2: dark gold (outline)
-    [255, 240, 150, 255],// 3: light gold (highlight)
-    [180, 100, 50, 255], // 4: brown (boots)
-    [220, 220, 220, 255],// 5: silver (sword)
-    [100, 60, 30, 255],  // 6: dark brown
-    [255, 180, 120, 255],// 7: skin
+    [0,0,0,0],           // 0: transparent
+    [0,255,204,255],      // 1: neon cyan (body)
+    [0,180,140,255],      // 2: dark cyan (outline)
+    [150,255,230,255],    // 3: light cyan (highlight)
+    [100,70,40,255],      // 4: brown (boots)
+    [200,210,220,255],    // 5: chrome silver (sword)
+    [60,40,25,255],       // 6: dark brown
+    [212,165,116,255],    // 7: skin
+    [26,26,42,255],       // 8: dark bg accent
+    [0,255,136,255],      // 9: neon green accent
+  ],
+  player_bruiser: [
+    [0,0,0,0],           // 0: transparent
+    [139,26,26,255],      // 1: dark red armor
+    [255,34,68,255],      // 2: neon red
+    [192,200,208,255],    // 3: chrome silver
+    [212,165,116,255],    // 4: skin
+    [96,104,112,255],     // 5: dark chrome
+    [255,102,51,255],     // 6: neon orange highlight
+    [255,68,68,255],      // 7: visor glow
+    [26,26,42,255],       // 8: black
+    [58,58,74,255],       // 9: boot metal
+    [180,20,40,255],      // 10: mid red
+  ],
+  player_fixer: [
+    [0,0,0,0],           // 0: transparent
+    [10,74,58,255],       // 1: dark green
+    [0,255,204,255],      // 2: neon teal
+    [212,165,116,255],    // 3: skin
+    [21,32,40,255],       // 4: hood shadow
+    [26,42,42,255],       // 5: dark coat
+    [170,238,221,255],    // 6: blade gleam
+    [10,21,21,255],       // 7: boot dark
+    [0,255,136,255],      // 8: neon green accent
+    [40,60,55,255],       // 9: mid coat
+  ],
+  player_hacker: [
+    [0,0,0,0],           // 0: transparent
+    [26,26,74,255],       // 1: dark blue coat
+    [0,170,255,255],      // 2: neon blue
+    [212,165,116,255],    // 3: skin
+    [68,204,255,255],     // 4: visor glow
+    [136,68,255,255],     // 5: purple accent
+    [21,21,48,255],       // 6: dark pants
+    [0,255,136,255],      // 7: tech screen green
+    [58,58,106,255],      // 8: glasses frame
+    [40,40,80,255],       // 9: mid blue
   ],
   bat: [
-    [0, 0, 0, 0],
-    [136, 68, 170, 255], // 1: purple (body)
-    [100, 40, 130, 255], // 2: dark purple
-    [180, 100, 220, 255],// 3: light purple
-    [255, 50, 50, 255],  // 4: red (eyes)
-    [60, 30, 80, 255],   // 5: very dark purple
+    [0,0,0,0],
+    [100,40,150,255],     // 1: purple body
+    [70,20,110,255],      // 2: dark purple
+    [160,80,220,255],     // 3: light purple
+    [255,0,80,255],       // 4: neon red eyes
+    [40,15,60,255],       // 5: very dark purple
+    [200,100,255,255],    // 6: neon purple highlight
+    [130,60,180,255],     // 7: mid purple
   ],
   slime: [
-    [0, 0, 0, 0],
-    [68, 187, 68, 255],  // 1: green (body)
-    [40, 140, 40, 255],  // 2: dark green
-    [100, 220, 100, 255],// 3: light green
-    [255, 255, 255, 255],// 4: white (eyes)
-    [30, 30, 30, 255],   // 5: black (pupils)
+    [0,0,0,0],
+    [0,200,80,255],       // 1: neon green body
+    [0,140,50,255],       // 2: dark green
+    [80,255,130,255],     // 3: light green
+    [255,255,255,255],    // 4: white eyes
+    [20,20,30,255],       // 5: black pupils
+    [0,255,100,255],      // 6: neon glow
+    [0,170,65,255],       // 7: mid green
   ],
   goblin: [
-    [0, 0, 0, 0],
-    [204, 102, 51, 255], // 1: orange-brown (skin)
-    [150, 70, 30, 255],  // 2: dark brown
-    [240, 140, 80, 255], // 3: light skin
-    [80, 80, 80, 255],   // 4: gray (armor)
-    [255, 50, 50, 255],  // 5: red (eyes)
-    [60, 60, 60, 255],   // 6: dark gray
+    [0,0,0,0],
+    [200,100,50,255],     // 1: orange-brown skin
+    [140,65,25,255],      // 2: dark brown
+    [240,140,80,255],     // 3: light skin
+    [60,65,75,255],       // 4: dark armor
+    [255,0,60,255],       // 5: neon red eyes
+    [45,45,55,255],       // 6: very dark gray
+    [90,95,105,255],      // 7: mid armor
+    [0,255,136,255],      // 8: neon accent
   ],
   shadow_bat: [
-    [0, 0, 0, 0],
-    [80, 30, 130, 255],  // 1: dark purple (body)
-    [50, 15, 90, 255],   // 2: very dark purple
-    [120, 60, 180, 255], // 3: medium purple
-    [200, 50, 200, 255], // 4: magenta (eyes)
-    [30, 10, 50, 255],   // 5: near-black purple
+    [0,0,0,0],
+    [60,20,110,255],      // 1: dark purple body
+    [35,10,70,255],       // 2: very dark purple
+    [100,50,160,255],     // 3: medium purple
+    [255,0,200,255],      // 4: neon magenta eyes
+    [20,5,40,255],        // 5: near-black purple
+    [180,60,255,255],     // 6: neon purple
+    [80,35,130,255],      // 7: mid purple
   ],
   poison_slime: [
-    [0, 0, 0, 0],
-    [170, 204, 34, 255], // 1: yellow-green (body)
-    [130, 160, 20, 255], // 2: dark yellow-green
-    [200, 240, 60, 255], // 3: light yellow-green
-    [255, 255, 255, 255],// 4: white (eyes)
-    [30, 30, 30, 255],   // 5: black (pupils)
+    [0,0,0,0],
+    [170,220,0,255],      // 1: yellow-green body
+    [120,160,0,255],      // 2: dark yellow-green
+    [210,255,50,255],     // 3: light yellow-green
+    [255,255,255,255],    // 4: white eyes
+    [20,20,30,255],       // 5: black pupils
+    [200,255,0,255],      // 6: neon glow
+    [145,190,0,255],      // 7: mid green
   ],
   cave_troll: [
-    [0, 0, 0, 0],
-    [136, 119, 102, 255],// 1: brown-gray (skin)
-    [100, 85, 70, 255],  // 2: dark brown
-    [170, 150, 130, 255],// 3: light brown
-    [80, 80, 80, 255],   // 4: gray (armor)
-    [200, 50, 50, 255],  // 5: red (eyes)
-    [60, 50, 40, 255],   // 6: dark muddy
+    [0,0,0,0],
+    [120,105,85,255],     // 1: brown-gray skin
+    [85,70,55,255],       // 2: dark brown
+    [155,140,115,255],    // 3: light brown
+    [60,65,70,255],       // 4: gray armor
+    [255,40,40,255],      // 5: neon red eyes
+    [50,40,30,255],       // 6: dark muddy
+    [100,85,70,255],      // 7: mid brown
+    [0,255,136,255],      // 8: neon green accent
   ],
   fire_imp: [
-    [0, 0, 0, 0],
-    [255, 85, 34, 255],  // 1: orange-red (body)
-    [200, 50, 10, 255],  // 2: dark red
-    [255, 150, 50, 255], // 3: bright orange
-    [255, 220, 50, 255], // 4: yellow (flame)
-    [150, 30, 10, 255],  // 5: dark crimson
+    [0,0,0,0],
+    [255,70,20,255],      // 1: orange-red body
+    [200,40,5,255],       // 2: dark red
+    [255,140,40,255],     // 3: bright orange
+    [255,220,0,255],      // 4: neon yellow flame
+    [140,25,5,255],       // 5: dark crimson
+    [255,100,30,255],     // 6: mid orange
+    [255,180,50,255],     // 7: light flame
   ],
   dark_knight: [
-    [0, 0, 0, 0],
-    [51, 68, 85, 255],   // 1: dark steel (armor)
-    [30, 40, 55, 255],   // 2: very dark steel
-    [80, 100, 120, 255], // 3: lighter steel
-    [200, 50, 50, 255],  // 4: red (visor glow)
-    [20, 25, 35, 255],   // 5: near-black
-    [100, 100, 110, 255],// 6: medium steel
+    [0,0,0,0],
+    [40,55,75,255],       // 1: dark steel armor
+    [25,35,50,255],       // 2: very dark steel
+    [70,90,115,255],      // 3: lighter steel
+    [255,0,50,255],       // 4: neon red visor
+    [15,20,30,255],       // 5: near-black
+    [90,100,110,255],     // 6: medium steel
+    [0,200,255,255],      // 7: neon blue accent
   ],
   crystal_spider: [
-    [0, 0, 0, 0],
-    [68, 221, 221, 255], // 1: cyan (body)
-    [40, 170, 170, 255], // 2: dark cyan
-    [120, 255, 255, 255],// 3: light cyan
-    [255, 255, 255, 255],// 4: white (eyes)
-    [20, 100, 100, 255], // 5: very dark cyan
+    [0,0,0,0],
+    [0,200,210,255],      // 1: cyan body
+    [0,150,155,255],      // 2: dark cyan
+    [100,255,255,255],    // 3: light cyan
+    [255,255,255,255],    // 4: white eyes
+    [0,80,85,255],        // 5: very dark cyan
+    [0,255,255,255],      // 6: neon cyan
+    [0,175,180,255],      // 7: mid cyan
   ],
   ancient_golem: [
-    [0, 0, 0, 0],
-    [170, 136, 51, 255], // 1: brown-gold (stone)
-    [130, 100, 30, 255], // 2: dark brown-gold
-    [210, 180, 80, 255], // 3: light gold
-    [255, 215, 0, 255],  // 4: gold (runes)
-    [90, 70, 20, 255],   // 5: very dark
+    [0,0,0,0],
+    [150,120,40,255],     // 1: brown-gold stone
+    [110,85,20,255],      // 2: dark brown-gold
+    [200,170,70,255],     // 3: light gold
+    [255,200,0,255],      // 4: neon gold runes
+    [75,55,15,255],       // 5: very dark
+    [170,140,50,255],     // 6: mid gold
+    [255,220,60,255],     // 7: bright glow
   ],
   chaos_wraith: [
-    [0, 0, 0, 0],
-    [170, 68, 204, 255], // 1: purple-magenta (body)
-    [120, 40, 160, 255], // 2: dark purple
-    [220, 100, 255, 255],// 3: bright magenta
-    [255, 50, 255, 255], // 4: hot pink (eyes)
-    [60, 20, 80, 255],   // 5: very dark purple
-  ],
-  npc_potion: [
-    [0, 0, 0, 0],
-    [68, 221, 170, 255], // 1: teal (robe)
-    [40, 160, 120, 255], // 2: dark teal
-    [100, 255, 200, 255],// 3: light teal
-    [255, 180, 120, 255],// 4: skin
-    [200, 200, 200, 255],// 5: gray (hair)
-  ],
-  npc_gear: [
-    [0, 0, 0, 0],
-    [221, 136, 68, 255], // 1: orange (apron)
-    [170, 90, 40, 255],  // 2: dark orange
-    [255, 180, 100, 255],// 3: light orange
-    [255, 180, 120, 255],// 4: skin
-    [120, 80, 40, 255],  // 5: brown (hair)
-  ],
-  npc_wizard: [
-    [0, 0, 0, 0],
-    [153, 102, 255, 255],// 1: purple (robe)
-    [100, 60, 200, 255], // 2: dark purple
-    [190, 140, 255, 255],// 3: light purple
-    [255, 180, 120, 255],// 4: skin
-    [255, 220, 50, 255], // 5: yellow (staff glow)
-    [180, 180, 180, 255],// 6: gray (beard)
+    [0,0,0,0],
+    [150,50,190,255],     // 1: purple-magenta body
+    [100,30,140,255],     // 2: dark purple
+    [210,90,255,255],     // 3: bright magenta
+    [255,0,255,255],      // 4: neon pink eyes
+    [50,15,65,255],       // 5: very dark purple
+    [180,60,230,255],     // 6: mid purple
+    [255,100,255,255],    // 7: neon glow
   ],
   sewer_king: [
-    [0, 0, 0, 0],
-    [51, 102, 51, 255],  // 1: dark green (body)
-    [30, 70, 30, 255],   // 2: very dark green
-    [80, 140, 80, 255],  // 3: medium green
-    [255, 200, 50, 255], // 4: gold (crown/eyes)
-    [20, 50, 20, 255],   // 5: near-black green
-    [100, 170, 100, 255],// 6: light green
+    [0,0,0,0],
+    [40,90,40,255],       // 1: dark green body
+    [25,60,25,255],       // 2: very dark green
+    [70,130,70,255],      // 3: medium green
+    [255,200,0,255],      // 4: neon gold crown/eyes
+    [15,40,15,255],       // 5: near-black green
+    [90,160,90,255],      // 6: light green
+    [0,255,100,255],      // 7: neon green glow
   ],
   sewer_rat: [
-    [0, 0, 0, 0],
-    [136, 119, 102, 255],// 1: brown-gray (fur)
-    [100, 85, 70, 255],  // 2: dark brown
-    [170, 150, 130, 255],// 3: light brown
-    [255, 80, 80, 255],  // 4: red (eyes)
-    [70, 55, 40, 255],   // 5: very dark brown
+    [0,0,0,0],
+    [120,105,85,255],     // 1: brown-gray fur
+    [85,70,55,255],       // 2: dark brown
+    [155,140,115,255],    // 3: light brown
+    [255,60,60,255],      // 4: red eyes
+    [55,40,30,255],       // 5: very dark brown
+    [100,85,70,255],      // 6: mid brown
   ],
   toxic_slime: [
-    [0, 0, 0, 0],
-    [102, 170, 51, 255], // 1: green (body)
-    [70, 130, 30, 255],  // 2: dark green
-    [140, 210, 80, 255], // 3: light green
-    [255, 255, 255, 255],// 4: white (eyes)
-    [30, 30, 30, 255],   // 5: black (pupils)
-    [200, 255, 50, 255], // 6: toxic glow
+    [0,0,0,0],
+    [80,160,30,255],      // 1: green body
+    [55,120,15,255],      // 2: dark green
+    [120,210,60,255],     // 3: light green
+    [255,255,255,255],    // 4: white eyes
+    [20,20,30,255],       // 5: black pupils
+    [180,255,0,255],      // 6: neon toxic glow
+    [100,180,40,255],     // 7: mid green
   ],
-  // NPC princess sprite
+  ghost_intern: [
+    [0,0,0,0],
+    [100,150,200,255],    // 1: pale blue body
+    [70,110,160,255],     // 2: dark blue
+    [140,190,240,255],    // 3: light blue
+    [200,220,255,255],    // 4: white-blue glow
+    [50,80,120,255],      // 5: very dark blue
+    [0,200,255,255],      // 6: neon blue accent
+    [120,170,220,255],    // 7: mid blue
+  ],
+  gatekeeper: [
+    [0,0,0,0],
+    [200,20,20,255],      // 1: red body
+    [150,10,10,255],      // 2: dark red
+    [240,60,60,255],      // 3: light red
+    [255,200,0,255],      // 4: gold eyes
+    [100,5,5,255],        // 5: very dark red
+    [255,0,50,255],       // 6: neon red
+    [220,40,40,255],      // 7: mid red
+  ],
+  npc_potion: [
+    [0,0,0,0],
+    [0,180,140,255],      // 1: teal robe
+    [0,130,100,255],      // 2: dark teal
+    [80,255,200,255],     // 3: light teal
+    [212,165,116,255],    // 4: skin
+    [180,185,190,255],    // 5: gray hair
+    [0,255,180,255],      // 6: neon teal glow
+    [0,155,120,255],      // 7: mid teal
+  ],
+  npc_gear: [
+    [0,0,0,0],
+    [210,130,50,255],     // 1: orange apron
+    [160,85,30,255],      // 2: dark orange
+    [255,175,90,255],     // 3: light orange
+    [212,165,116,255],    // 4: skin
+    [100,70,35,255],      // 5: brown hair
+    [255,150,0,255],      // 6: neon orange glow
+    [185,110,40,255],     // 7: mid orange
+  ],
+  npc_wizard: [
+    [0,0,0,0],
+    [130,80,240,255],     // 1: purple robe
+    [85,45,190,255],      // 2: dark purple
+    [175,120,255,255],    // 3: light purple
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: neon yellow staff glow
+    [165,165,175,255],    // 6: gray beard
+    [200,0,255,255],      // 7: neon purple glow
+  ],
   npc_princess: [
-    [0, 0, 0, 0],
-    [255, 105, 180, 255], // 1: pink (dress)
-    [200, 80, 150, 255],  // 2: dark pink
-    [255, 150, 210, 255], // 3: light pink
-    [255, 180, 120, 255], // 4: skin
-    [255, 220, 50, 255],  // 5: gold (tiara)
-    [180, 120, 60, 255],  // 6: brown (hair)
+    [0,0,0,0],
+    [255,80,170,255],     // 1: pink dress
+    [200,50,130,255],     // 2: dark pink
+    [255,140,200,255],    // 3: light pink
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: gold tiara
+    [160,100,50,255],     // 6: brown hair
+    [255,0,150,255],      // 7: neon pink glow
   ],
   npc_mayor: [
-    [0, 0, 0, 0],
-    [60, 60, 120, 255],   // 1: dark blue (suit)
-    [40, 40, 90, 255],    // 2: very dark blue
-    [80, 80, 150, 255],   // 3: lighter blue
-    [255, 180, 120, 255], // 4: skin
-    [255, 220, 50, 255],  // 5: gold (pin)
-    [150, 150, 150, 255], // 6: gray (hair)
+    [0,0,0,0],
+    [50,50,110,255],      // 1: dark blue suit
+    [30,30,80,255],       // 2: very dark blue
+    [70,70,140,255],      // 3: lighter blue
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: gold pin
+    [140,140,150,255],    // 6: gray hair
+    [0,150,255,255],      // 7: neon blue accent
   ],
-  // Sprawl enemy palettes
+  // Princess palette variants (same sprite shape, unique colors)
+  // Indices: 0=transparent, 1=dress, 2=dark dress, 3=light dress, 4=skin, 5=tiara, 6=hair, 7=neon glow
+  npc_princess_destiny: [
+    [0,0,0,0],
+    [255,80,170,255],     // 1: pink dress
+    [200,50,130,255],     // 2: dark pink
+    [255,140,200,255],    // 3: light pink
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: gold tiara
+    [255,220,130,255],    // 6: blonde hair
+    [255,0,150,255],      // 7: neon pink glow
+  ],
+  npc_princess_jasmine: [
+    [0,0,0,0],
+    [130,50,200,255],     // 1: purple dress
+    [90,30,150,255],      // 2: dark purple
+    [170,90,240,255],     // 3: light purple
+    [180,130,80,255],     // 4: darker skin
+    [255,220,0,255],      // 5: gold tiara
+    [30,20,40,255],       // 6: black hair
+    [180,0,255,255],      // 7: neon purple glow
+  ],
+  npc_princess_crystal: [
+    [0,0,0,0],
+    [100,160,255,255],    // 1: blue dress
+    [60,110,200,255],     // 2: dark blue
+    [150,200,255,255],    // 3: light blue
+    [220,185,140,255],    // 4: fair skin
+    [200,220,255,255],    // 5: silver tiara
+    [200,200,220,255],    // 6: silver hair
+    [0,150,255,255],      // 7: neon blue glow
+  ],
+  npc_princess_mercedes: [
+    [0,0,0,0],
+    [255,180,0,255],      // 1: gold dress
+    [200,140,0,255],      // 2: dark gold
+    [255,220,80,255],     // 3: light gold
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: gold tiara
+    [180,40,20,255],      // 6: red hair
+    [255,100,0,255],      // 7: neon orange glow
+  ],
+  npc_princess_tiffany: [
+    [0,0,0,0],
+    [50,180,80,255],      // 1: green dress
+    [30,130,50,255],      // 2: dark green
+    [90,220,120,255],     // 3: light green
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: gold tiara
+    [100,70,40,255],      // 6: brown hair
+    [0,255,100,255],      // 7: neon green glow
+  ],
+  npc_princess_angelica: [
+    [0,0,0,0],
+    [240,240,250,255],    // 1: white dress
+    [200,200,215,255],    // 2: light gray
+    [255,255,255,255],    // 3: pure white
+    [240,210,170,255],    // 4: pale skin
+    [255,240,200,255],    // 5: pearl tiara
+    [240,235,220,255],    // 6: white hair
+    [220,220,255,255],    // 7: neon white glow
+  ],
+  npc_princess_brianna: [
+    [0,0,0,0],
+    [0,180,170,255],      // 1: teal dress
+    [0,130,120,255],      // 2: dark teal
+    [50,220,210,255],     // 3: light teal
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: gold tiara
+    [140,60,30,255],      // 6: auburn hair
+    [0,255,200,255],      // 7: neon teal glow
+  ],
+  npc_princess_valentina: [
+    [0,0,0,0],
+    [200,0,40,255],       // 1: red dress
+    [150,0,25,255],       // 2: dark red
+    [240,50,80,255],      // 3: light red
+    [190,140,90,255],     // 4: olive skin
+    [255,220,0,255],      // 5: gold tiara
+    [20,15,30,255],       // 6: black hair
+    [255,0,50,255],       // 7: neon red glow
+  ],
   feral_dog: [
-    [0, 0, 0, 0],
-    [170, 119, 68, 255],  // 1: brown (fur)
-    [130, 85, 40, 255],   // 2: dark brown
-    [210, 160, 100, 255], // 3: light brown
-    [255, 80, 80, 255],   // 4: red (eyes)
-    [90, 60, 30, 255],    // 5: very dark brown
+    [0,0,0,0],
+    [155,105,55,255],     // 1: brown fur
+    [115,75,35,255],      // 2: dark brown
+    [200,155,90,255],     // 3: light brown
+    [255,50,50,255],      // 4: red eyes
+    [75,50,25,255],       // 5: very dark brown
+    [0,255,100,255],      // 6: neon green drool
+    [135,90,45,255],      // 7: mid brown
   ],
   feral_rat: [
-    [0, 0, 0, 0],
-    [153, 119, 85, 255],  // 1: tan-brown (fur)
-    [120, 90, 60, 255],   // 2: dark tan
-    [190, 155, 120, 255], // 3: light tan
-    [255, 80, 80, 255],   // 4: red (eyes)
-    [80, 55, 35, 255],    // 5: very dark brown
+    [0,0,0,0],
+    [140,110,75,255],     // 1: tan-brown fur
+    [105,80,50,255],      // 2: dark tan
+    [180,145,110,255],    // 3: light tan
+    [255,50,50,255],      // 4: red eyes
+    [65,45,28,255],       // 5: very dark brown
+    [120,95,63,255],      // 6: mid brown
   ],
   goblin_archer: [
-    [0, 0, 0, 0],
-    [187, 119, 51, 255],  // 1: orange-brown (skin)
-    [140, 85, 30, 255],   // 2: dark brown
-    [230, 160, 80, 255],  // 3: light skin
-    [80, 80, 80, 255],    // 4: gray (armor)
-    [255, 50, 50, 255],   // 5: red (eyes)
-    [100, 70, 40, 255],   // 6: bow brown
+    [0,0,0,0],
+    [175,110,40,255],     // 1: orange-brown skin
+    [130,75,20,255],      // 2: dark brown
+    [220,155,70,255],     // 3: light skin
+    [60,65,75,255],       // 4: gray armor
+    [255,30,30,255],      // 5: red eyes
+    [90,60,30,255],       // 6: bow brown
+    [0,255,100,255],      // 7: neon green arrow tip
   ],
   hoa_enforcer: [
-    [0, 0, 0, 0],
-    [68, 85, 102, 255],   // 1: dark blue-gray (uniform)
-    [45, 55, 70, 255],    // 2: very dark
-    [90, 110, 130, 255],  // 3: lighter blue-gray
-    [255, 180, 120, 255], // 4: skin
-    [200, 200, 50, 255],  // 5: yellow (badge)
-    [50, 50, 50, 255],    // 6: black (hat)
+    [0,0,0,0],
+    [55,70,90,255],       // 1: dark blue-gray uniform
+    [35,45,60,255],       // 2: very dark
+    [80,100,120,255],     // 3: lighter blue-gray
+    [212,165,116,255],    // 4: skin
+    [255,220,0,255],      // 5: neon yellow badge
+    [35,35,45,255],       // 6: black hat
+    [0,200,255,255],      // 7: neon blue accent
   ],
-  // Retail enemy palettes
   retail_bot: [
-    [0, 0, 0, 0],
-    [119, 170, 204, 255], // 1: light blue (body)
-    [80, 130, 170, 255],  // 2: dark blue
-    [160, 210, 240, 255], // 3: highlight
-    [255, 50, 50, 255],   // 4: red (eyes)
-    [50, 90, 130, 255],   // 5: very dark blue
+    [0,0,0,0],
+    [90,150,200,255],     // 1: light blue body
+    [60,110,160,255],     // 2: dark blue
+    [140,200,240,255],    // 3: highlight
+    [255,0,50,255],       // 4: neon red eyes
+    [35,75,120,255],      // 5: very dark blue
+    [0,200,255,255],      // 6: neon blue glow
+    [75,130,180,255],     // 7: mid blue
   ],
   price_scanner: [
-    [0, 0, 0, 0],
-    [85, 204, 85, 255],   // 1: green (body)
-    [60, 160, 60, 255],   // 2: dark green
-    [120, 240, 120, 255], // 3: light green
-    [255, 255, 255, 255], // 4: white (screen)
-    [255, 50, 50, 255],   // 5: red (laser)
+    [0,0,0,0],
+    [60,190,60,255],      // 1: green body
+    [40,150,40,255],      // 2: dark green
+    [100,230,100,255],    // 3: light green
+    [255,255,255,255],    // 4: white screen
+    [255,0,30,255],       // 5: neon red laser
+    [0,255,80,255],       // 6: neon green glow
+    [50,170,50,255],      // 7: mid green
   ],
   shopping_cart_golem: [
-    [0, 0, 0, 0],
-    [136, 136, 153, 255], // 1: silver (cart)
-    [100, 100, 115, 255], // 2: dark silver
-    [170, 170, 190, 255], // 3: light silver
-    [200, 50, 50, 255],   // 4: red (eyes)
-    [70, 70, 80, 255],    // 5: very dark
+    [0,0,0,0],
+    [120,125,140,255],    // 1: silver cart
+    [85,90,105,255],      // 2: dark silver
+    [160,165,180,255],    // 3: light silver
+    [255,0,50,255],       // 4: neon red eyes
+    [55,60,70,255],       // 5: very dark
+    [0,200,255,255],      // 6: neon blue glow
+    [100,105,120,255],    // 7: mid silver
   ],
   corrupted_cashier: [
-    [0, 0, 0, 0],
-    [204, 102, 136, 255], // 1: pink (body)
-    [160, 70, 100, 255],  // 2: dark pink
-    [240, 140, 170, 255], // 3: light pink
-    [255, 200, 120, 255], // 4: skin
-    [100, 40, 60, 255],   // 5: very dark
+    [0,0,0,0],
+    [190,80,120,255],     // 1: pink body
+    [145,55,85,255],      // 2: dark pink
+    [230,130,165,255],    // 3: light pink
+    [212,165,116,255],    // 4: skin
+    [85,30,50,255],       // 5: very dark
+    [255,0,150,255],      // 6: neon pink glow
+    [170,65,100,255],     // 7: mid pink
   ],
   the_manager: [
-    [0, 0, 0, 0],
-    [34, 68, 136, 255],   // 1: dark blue (suit)
-    [20, 45, 100, 255],   // 2: very dark blue
-    [50, 90, 170, 255],   // 3: medium blue
-    [255, 200, 50, 255],  // 4: gold (tie/power)
-    [15, 30, 70, 255],    // 5: near-black blue
-    [80, 120, 200, 255],  // 6: light blue
+    [0,0,0,0],
+    [25,55,120,255],      // 1: dark blue suit
+    [15,35,90,255],       // 2: very dark blue
+    [40,80,160,255],      // 3: medium blue
+    [255,200,0,255],      // 4: neon gold tie/power
+    [10,22,60,255],       // 5: near-black blue
+    [70,110,190,255],     // 6: light blue
+    [0,150,255,255],      // 7: neon blue glow
   ],
-  // Gym enemy palettes
   protein_junkie: [
-    [0, 0, 0, 0],
-    [221, 136, 85, 255],  // 1: orange (skin)
-    [180, 100, 50, 255],  // 2: dark orange
-    [255, 170, 110, 255], // 3: light orange
-    [255, 80, 80, 255],   // 4: red (eyes)
-    [140, 70, 30, 255],   // 5: very dark
+    [0,0,0,0],
+    [210,120,70,255],     // 1: orange skin
+    [170,85,40,255],      // 2: dark orange
+    [250,165,100,255],    // 3: light orange
+    [255,60,60,255],      // 4: red eyes
+    [130,60,20,255],      // 5: very dark
+    [255,150,0,255],      // 6: neon orange glow
+    [190,100,55,255],     // 7: mid orange
   ],
   swole_beast: [
-    [0, 0, 0, 0],
-    [187, 68, 68, 255],   // 1: red (body)
-    [140, 40, 40, 255],   // 2: dark red
-    [230, 100, 100, 255], // 3: light red
-    [255, 200, 50, 255],  // 4: yellow (eyes)
-    [100, 25, 25, 255],   // 5: very dark red
+    [0,0,0,0],
+    [175,50,50,255],      // 1: red body
+    [130,30,30,255],      // 2: dark red
+    [220,90,90,255],      // 3: light red
+    [255,200,0,255],      // 4: neon yellow eyes
+    [90,15,15,255],       // 5: very dark red
+    [255,0,50,255],       // 6: neon red glow
+    [150,40,40,255],      // 7: mid red
   ],
   gym_bro: [
-    [0, 0, 0, 0],
-    [221, 170, 68, 255],  // 1: gold-tan (skin)
-    [180, 130, 40, 255],  // 2: dark tan
-    [255, 200, 100, 255], // 3: light tan
-    [50, 50, 50, 255],    // 4: black (tank top)
-    [160, 100, 30, 255],  // 5: very dark
+    [0,0,0,0],
+    [210,160,55,255],     // 1: gold-tan skin
+    [170,120,30,255],     // 2: dark tan
+    [250,195,90,255],     // 3: light tan
+    [35,35,45,255],       // 4: black tank top
+    [150,90,20,255],      // 5: very dark
+    [255,200,0,255],      // 6: neon gold glow
+    [190,140,40,255],     // 7: mid tan
   ],
   treadmill_monster: [
-    [0, 0, 0, 0],
-    [68, 187, 153, 255],  // 1: teal (body)
-    [40, 150, 120, 255],  // 2: dark teal
-    [100, 220, 180, 255], // 3: light teal
-    [255, 80, 80, 255],   // 4: red (display)
-    [25, 110, 85, 255],   // 5: very dark teal
+    [0,0,0,0],
+    [50,175,140,255],     // 1: teal body
+    [30,140,110,255],     // 2: dark teal
+    [85,210,170,255],     // 3: light teal
+    [255,50,50,255],      // 4: neon red display
+    [15,100,75,255],      // 5: very dark teal
+    [0,255,200,255],      // 6: neon teal glow
+    [40,155,125,255],     // 7: mid teal
   ],
   the_alpha: [
-    [0, 0, 0, 0],
-    [170, 34, 34, 255],   // 1: deep red (body)
-    [130, 20, 20, 255],   // 2: very dark red
-    [210, 60, 60, 255],   // 3: medium red
-    [255, 220, 50, 255],  // 4: gold (eyes)
-    [90, 10, 10, 255],    // 5: near-black red
-    [240, 100, 100, 255], // 6: light red
+    [0,0,0,0],
+    [160,25,25,255],      // 1: deep red body
+    [120,12,12,255],      // 2: very dark red
+    [200,50,50,255],      // 3: medium red
+    [255,220,0,255],      // 4: neon gold eyes
+    [80,5,5,255],         // 5: near-black red
+    [230,90,90,255],      // 6: light red
+    [255,0,50,255],       // 7: neon red glow
   ],
-  // Labs enemy palettes
   lab_chimera: [
-    [0, 0, 0, 0],
-    [170, 85, 170, 255],  // 1: purple (body)
-    [130, 50, 130, 255],  // 2: dark purple
-    [210, 120, 210, 255], // 3: light purple
-    [100, 255, 100, 255], // 4: green (mutation glow)
-    [80, 30, 80, 255],    // 5: very dark purple
+    [0,0,0,0],
+    [155,70,155,255],     // 1: purple body
+    [115,35,115,255],     // 2: dark purple
+    [200,110,200,255],    // 3: light purple
+    [0,255,80,255],       // 4: neon green mutation glow
+    [65,20,65,255],       // 5: very dark purple
+    [180,80,180,255],     // 6: mid purple
+    [255,0,200,255],      // 7: neon magenta glow
   ],
   bio_mutant: [
-    [0, 0, 0, 0],
-    [102, 170, 68, 255],  // 1: green (body)
-    [70, 130, 40, 255],   // 2: dark green
-    [140, 210, 100, 255], // 3: light green
-    [255, 255, 100, 255], // 4: yellow (eyes)
-    [40, 90, 20, 255],    // 5: very dark green
+    [0,0,0,0],
+    [80,160,50,255],      // 1: green body
+    [55,120,30,255],      // 2: dark green
+    [120,200,80,255],     // 3: light green
+    [255,255,0,255],      // 4: neon yellow eyes
+    [30,80,15,255],       // 5: very dark green
+    [0,255,80,255],       // 6: neon green glow
+    [100,180,65,255],     // 7: mid green
   ],
   experiment_pod: [
-    [0, 0, 0, 0],
-    [136, 204, 170, 255], // 1: pale green (tank)
-    [100, 160, 130, 255], // 2: dark green
-    [170, 240, 200, 255], // 3: light green
-    [200, 200, 200, 255], // 4: silver (frame)
-    [70, 120, 95, 255],   // 5: very dark
+    [0,0,0,0],
+    [110,190,155,255],    // 1: pale green tank
+    [80,150,115,255],     // 2: dark green
+    [150,230,190,255],    // 3: light green
+    [180,185,190,255],    // 4: silver frame
+    [55,110,85,255],      // 5: very dark
+    [0,255,180,255],      // 6: neon green glow
+    [95,170,135,255],     // 7: mid green
   ],
   rogue_ai: [
-    [0, 0, 0, 0],
-    [68, 204, 255, 255],  // 1: cyan (body)
-    [40, 160, 210, 255],  // 2: dark cyan
-    [100, 240, 255, 255], // 3: light cyan
-    [255, 255, 255, 255], // 4: white (core)
-    [20, 120, 170, 255],  // 5: very dark cyan
+    [0,0,0,0],
+    [50,190,255,255],     // 1: cyan body
+    [30,150,200,255],     // 2: dark cyan
+    [90,230,255,255],     // 3: light cyan
+    [255,255,255,255],    // 4: white core
+    [15,110,160,255],     // 5: very dark cyan
+    [0,255,255,255],      // 6: neon cyan glow
+    [40,170,225,255],     // 7: mid cyan
   ],
   the_specimen: [
-    [0, 0, 0, 0],
-    [204, 68, 204, 255],  // 1: magenta (body)
-    [160, 40, 160, 255],  // 2: dark magenta
-    [240, 100, 240, 255], // 3: light magenta
-    [255, 200, 50, 255],  // 4: gold (eyes)
-    [120, 20, 120, 255],  // 5: very dark
-    [255, 140, 255, 255], // 6: bright pink
+    [0,0,0,0],
+    [190,50,190,255],     // 1: magenta body
+    [150,30,150,255],     // 2: dark magenta
+    [230,90,230,255],     // 3: light magenta
+    [255,200,0,255],      // 4: neon gold eyes
+    [110,15,110,255],     // 5: very dark
+    [255,130,255,255],    // 6: bright pink
+    [255,0,200,255],      // 7: neon magenta glow
   ],
-  // Island enemy palettes
   elite_guard: [
-    [0, 0, 0, 0],
-    [51, 68, 102, 255],   // 1: dark blue (armor)
-    [30, 45, 70, 255],    // 2: very dark
-    [70, 90, 130, 255],   // 3: medium blue
-    [200, 200, 200, 255], // 4: silver (weapon)
-    [20, 30, 50, 255],    // 5: near-black
+    [0,0,0,0],
+    [40,55,90,255],       // 1: dark blue armor
+    [25,35,60,255],       // 2: very dark
+    [60,80,120,255],      // 3: medium blue
+    [180,185,190,255],    // 4: silver weapon
+    [15,22,40,255],       // 5: near-black
+    [0,150,255,255],      // 6: neon blue glow
+    [50,65,100,255],      // 7: mid blue
   ],
   security_drone: [
-    [0, 0, 0, 0],
-    [102, 136, 170, 255], // 1: blue-gray (body)
-    [70, 100, 130, 255],  // 2: dark blue-gray
-    [140, 170, 200, 255], // 3: light blue-gray
-    [255, 50, 50, 255],   // 4: red (laser)
-    [45, 65, 90, 255],    // 5: very dark
+    [0,0,0,0],
+    [80,120,155,255],     // 1: blue-gray body
+    [55,85,115,255],      // 2: dark blue-gray
+    [120,155,190,255],    // 3: light blue-gray
+    [255,0,30,255],       // 4: neon red laser
+    [35,55,80,255],       // 5: very dark
+    [0,200,255,255],      // 6: neon blue glow
+    [100,140,175,255],    // 7: mid blue-gray
   ],
   cult_acolyte: [
-    [0, 0, 0, 0],
-    [102, 51, 85, 255],   // 1: dark purple (robe)
-    [70, 30, 55, 255],    // 2: very dark
-    [140, 80, 120, 255],  // 3: medium purple
-    [200, 150, 100, 255], // 4: skin
-    [255, 100, 255, 255], // 5: magenta (glow)
+    [0,0,0,0],
+    [90,35,70,255],       // 1: dark purple robe
+    [60,20,45,255],       // 2: very dark
+    [125,65,105,255],     // 3: medium purple
+    [190,140,90,255],     // 4: skin
+    [255,0,255,255],      // 5: neon magenta glow
+    [200,50,200,255],     // 6: mid glow
+    [110,45,85,255],      // 7: mid purple
   ],
   void_wraith: [
-    [0, 0, 0, 0],
-    [85, 51, 136, 255],   // 1: deep purple (body)
-    [55, 30, 100, 255],   // 2: very dark
-    [120, 80, 170, 255],  // 3: medium purple
-    [200, 50, 255, 255],  // 4: bright purple (eyes)
-    [30, 15, 60, 255],    // 5: near-black
+    [0,0,0,0],
+    [70,35,120,255],      // 1: deep purple body
+    [45,20,85,255],       // 2: very dark
+    [105,65,160,255],     // 3: medium purple
+    [200,0,255,255],      // 4: neon purple eyes
+    [25,10,50,255],       // 5: near-black
+    [150,50,255,255],     // 6: neon glow
+    [85,45,140,255],      // 7: mid purple
   ],
   the_consultant: [
-    [0, 0, 0, 0],
-    [17, 34, 68, 255],    // 1: navy (suit)
-    [10, 20, 45, 255],    // 2: very dark navy
-    [30, 50, 90, 255],    // 3: medium navy
-    [255, 215, 0, 255],   // 4: gold (power)
-    [5, 10, 25, 255],     // 5: near-black
-    [50, 80, 130, 255],   // 6: lighter blue
+    [0,0,0,0],
+    [12,25,55,255],       // 1: navy suit
+    [8,15,38,255],        // 2: very dark navy
+    [25,42,80,255],       // 3: medium navy
+    [255,200,0,255],      // 4: neon gold power
+    [3,8,20,255],         // 5: near-black
+    [40,70,120,255],      // 6: lighter blue
+    [0,150,255,255],      // 7: neon blue glow
   ],
-  // Raccoon palette
   raccoon: [
-    [0, 0, 0, 0],
-    [119, 102, 85, 255],  // 1: gray-brown (fur)
-    [85, 70, 55, 255],    // 2: dark brown
-    [155, 140, 120, 255], // 3: light brown
-    [30, 30, 30, 255],    // 4: black (mask)
-    [255, 255, 255, 255], // 5: white (face)
+    [0,0,0,0],
+    [105,90,72,255],      // 1: gray-brown fur
+    [72,58,44,255],       // 2: dark brown
+    [140,128,108,255],    // 3: light brown
+    [20,20,25,255],       // 4: black mask
+    [240,240,245,255],    // 5: white face
+    [0,255,136,255],      // 6: neon green eyes
+    [85,72,58,255],       // 7: mid brown
   ],
-  // Tile palettes
+  // Tile palette — cyberpunk themed
   tile: [
-    [0, 0, 0, 0],
-    [68, 170, 68, 255],  // 1: grass green
-    [50, 140, 50, 255],  // 2: dark grass
-    [85, 85, 85, 255],   // 3: wall gray
-    [70, 70, 70, 255],   // 4: dark wall
-    [200, 176, 112, 255],// 5: path tan
-    [170, 145, 90, 255], // 6: dark path
-    [139, 90, 43, 255],  // 7: door brown
-    [110, 70, 30, 255],  // 8: dark door
-    [51, 102, 204, 255], // 9: water blue
-    [30, 70, 170, 255],  // 10: dark water
-    [170, 170, 170, 255],// 11: floor light
-    [140, 140, 140, 255],// 12: floor dark
-    [61, 61, 61, 255],   // 13: cave wall
-    [45, 45, 45, 255],   // 14: cave wall dark
-    [119, 119, 119, 255],// 15: cave floor
-    [95, 95, 95, 255],   // 16: cave floor dark
-    [204, 136, 51, 255], // 17: chest gold
-    [170, 100, 30, 255], // 18: chest dark
-    [102, 102, 119, 255],// 19: stone wall
-    [80, 80, 95, 255],   // 20: stone wall dark
-    [61, 74, 61, 255],   // 21: sewer wall
-    [45, 55, 45, 255],   // 22: sewer wall dark
-    [90, 107, 90, 255],  // 23: sewer floor
-    [75, 90, 75, 255],   // 24: sewer floor dark
-    [58, 90, 58, 255],   // 25: sewer water
-    [40, 70, 40, 255],   // 26: sewer water dark
-    // Sprawl tiles
-    [102, 102, 102, 255],// 27: sprawl road
-    [80, 80, 80, 255],   // 28: sprawl road dark
-    [139, 105, 20, 255], // 29: sprawl fence
-    [110, 80, 15, 255],  // 30: sprawl fence dark
-    [85, 136, 68, 255],  // 31: sprawl grass
-    [65, 110, 50, 255],  // 32: sprawl grass dark
-    // Retail tiles
-    [200, 184, 152, 255],// 33: retail floor
-    [170, 155, 125, 255],// 34: retail floor dark
-    [170, 153, 136, 255],// 35: retail wall
-    [140, 125, 110, 255],// 36: retail wall dark
-    [122, 106, 90, 255], // 37: retail shelf
-    [95, 80, 65, 255],   // 38: retail shelf dark
-    // Gym tiles
-    [85, 85, 102, 255],  // 39: gym floor
-    [65, 65, 80, 255],   // 40: gym floor dark
-    [68, 68, 85, 255],   // 41: gym wall
-    [48, 48, 65, 255],   // 42: gym wall dark
-    [51, 51, 68, 255],   // 43: gym equipment
-    [35, 35, 48, 255],   // 44: gym equipment dark
-    // Lab tiles
-    [204, 204, 204, 255],// 45: lab floor
-    [180, 180, 180, 255],// 46: lab floor dark
-    [221, 221, 221, 255],// 47: lab wall
-    [195, 195, 195, 255],// 48: lab wall dark
-    [68, 170, 136, 255], // 49: lab tank
-    [45, 135, 105, 255], // 50: lab tank dark
-    // Island tiles
-    [187, 170, 153, 255],// 51: island floor
-    [160, 143, 125, 255],// 52: island floor dark
-    [85, 102, 119, 255], // 53: island wall
-    [65, 80, 95, 255],   // 54: island wall dark
-    // Temple tiles
-    [153, 136, 119, 255],// 55: temple floor
-    [125, 110, 93, 255], // 56: temple floor dark
-    [119, 102, 85, 255], // 57: temple wall
-    [95, 80, 65, 255],   // 58: temple wall dark
+    [0,0,0,0],
+    [30,80,50,255],       // 1: dark urban grass
+    [20,55,35,255],       // 2: darker grass
+    [55,60,70,255],       // 3: wall gray (concrete)
+    [40,44,52,255],       // 4: dark wall
+    [70,65,50,255],       // 5: path (cracked asphalt)
+    [50,46,35,255],       // 6: dark path
+    [90,55,25,255],       // 7: door brown
+    [65,40,15,255],       // 8: dark door
+    [15,50,90,255],       // 9: water (dark blue)
+    [10,35,65,255],       // 10: dark water
+    [45,48,55,255],       // 11: floor light
+    [35,38,45,255],       // 12: floor dark
+    [35,35,40,255],       // 13: cave wall
+    [25,25,30,255],       // 14: cave wall dark
+    [50,50,55,255],       // 15: cave floor
+    [38,38,44,255],       // 16: cave floor dark
+    [180,140,30,255],     // 17: chest gold
+    [140,100,15,255],     // 18: chest dark
+    [60,60,75,255],       // 19: stone wall
+    [45,45,58,255],       // 20: stone wall dark
+    [30,42,35,255],       // 21: sewer wall
+    [22,32,25,255],       // 22: sewer wall dark
+    [40,52,42,255],       // 23: sewer floor
+    [30,40,32,255],       // 24: sewer floor dark
+    [20,55,35,255],       // 25: sewer water
+    [12,38,22,255],       // 26: sewer water dark
+    [60,60,68,255],       // 27: sprawl road
+    [42,42,50,255],       // 28: sprawl road dark
+    [75,55,20,255],       // 29: sprawl fence
+    [55,40,10,255],       // 30: sprawl fence dark
+    [25,65,40,255],       // 31: sprawl grass
+    [18,48,30,255],       // 32: sprawl grass dark
+    [55,48,40,255],       // 33: retail floor
+    [42,36,30,255],       // 34: retail floor dark
+    [65,55,48,255],       // 35: retail wall
+    [48,40,34,255],       // 36: retail wall dark
+    [50,42,35,255],       // 37: retail shelf
+    [38,30,22,255],       // 38: retail shelf dark
+    [38,38,55,255],       // 39: gym floor (dark rubber)
+    [28,28,42,255],       // 40: gym floor dark
+    [32,32,48,255],       // 41: gym wall
+    [22,22,35,255],       // 42: gym wall dark
+    [26,26,40,255],       // 43: gym equipment
+    [18,18,28,255],       // 44: gym equipment dark
+    [55,60,65,255],       // 45: lab floor (clean gray)
+    [42,46,50,255],       // 46: lab floor dark
+    [65,70,75,255],       // 47: lab wall
+    [50,54,58,255],       // 48: lab wall dark
+    [15,80,60,255],       // 49: lab tank
+    [10,60,45,255],       // 50: lab tank dark
+    [60,55,48,255],       // 51: island floor
+    [45,40,34,255],       // 52: island floor dark
+    [40,50,62,255],       // 53: island wall
+    [28,38,48,255],       // 54: island wall dark
+    [55,45,38,255],       // 55: temple floor
+    [42,34,28,255],       // 56: temple floor dark
+    [48,38,30,255],       // 57: temple wall
+    [35,28,20,255],       // 58: temple wall dark
+    [0,255,136,255],      // 59: neon green accent
+    [0,180,255,255],      // 60: neon blue accent
+    [255,0,150,255],      // 61: neon pink accent
+    [0,60,40,255],        // 62: neon green dim
+    [0,40,60,255],        // 63: neon blue dim
+    [0,200,120,255],      // 64: sewer neon glow
+    [0,100,180,255],      // 65: lab neon glow
+    [80,0,120,255],       // 66: temple purple glow
+    [60,0,90,255],        // 67: temple purple dim
   ],
 };
 
-// Sprite data: 8x8 grid of palette indices
+// Sprite data: 16x16 grid of palette indices
 export const SPRITE_DATA = {
   player: [
-    [0,0,2,3,3,2,0,0],
-    [0,2,7,7,7,7,2,0],
-    [0,2,7,5,5,7,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,5,1,3,3,1,5,0],
-    [0,0,1,2,2,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,4,0,0,4,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,3,3,3,3,3,3,2,0,0,0,0],
+    [0,0,0,2,7,7,7,7,7,7,7,7,2,0,0,0],
+    [0,0,0,2,7,7,5,5,5,5,7,7,2,0,0,0],
+    [0,0,0,2,7,5,9,5,5,9,5,7,2,0,0,0],
+    [0,0,0,0,2,7,7,7,7,7,7,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,5,2,1,1,3,1,1,3,1,1,2,5,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,2,2,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,4,6,0,0,6,4,0,0,0,0,0],
+    [0,0,0,0,4,4,6,0,0,6,4,4,0,0,0,0],
+  ],
+  player_bruiser: [
+    [0,0,0,0,0,8,1,1,1,1,8,0,0,0,0,0],
+    [0,0,0,0,8,1,1,10,10,1,1,8,0,0,0,0],
+    [0,0,0,8,1,3,3,3,3,3,3,1,8,0,0,0],
+    [0,0,0,8,3,4,7,4,4,7,4,3,8,0,0,0],
+    [0,0,0,8,3,4,4,4,4,4,4,3,8,0,0,0],
+    [0,0,0,0,8,3,4,4,4,4,3,8,0,0,0,0],
+    [0,0,0,0,1,1,2,2,2,2,1,1,0,0,0,0],
+    [0,0,0,1,1,1,2,1,1,2,1,1,1,0,0,0],
+    [0,0,1,5,1,1,1,1,1,1,1,1,5,1,0,0],
+    [0,1,5,5,1,1,6,1,1,6,1,1,5,5,1,0],
+    [0,0,5,1,1,1,1,1,1,1,1,1,1,5,0,0],
+    [0,0,0,1,1,1,1,10,10,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,10,0,0,10,1,1,0,0,0,0],
+    [0,0,0,0,1,9,9,0,0,9,9,1,0,0,0,0],
+    [0,0,0,0,9,9,8,0,0,8,9,9,0,0,0,0],
+    [0,0,0,9,9,8,8,0,0,8,8,9,9,0,0,0],
+  ],
+  player_fixer: [
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,4,4,1,1,1,1,4,4,0,0,0,0],
+    [0,0,0,4,4,1,1,1,1,1,1,4,4,0,0,0],
+    [0,0,0,4,3,3,8,3,3,8,3,3,4,0,0,0],
+    [0,0,0,4,3,3,3,3,3,3,3,3,4,0,0,0],
+    [0,0,0,0,4,3,3,3,3,3,3,4,0,0,0,0],
+    [0,0,0,0,5,5,2,5,5,2,5,5,0,0,0,0],
+    [0,0,0,5,5,9,5,5,5,5,9,5,5,0,0,0],
+    [0,0,6,5,9,9,5,5,5,5,9,9,5,6,0,0],
+    [0,6,6,5,5,5,5,5,5,5,5,5,5,6,6,0],
+    [0,0,0,5,5,5,5,1,1,5,5,5,5,0,0,0],
+    [0,0,0,0,5,5,1,1,1,1,5,5,0,0,0,0],
+    [0,0,0,0,0,1,7,0,0,7,1,0,0,0,0,0],
+    [0,0,0,0,0,7,7,0,0,7,7,0,0,0,0,0],
+    [0,0,0,0,7,7,5,0,0,5,7,7,0,0,0,0],
+    [0,0,0,7,7,5,5,0,0,5,5,7,7,0,0,0],
+  ],
+  player_hacker: [
+    [0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0],
+    [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0],
+    [0,0,0,0,1,3,3,3,3,3,3,1,0,0,0,0],
+    [0,0,0,8,8,4,4,3,3,4,4,8,8,0,0,0],
+    [0,0,0,0,3,3,3,3,3,3,3,3,0,0,0,0],
+    [0,0,0,0,0,3,3,3,3,3,3,0,0,0,0,0],
+    [0,0,0,0,1,1,2,1,1,2,1,1,0,0,0,0],
+    [0,0,0,1,1,9,1,1,1,1,9,1,1,0,0,0],
+    [0,0,0,1,9,9,1,1,1,1,9,9,1,0,0,0],
+    [0,0,7,1,1,1,1,5,5,1,1,1,1,7,0,0],
+    [0,0,7,7,1,1,1,1,1,1,1,1,7,7,0,0],
+    [0,0,0,0,1,1,1,9,9,1,1,1,0,0,0,0],
+    [0,0,0,0,0,6,6,0,0,6,6,0,0,0,0,0],
+    [0,0,0,0,0,6,6,0,0,6,6,0,0,0,0,0],
+    [0,0,0,0,6,6,1,0,0,1,6,6,0,0,0,0],
+    [0,0,0,6,6,1,1,0,0,1,1,6,6,0,0,0],
   ],
   bat: [
-    [0,0,0,2,2,0,0,0],
-    [0,0,2,1,1,2,0,0],
-    [2,2,1,4,4,1,2,2],
-    [2,3,1,1,1,1,3,2],
-    [5,1,3,1,1,3,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,1,1,2,0,0],
-    [0,0,0,2,2,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,7,7,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,2,1,7,1,1,1,1,1,1,7,1,2,0,0],
+    [0,2,1,7,7,1,1,1,1,1,1,7,7,1,2,0],
+    [2,1,3,1,7,1,3,1,1,3,1,7,1,3,1,2],
+    [2,3,1,1,1,3,1,1,1,1,3,1,1,1,3,2],
+    [5,1,1,3,1,1,1,1,1,1,1,1,3,1,1,5],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,0,2,1,1,1,6,1,1,6,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,7,7,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,2,1,1,2,2,0,0,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
   ],
   slime: [
-    [0,0,0,0,0,0,0,0],
-    [0,0,2,2,2,2,0,0],
-    [0,2,3,1,1,3,2,0],
-    [0,2,4,5,4,5,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,3,1,1,3,1,2],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,2,2,2,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,7,3,1,1,3,7,2,0,0,0,0],
+    [0,0,0,2,7,3,1,1,1,1,3,7,2,0,0,0],
+    [0,0,0,2,3,4,5,1,4,5,1,3,2,0,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,2,1,6,1,1,1,1,1,1,6,1,2,0,0],
+    [0,2,1,1,1,1,3,1,1,3,1,1,1,1,2,0],
+    [0,2,1,3,1,1,1,1,1,1,1,1,3,1,2,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,0,2,1,1,6,1,1,1,1,6,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,2,1,1,1,1,2,2,0,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   goblin: [
-    [0,0,6,4,4,6,0,0],
-    [0,6,1,1,1,1,6,0],
-    [0,1,5,1,1,5,1,0],
-    [0,0,1,3,3,1,0,0],
-    [0,4,4,4,4,4,4,0],
-    [0,0,4,6,6,4,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,6,0,0,6,0,0],
+    [0,0,0,0,0,6,4,4,4,4,6,0,0,0,0,0],
+    [0,0,0,0,6,4,7,4,4,7,4,6,0,0,0,0],
+    [0,0,0,6,1,1,1,1,1,1,1,1,6,0,0,0],
+    [0,0,0,6,1,5,1,1,1,1,5,1,6,0,0,0],
+    [0,0,0,0,1,1,1,3,3,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,3,1,1,3,1,0,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,4,7,4,4,4,4,4,4,7,4,0,0,0],
+    [0,0,8,4,4,4,7,4,4,7,4,4,4,8,0,0],
+    [0,0,0,4,4,4,4,4,4,4,4,4,4,0,0,0],
+    [0,0,0,0,4,4,4,6,6,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,6,4,4,6,4,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,6,6,2,0,0,2,6,6,0,0,0,0],
+    [0,0,0,0,6,6,0,0,0,0,6,6,0,0,0,0],
   ],
   shadow_bat: [
-    [0,0,0,2,2,0,0,0],
-    [0,0,2,1,1,2,0,0],
-    [2,2,1,4,4,1,2,2],
-    [5,3,1,1,1,1,3,5],
-    [5,1,3,1,1,3,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,1,1,2,0,0],
-    [0,0,0,5,5,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,7,7,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,2,1,7,1,1,1,1,1,1,7,1,2,0,0],
+    [0,2,1,3,7,1,1,1,1,1,1,7,3,1,2,0],
+    [2,1,3,1,7,1,3,1,1,3,1,7,1,3,1,2],
+    [5,3,1,1,1,3,1,6,6,1,3,1,1,1,3,5],
+    [5,1,1,3,1,1,1,1,1,1,1,1,3,1,1,5],
+    [0,2,1,1,1,1,6,1,1,6,1,1,1,1,2,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,7,7,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,2,1,1,2,2,0,0,0,0,0],
+    [0,0,0,0,0,0,5,5,5,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
   ],
   poison_slime: [
-    [0,0,0,0,0,0,0,0],
-    [0,0,2,2,2,2,0,0],
-    [0,2,3,1,1,3,2,0],
-    [0,2,4,5,4,5,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,3,1,1,3,1,2],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,2,2,2,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,7,3,1,1,3,7,2,0,0,0,0],
+    [0,0,0,2,7,3,1,1,1,1,3,7,2,0,0,0],
+    [0,0,0,2,3,4,5,1,4,5,1,3,2,0,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,2,1,6,1,1,1,1,1,1,6,1,2,0,0],
+    [0,2,1,1,1,1,3,1,1,3,1,1,1,1,2,0],
+    [0,2,1,6,1,1,1,1,1,1,1,1,6,1,2,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,0,2,1,1,6,1,1,1,1,6,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,2,1,1,1,1,2,2,0,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   cave_troll: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,1,1,1,2,0],
-    [0,1,5,1,1,5,1,0],
-    [0,1,1,3,3,1,1,0],
-    [2,4,1,1,1,1,4,2],
-    [0,4,4,1,1,4,4,0],
-    [0,0,6,0,0,6,0,0],
-    [0,0,2,0,0,2,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,7,1,1,7,1,1,2,0,0,0],
+    [0,0,0,2,1,5,1,1,1,1,5,1,2,0,0,0],
+    [0,0,0,2,1,1,1,3,3,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,3,1,1,3,1,1,0,0,0,0],
+    [0,0,2,4,4,1,1,1,1,1,1,4,4,2,0,0],
+    [0,2,4,4,1,1,1,1,1,1,1,1,4,4,2,0],
+    [0,2,4,1,1,7,1,1,1,1,7,1,1,4,2,0],
+    [0,0,4,4,1,1,1,1,1,1,1,1,4,4,0,0],
+    [0,0,0,4,4,1,1,1,1,1,1,4,4,0,0,0],
+    [0,0,0,0,4,4,1,7,7,1,4,4,0,0,0,0],
+    [0,0,0,0,0,6,6,0,0,6,6,0,0,0,0,0],
+    [0,0,0,0,0,6,6,0,0,6,6,0,0,0,0,0],
+    [0,0,0,0,6,2,2,0,0,2,2,6,0,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
   ],
   fire_imp: [
-    [0,0,4,4,4,4,0,0],
-    [0,4,3,1,1,3,4,0],
-    [0,1,4,1,1,4,1,0],
-    [0,0,1,3,3,1,0,0],
-    [0,2,1,1,1,1,2,0],
-    [0,0,1,5,5,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,4,7,4,4,4,4,7,4,0,0,0,0],
+    [0,0,0,4,3,3,7,1,1,7,3,3,4,0,0,0],
+    [0,0,0,4,1,4,1,1,1,1,4,1,4,0,0,0],
+    [0,0,0,0,1,1,1,3,3,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,3,1,1,3,1,0,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,2,6,1,1,1,1,1,1,6,2,0,0,0],
+    [0,0,2,1,1,6,1,1,1,1,6,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,5,5,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,5,1,1,5,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,5,5,2,0,0,2,5,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
   ],
   dark_knight: [
-    [0,0,5,2,2,5,0,0],
-    [0,5,1,1,1,1,5,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,1,1,1,1,0],
-    [6,2,1,3,3,1,2,6],
-    [0,0,1,2,2,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,5,2,2,2,2,5,0,0,0,0,0],
+    [0,0,0,0,5,1,1,1,1,1,1,5,0,0,0,0],
+    [0,0,0,5,1,1,4,4,4,4,1,1,5,0,0,0],
+    [0,0,0,5,1,4,1,1,1,1,4,1,5,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,3,3,1,1,0,0,0,0,0],
+    [0,0,6,2,1,1,1,1,1,1,1,1,2,6,0,0],
+    [0,0,0,2,1,1,3,1,1,3,1,1,2,0,0,0],
+    [0,7,0,2,1,1,1,1,1,1,1,1,2,0,7,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,2,1,1,2,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,5,5,2,0,0,2,5,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
   ],
   crystal_spider: [
-    [5,0,0,2,2,0,0,5],
-    [0,5,2,1,1,2,5,0],
-    [0,2,3,4,4,3,2,0],
-    [5,1,1,1,1,1,1,5],
-    [0,2,1,3,3,1,2,0],
-    [5,0,2,1,1,2,0,5],
-    [0,5,0,2,2,0,5,0],
-    [5,0,0,0,0,0,0,5],
+    [5,0,0,0,0,2,2,2,2,2,2,0,0,0,0,5],
+    [0,5,0,0,2,1,7,1,1,7,1,2,0,0,5,0],
+    [0,0,5,2,1,1,1,1,1,1,1,1,2,5,0,0],
+    [0,0,2,1,3,6,1,1,1,1,6,3,1,2,0,0],
+    [0,2,1,1,4,4,1,1,1,1,4,4,1,1,2,0],
+    [5,1,1,1,1,1,3,1,1,3,1,1,1,1,1,5],
+    [0,2,1,3,1,1,1,1,1,1,1,1,3,1,2,0],
+    [0,0,2,1,1,1,1,6,6,1,1,1,1,2,0,0],
+    [0,5,0,2,1,3,1,1,1,1,3,1,2,0,5,0],
+    [5,0,0,0,2,1,1,1,1,1,1,2,0,0,0,5],
+    [0,5,0,0,0,2,1,1,1,1,2,0,0,0,5,0],
+    [0,0,5,0,0,0,2,1,1,2,0,0,0,5,0,0],
+    [5,0,0,5,0,0,0,2,2,0,0,0,5,0,0,5],
+    [0,5,0,0,5,0,0,0,0,0,0,5,0,0,5,0],
+    [0,0,5,0,0,5,0,0,0,0,5,0,0,5,0,0],
+    [5,0,0,5,0,0,5,0,0,5,0,0,5,0,0,5],
   ],
   ancient_golem: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [0,1,4,1,1,4,1,0],
-    [2,1,1,1,1,1,1,2],
-    [2,5,1,3,3,1,5,2],
-    [0,2,1,1,1,1,2,0],
-    [0,2,5,0,0,5,2,0],
-    [0,5,2,0,0,2,5,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,4,1,1,4,1,2,0,0,0,0],
+    [0,0,0,2,1,4,1,1,1,1,4,1,2,0,0,0],
+    [0,0,0,2,1,1,1,6,6,1,1,1,2,0,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,2,5,1,1,3,1,1,3,1,1,5,2,0,0],
+    [0,2,1,1,1,7,1,1,1,1,7,1,1,1,2,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,2,1,4,1,1,1,1,1,1,1,1,4,1,2,0],
+    [0,0,2,1,1,1,1,6,6,1,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,2,5,1,1,1,1,1,1,5,2,0,0,0],
+    [0,0,0,0,2,5,0,0,0,0,5,2,0,0,0,0],
+    [0,0,0,0,5,2,0,0,0,0,2,5,0,0,0,0],
+    [0,0,0,5,2,2,0,0,0,0,2,2,5,0,0,0],
+    [0,0,0,5,5,0,0,0,0,0,0,5,5,0,0,0],
   ],
   chaos_wraith: [
-    [0,0,5,3,3,5,0,0],
-    [0,5,1,1,1,1,5,0],
-    [0,1,4,1,1,4,1,0],
-    [5,1,1,3,3,1,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,1,1,2,0,0],
-    [0,0,5,2,2,5,0,0],
-    [0,0,0,5,5,0,0,0],
-  ],
-  npc_potion: [
-    [0,0,5,5,5,5,0,0],
-    [0,5,4,4,4,4,5,0],
-    [0,0,4,4,4,4,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
-  ],
-  npc_gear: [
-    [0,0,5,5,5,5,0,0],
-    [0,5,4,4,4,4,5,0],
-    [0,0,4,4,4,4,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
-  ],
-  npc_wizard: [
-    [0,0,2,1,1,2,0,0],
-    [0,0,2,1,1,2,0,0],
-    [0,6,4,4,4,4,6,0],
-    [0,0,1,1,1,1,5,0],
-    [0,2,1,3,3,1,5,0],
-    [0,0,1,1,1,1,5,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,5,3,3,3,3,5,0,0,0,0,0],
+    [0,0,0,0,5,1,1,6,6,1,1,5,0,0,0,0],
+    [0,0,0,5,1,1,1,1,1,1,1,1,5,0,0,0],
+    [0,0,0,5,1,4,1,1,1,1,4,1,5,0,0,0],
+    [0,0,5,1,1,1,1,3,3,1,1,1,1,5,0,0],
+    [0,5,1,1,7,1,3,1,1,3,1,7,1,1,5,0],
+    [0,5,1,1,1,1,1,1,1,1,1,1,1,1,5,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,0,2,1,1,6,1,1,6,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,5,2,1,1,2,5,0,0,0,0,0],
+    [0,0,0,0,0,0,5,2,2,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,5,0,0,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
   ],
   sewer_king: [
-    [0,0,4,4,4,4,0,0],
-    [0,2,1,4,4,1,2,0],
-    [2,1,4,1,1,4,1,2],
-    [2,1,1,3,3,1,1,2],
-    [5,1,3,1,1,3,1,5],
-    [0,2,1,6,6,1,2,0],
-    [0,0,2,1,1,2,0,0],
-    [0,0,5,2,2,5,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,4,7,4,4,4,4,7,4,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,2,1,1,4,1,1,1,1,4,1,1,2,0,0],
+    [0,0,2,1,1,1,1,3,3,1,1,1,1,2,0,0],
+    [0,2,1,1,7,1,3,1,1,3,1,7,1,1,2,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [5,1,1,3,1,1,1,1,1,1,1,1,3,1,1,5],
+    [5,1,3,1,1,6,1,1,1,1,6,1,1,3,1,5],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,0,2,1,1,1,6,1,1,6,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,7,7,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,2,1,1,2,2,0,0,0,0,0],
+    [0,0,0,0,5,2,2,2,2,2,2,5,0,0,0,0],
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
   ],
   sewer_rat: [
-    [0,0,0,0,0,0,0,0],
-    [0,5,0,0,0,0,5,0],
-    [0,2,1,1,1,1,2,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,3,3,1,1,0],
-    [0,0,2,1,1,2,3,3],
-    [0,0,0,2,2,0,0,0],
-    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,5,5,0,0,0,0,0,0,0,0,5,5,0,0],
+    [0,0,5,2,0,0,0,0,0,0,0,0,2,5,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,4,1,1,1,1,4,1,1,0,0,0],
+    [0,0,0,1,1,1,1,3,3,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,3,3,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,3,3,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   toxic_slime: [
-    [0,0,0,0,0,0,0,0],
-    [0,0,2,2,2,2,0,0],
-    [0,2,3,6,6,3,2,0],
-    [0,2,4,5,4,5,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,6,1,1,6,1,2],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,2,2,2,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,7,3,6,6,3,7,2,0,0,0,0],
+    [0,0,0,2,7,3,6,1,1,6,3,7,2,0,0,0],
+    [0,0,0,2,3,4,5,1,4,5,1,3,2,0,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,2,1,6,1,1,1,1,1,1,6,1,2,0,0],
+    [0,2,1,1,1,6,3,1,1,3,6,1,1,1,2,0],
+    [0,2,1,6,1,1,1,1,1,1,1,1,6,1,2,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,0,2,1,1,6,1,1,1,1,6,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,2,1,1,1,1,2,2,0,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
-  // NPC sprites
+  ghost_intern: [
+    [0,0,0,0,0,0,6,6,6,6,0,0,0,0,0,0],
+    [0,0,0,0,0,5,1,1,1,1,5,0,0,0,0,0],
+    [0,0,0,0,5,1,1,7,7,1,1,5,0,0,0,0],
+    [0,0,0,5,1,1,4,1,1,4,1,1,5,0,0,0],
+    [0,0,0,5,1,1,1,3,3,1,1,1,5,0,0,0],
+    [0,0,0,0,1,1,3,1,1,3,1,1,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,7,7,1,1,0,0,0,0,0],
+    [0,0,0,0,0,5,1,1,1,1,5,0,0,0,0,0],
+    [0,0,0,0,0,0,5,1,1,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,5,0,0,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
+  ],
+  gatekeeper: [
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,6,1,1,6,1,2,0,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,2,1,4,1,1,1,1,4,1,2,0,0,0],
+    [0,0,0,0,1,1,1,3,3,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,3,7,7,3,1,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,6,1,7,1,1,1,1,1,1,7,1,6,0,0],
+    [0,0,0,1,1,1,6,1,1,6,1,1,1,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,2,1,1,2,1,0,0,0,0,0],
+    [0,0,0,0,0,2,5,0,0,5,2,0,0,0,0,0],
+    [0,0,0,0,0,5,5,0,0,5,5,0,0,0,0,0],
+    [0,0,0,0,5,5,2,0,0,2,5,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+  ],
+  npc_potion: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,5,5,5,5,5,5,5,5,0,0,0,0],
+    [0,0,0,5,4,4,4,4,4,4,4,4,5,0,0,0],
+    [0,0,0,0,4,4,6,4,4,6,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,1,2,0,0,2,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_gear: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,5,5,5,5,5,5,5,5,0,0,0,0],
+    [0,0,0,5,4,4,4,4,4,4,4,4,5,0,0,0],
+    [0,0,0,0,4,4,6,4,4,6,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,1,2,0,0,2,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_wizard: [
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0],
+    [0,0,0,6,6,4,4,4,4,4,4,6,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,5,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,5,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,5,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,5,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,5,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,5,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,5,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,5,0,0],
+    [0,0,0,0,0,1,2,0,0,2,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
   npc_princess: [
-    [0,0,5,5,5,5,0,0],
-    [0,6,4,4,4,4,6,0],
-    [0,0,4,4,4,4,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
   ],
   npc_mayor: [
-    [0,0,6,6,6,6,0,0],
-    [0,6,4,4,4,4,6,0],
-    [0,0,4,4,4,4,0,0],
-    [0,1,1,5,5,1,1,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,6,6,6,6,6,6,0,0,0,0,0],
+    [0,0,0,0,6,6,6,6,6,6,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,5,5,5,5,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,1,2,0,0,2,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
   ],
-  // Sprawl enemy sprites
+  // --- Princess palette variants (same pixel layout as npc_princess, different palette) ---
+  npc_princess_destiny: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_jasmine: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_crystal: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_mercedes: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_tiffany: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_angelica: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_brianna: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  npc_princess_valentina: [
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,6,6,5,6,6,5,6,6,0,0,0,0],
+    [0,0,0,6,4,4,4,4,4,4,4,4,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,2,2,1,1,1,1,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
+  ],
+  // --- Sprawl enemies ---
   feral_dog: [
-    [0,0,0,2,2,0,0,0],
-    [0,0,2,1,1,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [0,1,1,1,1,1,1,0],
-    [2,1,3,1,1,3,1,2],
-    [0,1,1,1,1,1,1,3],
-    [0,5,0,0,0,0,5,0],
-    [0,2,0,0,0,0,2,0],
+    [0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,2,1,1,2,0,0,0,0,0,0,0,0],
+    [0,0,0,2,1,4,4,1,2,0,0,0,0,0,0,0],
+    [0,0,0,2,1,1,1,1,1,2,0,0,0,0,0,0],
+    [0,0,0,0,1,1,3,1,1,1,2,0,0,0,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,2,1,3,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,2,1,1,7,1,1,1,1,7,1,1,2,0,0],
+    [0,0,0,1,1,1,1,1,1,1,1,1,1,3,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,3,3,3,0],
+    [0,0,0,0,0,5,0,0,0,0,5,0,0,3,0,0],
+    [0,0,0,0,0,2,0,0,0,0,2,0,0,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   feral_rat: [
-    [0,0,0,0,0,0,0,0],
-    [0,5,0,0,0,0,5,0],
-    [0,2,1,1,1,1,2,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,3,3,1,1,0],
-    [0,0,2,1,1,2,3,3],
-    [0,0,0,2,2,0,0,0],
-    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,5,5,0,0,0,0,0,0,0,0,5,5,0,0],
+    [0,0,5,2,0,0,0,0,0,0,0,0,2,5,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,1,1,4,1,1,1,1,4,1,1,0,0,0],
+    [0,0,0,1,1,1,1,3,3,1,1,1,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,3,3,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,3,3,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   goblin_archer: [
-    [0,0,6,4,4,6,0,0],
-    [0,6,1,1,1,1,6,0],
-    [0,1,5,1,1,5,1,0],
-    [0,0,1,3,3,1,0,6],
-    [0,4,4,4,4,4,6,6],
-    [0,0,4,6,6,4,0,6],
-    [0,0,2,0,0,2,0,0],
-    [0,0,6,0,0,6,0,0],
+    [0,0,0,0,0,6,4,4,4,4,6,0,0,0,0,0],
+    [0,0,0,0,6,4,7,4,4,7,4,6,0,0,0,0],
+    [0,0,0,6,1,1,1,1,1,1,1,1,6,0,0,0],
+    [0,0,0,6,1,5,1,1,1,1,5,1,6,0,0,0],
+    [0,0,0,0,1,1,1,3,3,1,1,1,0,0,6,0],
+    [0,0,0,0,0,1,3,1,1,3,1,0,0,6,6,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,6,6,6,0],
+    [0,0,0,4,7,4,4,4,4,4,4,7,4,6,0,0],
+    [0,0,7,4,4,4,7,4,4,7,4,4,4,6,0,0],
+    [0,0,0,4,4,4,4,4,4,4,4,4,4,6,0,0],
+    [0,0,0,0,4,4,4,6,6,4,4,4,0,6,0,0],
+    [0,0,0,0,0,4,6,4,4,6,4,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,6,6,2,0,0,2,6,6,0,0,0,0],
+    [0,0,0,0,6,6,0,0,0,0,6,6,0,0,0,0],
   ],
   hoa_enforcer: [
-    [0,0,6,6,6,6,0,0],
-    [0,6,1,5,5,1,6,0],
-    [0,0,4,4,4,4,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,6,6,6,6,6,6,0,0,0,0,0],
+    [0,0,0,0,6,6,6,6,6,6,6,6,0,0,0,0],
+    [0,0,0,6,1,1,5,5,5,5,1,1,6,0,0,0],
+    [0,0,0,0,4,4,7,4,4,7,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,1,2,0,0,2,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
   ],
-  // Retail enemy sprites
+  // --- Retail enemies ---
   retail_bot: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [0,1,1,1,1,1,1,0],
-    [2,1,3,1,1,3,1,2],
-    [2,5,1,1,1,1,5,2],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,7,7,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,2,1,1,3,1,1,1,1,3,1,1,2,0,0],
+    [0,0,2,5,1,1,6,1,1,6,1,1,5,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,5,0,0,5,2,0,0,0,0,0],
+    [0,0,0,0,0,5,5,0,0,5,5,0,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   price_scanner: [
-    [0,0,0,2,2,0,0,0],
-    [0,0,2,4,4,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,3,1,1,3,1,0],
-    [5,5,1,1,1,1,5,5],
-    [0,0,2,1,1,2,0,0],
-    [0,0,0,2,2,0,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,4,4,4,4,2,0,0,0,0,0],
+    [0,0,0,0,2,1,4,4,4,4,1,2,0,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,2,1,3,1,1,1,1,3,1,2,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,5,5,1,6,1,1,1,1,6,1,5,5,0,0],
+    [5,5,0,0,1,1,1,1,1,1,1,1,0,0,5,5],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   shopping_cart_golem: [
-    [0,2,2,2,2,2,2,0],
-    [0,2,1,4,4,1,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,3,1,1,3,1,2],
-    [5,1,1,1,1,1,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,5,2,0,0,2,5,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,0],
+    [0,0,2,1,1,1,4,4,4,4,1,1,1,2,0,0],
+    [0,2,1,1,7,1,1,1,1,1,1,7,1,1,2,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [2,1,1,3,1,1,1,1,1,1,1,1,3,1,1,2],
+    [2,1,1,1,1,6,1,1,1,1,6,1,1,1,1,2],
+    [5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,5,2,2,0,0,0,0,0,0,2,2,5,0,0],
+    [0,0,0,5,5,0,0,0,0,0,0,5,5,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   corrupted_cashier: [
-    [0,0,5,5,5,5,0,0],
-    [0,5,4,4,4,4,5,0],
-    [0,0,4,4,4,4,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,5,5,5,5,5,5,5,5,0,0,0,0],
+    [0,0,0,5,4,4,4,4,4,4,4,4,5,0,0,0],
+    [0,0,0,0,4,4,6,4,4,6,4,4,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,1,7,1,1,1,1,1,1,7,1,0,0,0],
+    [0,0,0,1,1,1,3,1,1,3,1,1,1,0,0,0],
+    [0,0,0,2,1,1,1,6,6,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,1,2,0,0,2,1,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0],
   ],
   the_manager: [
-    [0,0,5,2,2,5,0,0],
-    [0,5,1,4,4,1,5,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,1,1,1,1,0],
-    [6,2,1,3,3,1,2,6],
-    [0,0,1,2,2,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,5,2,2,2,2,5,0,0,0,0,0],
+    [0,0,0,0,5,1,1,4,4,1,1,5,0,0,0,0],
+    [0,0,0,5,1,1,4,1,1,4,1,1,5,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,3,3,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,3,1,1,3,1,0,0,0,0,0],
+    [0,0,6,2,1,1,1,1,1,1,1,1,2,6,0,0],
+    [0,0,0,2,1,1,3,4,4,3,1,1,2,0,0,0],
+    [0,7,0,2,1,1,1,1,1,1,1,1,2,0,7,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,1,1,2,2,1,1,0,0,0,0,0],
+    [0,0,0,0,0,1,2,1,1,2,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,5,5,2,0,0,2,5,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
   ],
-  // Gym enemy sprites
+  // --- Gym enemies ---
   protein_junkie: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,1,1,1,2,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,3,3,1,1,0],
-    [2,1,1,1,1,1,1,2],
-    [0,1,3,1,1,3,1,0],
-    [0,0,5,0,0,5,0,0],
-    [0,0,2,0,0,2,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,0,2,1,1,1,3,3,1,1,1,2,0,0,0],
+    [0,0,0,0,1,1,3,1,1,3,1,1,0,0,0,0],
+    [0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,2,1,7,1,1,1,1,1,1,1,1,7,1,2,0],
+    [0,2,1,1,1,3,1,1,1,1,3,1,1,1,2,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,0,0,1,1,1,6,6,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,3,1,1,3,1,0,0,0,0,0],
+    [0,0,0,0,0,5,5,0,0,5,5,0,0,0,0,0],
+    [0,0,0,0,0,5,5,0,0,5,5,0,0,0,0,0],
+    [0,0,0,0,2,2,5,0,0,5,2,2,0,0,0,0],
+    [0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0],
   ],
   swole_beast: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,3,1,1,3,1,2],
-    [5,1,1,1,1,1,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,5,2,0,0,2,5,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,4,4,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,2,1,1,3,1,1,1,1,3,1,1,2,0,0],
+    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,2,0],
+    [0,2,5,1,1,1,6,1,1,6,1,1,1,5,2,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,5,2,1,1,1,1,1,1,2,5,0,0,0],
+    [0,0,0,0,5,2,1,2,2,1,2,5,0,0,0,0],
+    [0,0,0,0,5,2,0,0,0,0,2,5,0,0,0,0],
+    [0,0,0,0,0,5,0,0,0,0,5,0,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+    [0,0,0,0,5,0,0,0,0,0,0,5,0,0,0,0],
   ],
   gym_bro: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,1,1,1,2,0],
-    [0,1,4,1,1,4,1,0],
-    [0,0,1,3,3,1,0,0],
-    [0,4,4,4,4,4,4,0],
-    [0,0,4,5,5,4,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,0,0,1,1,1,3,3,1,1,1,0,0,0,0],
+    [0,0,0,0,0,1,3,1,1,3,1,0,0,0,0,0],
+    [0,0,0,0,4,4,4,4,4,4,4,4,0,0,0,0],
+    [0,0,0,4,7,4,4,4,4,4,4,7,4,0,0,0],
+    [0,0,6,4,4,4,6,4,4,6,4,4,4,6,0,0],
+    [0,0,0,4,4,4,4,4,4,4,4,4,4,0,0,0],
+    [0,0,0,0,4,4,4,5,5,4,4,4,0,0,0,0],
+    [0,0,0,0,0,4,5,4,4,5,4,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,5,5,2,0,0,2,5,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   treadmill_monster: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [0,1,1,1,1,1,1,0],
-    [2,1,3,1,1,3,1,2],
-    [2,5,1,1,1,1,5,2],
-    [0,2,1,3,3,1,2,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,4,4,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,2,1,1,3,1,1,1,1,3,1,1,2,0,0],
+    [0,0,2,5,1,1,6,1,1,6,1,1,5,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,3,1,1,3,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,5,0,0,5,2,0,0,0,0,0],
+    [0,0,0,0,0,5,5,0,0,5,5,0,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   the_alpha: [
-    [0,0,5,4,4,5,0,0],
-    [0,5,1,1,1,1,5,0],
-    [5,1,4,1,1,4,1,5],
-    [2,1,1,3,3,1,1,2],
-    [2,1,1,1,1,1,1,2],
-    [0,2,1,6,6,1,2,0],
-    [0,5,2,0,0,2,5,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,5,4,4,4,4,5,0,0,0,0,0],
+    [0,0,0,0,5,1,1,4,4,1,1,5,0,0,0,0],
+    [0,0,0,5,1,1,4,1,1,4,1,1,5,0,0,0],
+    [0,0,5,1,1,1,1,3,3,1,1,1,1,5,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,2,1,1,7,1,1,1,1,1,1,7,1,1,2,0],
+    [0,2,1,1,1,1,6,1,1,6,1,1,1,1,2,0],
+    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,0,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,6,6,1,1,2,0,0,0,0],
+    [0,0,0,5,2,1,1,1,1,1,1,2,5,0,0,0],
+    [0,0,0,0,5,2,0,0,0,0,2,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+    [0,0,0,5,5,0,0,0,0,0,0,5,5,0,0,0],
+    [0,0,0,5,0,0,0,0,0,0,0,0,5,0,0,0],
   ],
-  // Labs enemy sprites
+  // --- Lab enemies ---
   lab_chimera: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,3,1,1,3,1,2],
-    [5,1,1,4,4,1,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,5,2,0,0,2,5,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0],
+    [0,0,0,0,0,3,1,1,1,1,3,0,0,0,0,0],
+    [0,0,0,0,3,1,5,1,1,5,1,3,0,0,0,0],
+    [0,0,0,3,1,1,1,6,6,1,1,1,3,0,0,0],
+    [0,0,0,3,1,1,1,1,1,1,1,1,3,0,0,0],
+    [0,0,3,2,1,1,1,1,1,1,1,1,2,3,0,0],
+    [0,3,2,1,1,4,1,1,1,1,4,1,1,2,3,0],
+    [0,3,1,1,1,4,1,1,1,1,4,1,1,1,3,0],
+    [0,0,3,1,1,1,1,1,1,1,1,1,1,3,0,0],
+    [0,0,0,3,1,1,7,1,1,7,1,1,3,0,0,0],
+    [0,0,0,0,3,1,1,1,1,1,1,3,0,0,0,0],
+    [0,0,0,3,2,1,1,0,0,1,1,2,3,0,0,0],
+    [0,0,3,2,0,1,1,0,0,1,1,0,2,3,0,0],
+    [0,0,3,0,0,2,2,0,0,2,2,0,0,3,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   bio_mutant: [
-    [0,0,0,0,0,0,0,0],
-    [0,0,2,2,2,2,0,0],
-    [0,2,3,1,1,3,2,0],
-    [0,2,4,5,4,5,2,0],
-    [2,1,1,1,1,1,1,2],
-    [2,1,3,1,1,3,1,2],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,2,2,2,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,3,3,3,3,3,3,0,0,0,0,0],
+    [0,0,0,0,3,1,1,1,1,1,1,3,0,0,0,0],
+    [0,0,0,3,1,5,1,1,1,1,5,1,3,0,0,0],
+    [0,0,0,3,1,1,1,6,6,1,1,1,3,0,0,0],
+    [0,0,0,0,3,1,1,1,1,1,1,3,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,4,2,1,1,1,1,1,1,2,4,0,0,0],
+    [0,0,4,4,1,1,7,1,1,7,1,1,4,4,0,0],
+    [0,0,0,4,1,1,1,1,1,1,1,1,4,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   experiment_pod: [
-    [0,2,4,4,4,4,2,0],
-    [2,4,1,1,1,1,4,2],
-    [4,1,3,1,1,3,1,4],
-    [4,1,1,1,1,1,1,4],
-    [4,1,3,1,1,3,1,4],
-    [2,4,1,1,1,1,4,2],
-    [0,2,4,4,4,4,2,0],
-    [0,0,5,5,5,5,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,3,3,3,3,3,3,0,0,0,0,0],
+    [0,0,0,0,3,4,4,4,4,4,4,3,0,0,0,0],
+    [0,0,0,3,4,1,1,1,1,1,1,4,3,0,0,0],
+    [0,0,3,4,1,5,1,1,1,1,5,1,4,3,0,0],
+    [0,0,3,4,1,1,1,7,7,1,1,1,4,3,0,0],
+    [0,0,3,4,1,1,1,1,1,1,1,1,4,3,0,0],
+    [0,0,3,4,1,1,6,1,1,6,1,1,4,3,0,0],
+    [0,0,3,4,1,1,1,1,1,1,1,1,4,3,0,0],
+    [0,0,3,4,2,1,1,1,1,1,1,2,4,3,0,0],
+    [0,0,0,3,4,2,1,1,1,1,2,4,3,0,0,0],
+    [0,0,0,0,3,4,2,2,2,2,4,3,0,0,0,0],
+    [0,0,0,0,0,3,4,4,4,4,3,0,0,0,0,0],
+    [0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   rogue_ai: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [2,1,3,1,1,3,1,2],
-    [2,1,1,4,4,1,1,2],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,3,3,2,0,0],
-    [0,0,5,2,2,5,0,0],
-    [0,0,0,5,5,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,5,5,5,5,0,0,0,0,0,0],
+    [0,0,0,0,0,5,3,3,3,3,5,0,0,0,0,0],
+    [0,0,0,0,5,3,7,3,3,7,3,5,0,0,0,0],
+    [0,0,0,0,5,3,3,3,3,3,3,5,0,0,0,0],
+    [0,0,0,0,0,5,3,6,6,3,5,0,0,0,0,0],
+    [0,0,0,0,0,0,5,5,5,5,0,0,0,0,0,0],
+    [0,0,0,4,4,0,1,1,1,1,0,4,4,0,0,0],
+    [0,0,4,2,2,1,1,1,1,1,1,2,2,4,0,0],
+    [0,0,0,4,1,1,1,1,1,1,1,1,4,0,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,4,2,0,0,0,0,2,4,0,0,0,0],
+    [0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   the_specimen: [
-    [0,4,0,2,2,0,4,0],
-    [4,2,2,1,1,2,2,4],
-    [0,2,1,4,4,1,2,0],
-    [0,1,3,1,1,3,1,0],
-    [5,1,1,6,6,1,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,5,2,1,1,2,5,0],
-    [0,0,5,2,2,5,0,0],
+    [0,0,0,0,0,5,5,5,5,5,5,0,0,0,0,0],
+    [0,0,0,0,5,3,3,3,3,3,3,5,0,0,0,0],
+    [0,0,0,5,3,7,3,3,3,3,7,3,5,0,0,0],
+    [0,0,5,3,3,3,3,6,6,3,3,3,3,5,0,0],
+    [0,0,5,1,3,3,3,3,3,3,3,3,1,5,0,0],
+    [0,5,1,1,1,3,3,3,3,3,3,1,1,1,5,0],
+    [0,5,1,1,1,1,4,1,1,4,1,1,1,1,5,0],
+    [0,0,5,1,1,1,1,1,1,1,1,1,1,5,0,0],
+    [0,0,0,5,1,1,1,1,1,1,1,1,5,0,0,0],
+    [0,0,0,5,2,1,1,1,1,1,1,2,5,0,0,0],
+    [0,0,5,2,1,1,6,1,1,6,1,1,2,5,0,0],
+    [0,0,5,2,1,1,1,1,1,1,1,1,2,5,0,0],
+    [0,0,0,5,2,1,0,0,0,0,1,2,5,0,0,0],
+    [0,0,0,0,5,2,0,0,0,0,2,5,0,0,0,0],
+    [0,0,0,0,5,5,0,0,0,0,5,5,0,0,0,0],
+    [0,0,0,5,5,0,0,0,0,0,0,5,5,0,0,0],
   ],
-  // Island enemy sprites
+  // --- Island enemies ---
   elite_guard: [
-    [0,0,5,2,2,5,0,0],
-    [0,5,1,1,1,1,5,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,1,1,1,1,0],
-    [4,2,1,3,3,1,2,4],
-    [0,0,1,2,2,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0],
+    [0,0,0,0,0,3,1,1,1,1,3,0,0,0,0,0],
+    [0,0,0,0,3,1,5,1,1,5,1,3,0,0,0,0],
+    [0,0,0,0,3,1,1,7,7,1,1,3,0,0,0,0],
+    [0,0,0,0,0,3,1,1,1,1,3,0,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,6,2,2,1,1,1,1,1,1,2,2,6,0,0],
+    [0,0,6,0,1,1,1,4,4,1,1,1,0,6,0,0],
+    [0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,3,3,0,0,3,3,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   security_drone: [
-    [0,0,0,2,2,0,0,0],
-    [0,0,2,1,1,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [2,1,3,1,1,3,1,2],
-    [0,2,1,1,1,1,2,0],
-    [0,5,2,1,1,2,5,0],
-    [0,0,5,2,2,5,0,0],
-    [0,0,0,5,5,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0],
+    [0,0,0,0,0,3,4,4,4,4,3,0,0,0,0,0],
+    [0,0,0,0,3,4,5,4,4,5,4,3,0,0,0,0],
+    [0,0,0,3,4,4,4,4,4,4,4,4,3,0,0,0],
+    [0,0,6,3,1,1,1,1,1,1,1,1,3,6,0,0],
+    [0,6,0,3,1,1,7,1,1,7,1,1,3,0,6,0],
+    [0,0,0,0,3,1,1,1,1,1,1,3,0,0,0,0],
+    [0,0,0,0,0,3,2,2,2,2,3,0,0,0,0,0],
+    [0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   cult_acolyte: [
-    [0,0,2,1,1,2,0,0],
-    [0,0,2,1,1,2,0,0],
-    [0,5,4,4,4,4,5,0],
-    [0,0,1,1,1,1,0,0],
-    [0,2,1,3,3,1,2,0],
-    [0,0,1,1,1,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,2,1,5,1,1,5,1,2,0,0,0,0],
+    [0,0,0,0,2,1,1,7,7,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,3,3,1,1,1,1,3,3,0,0,0,0],
+    [0,0,0,3,3,1,1,1,1,1,1,3,3,0,0,0],
+    [0,0,3,3,1,1,6,1,1,6,1,1,3,3,0,0],
+    [0,0,3,1,1,1,1,1,1,1,1,1,1,3,0,0],
+    [0,0,0,3,1,1,1,4,4,1,1,1,3,0,0,0],
+    [0,0,0,0,3,1,1,1,1,1,1,3,0,0,0,0],
+    [0,0,0,0,0,3,1,1,1,1,3,0,0,0,0,0],
+    [0,0,0,0,0,3,3,0,0,3,3,0,0,0,0,0],
+    [0,0,0,0,0,3,3,0,0,3,3,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   void_wraith: [
-    [0,0,5,3,3,5,0,0],
-    [0,5,1,1,1,1,5,0],
-    [0,1,4,1,1,4,1,0],
-    [5,1,1,3,3,1,1,5],
-    [0,2,1,1,1,1,2,0],
-    [0,0,2,1,1,2,0,0],
-    [0,0,5,2,2,5,0,0],
-    [0,0,0,5,5,0,0,0],
+    [0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,5,3,3,5,0,0,0,0,0,0],
+    [0,0,0,0,0,5,3,3,3,3,5,0,0,0,0,0],
+    [0,0,0,0,5,3,7,3,3,7,3,5,0,0,0,0],
+    [0,0,0,0,5,3,3,3,3,3,3,5,0,0,0,0],
+    [0,0,0,5,2,3,3,6,6,3,3,2,5,0,0,0],
+    [0,0,5,2,1,1,1,1,1,1,1,1,2,5,0,0],
+    [0,5,2,1,1,1,1,1,1,1,1,1,1,2,5,0],
+    [0,5,1,1,1,4,1,1,1,1,4,1,1,1,5,0],
+    [0,0,5,1,1,1,1,1,1,1,1,1,1,5,0,0],
+    [0,0,0,5,1,1,1,1,1,1,1,1,5,0,0,0],
+    [0,0,0,0,5,2,1,1,1,1,2,5,0,0,0,0],
+    [0,0,0,0,0,5,2,2,2,2,5,0,0,0,0,0],
+    [0,0,0,0,0,0,5,5,5,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   the_consultant: [
-    [0,0,5,4,4,5,0,0],
-    [0,5,1,1,1,1,5,0],
-    [0,1,4,1,1,4,1,0],
-    [0,1,1,1,1,1,1,0],
-    [6,2,1,3,3,1,2,6],
-    [0,0,1,4,4,1,0,0],
-    [0,0,2,0,0,2,0,0],
-    [0,0,5,0,0,5,0,0],
+    [0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0],
+    [0,0,0,0,4,1,1,1,1,1,1,4,0,0,0,0],
+    [0,0,0,4,1,5,1,1,1,1,5,1,4,0,0,0],
+    [0,0,0,4,1,1,1,7,7,1,1,1,4,0,0,0],
+    [0,0,0,0,4,1,1,1,1,1,1,4,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,3,2,2,1,1,6,6,1,1,2,2,3,0,0],
+    [0,3,0,2,1,1,1,1,1,1,1,1,2,0,3,0],
+    [0,3,0,0,1,1,1,1,1,1,1,1,0,0,3,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,0,2,6,1,1,6,2,0,0,0,0,0],
+    [0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0],
+    [0,0,0,0,0,2,2,0,0,2,2,0,0,0,0,0],
+    [0,0,0,0,4,4,2,0,0,2,4,4,0,0,0,0],
+    [0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0],
   ],
+  // --- Raccoon ---
   raccoon: [
-    [0,0,2,2,2,2,0,0],
-    [0,2,1,4,4,1,2,0],
-    [0,1,4,5,5,4,1,0],
-    [0,0,1,3,3,1,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,0,1,2,2,1,3,3],
-    [0,0,0,2,2,0,0,0],
-    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,2,2,0,0,0,0,0,0,2,2,0,0,0],
+    [0,0,0,2,1,2,0,0,0,0,2,1,2,0,0,0],
+    [0,0,0,0,2,1,2,2,2,2,1,2,0,0,0,0],
+    [0,0,0,0,1,3,5,1,1,5,3,1,0,0,0,0],
+    [0,0,0,0,1,1,1,6,6,1,1,1,0,0,0,0],
+    [0,0,0,0,0,2,1,1,1,1,2,0,0,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,2,1,1,4,1,1,4,1,1,2,0,0,0],
+    [0,0,0,2,1,1,1,1,1,1,1,1,2,0,0,0],
+    [0,0,0,0,2,1,1,1,1,1,1,2,0,0,0,0],
+    [0,0,0,0,0,7,7,0,0,7,7,0,0,0,0,0],
+    [0,0,0,0,0,7,7,0,0,7,7,0,0,0,0,0],
+    [0,0,2,2,2,2,0,0,0,0,2,2,2,2,0,0],
+    [0,0,2,1,2,0,0,0,0,0,0,2,1,2,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
-  // Tile sprites
+  // --- Tile sprites (16x16, using tile palette) ---
   tile_grass: [
-    [1,1,2,1,1,1,2,1],
-    [1,2,1,1,1,2,1,1],
-    [1,1,1,1,2,1,1,1],
-    [2,1,1,2,1,1,1,2],
-    [1,1,2,1,1,1,2,1],
-    [1,1,1,1,1,2,1,1],
-    [1,2,1,1,2,1,1,1],
-    [1,1,1,2,1,1,2,1],
+    [1,2,1,1,2,1,1,1,2,1,1,2,1,1,1,2],
+    [1,1,1,2,1,1,2,1,1,1,2,1,1,2,1,1],
+    [2,1,1,1,1,2,1,1,1,2,1,1,1,1,2,1],
+    [1,1,2,1,1,1,1,2,1,1,1,1,2,1,1,1],
+    [1,2,1,1,2,1,1,1,1,1,2,1,1,1,2,1],
+    [1,1,1,1,1,1,2,1,2,1,1,1,1,2,1,1],
+    [2,1,1,2,1,1,1,1,1,1,1,2,1,1,1,2],
+    [1,1,1,1,1,2,1,59,1,2,1,1,1,1,2,1],
+    [1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,1],
+    [1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,2],
+    [2,1,1,1,1,2,1,1,2,1,1,2,1,1,2,1],
+    [1,1,2,1,1,1,1,2,1,1,1,1,1,2,1,1],
+    [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1],
+    [1,2,1,1,1,1,2,1,1,2,1,1,2,1,1,2],
+    [1,1,1,2,1,1,1,1,2,1,1,1,1,1,2,1],
+    [2,1,1,1,1,2,1,1,1,1,2,1,1,2,1,1],
   ],
   tile_wall: [
-    [3,3,3,3,4,3,3,3],
-    [3,4,3,3,4,3,4,3],
-    [4,4,4,4,4,4,4,4],
-    [3,3,4,3,3,3,3,4],
-    [3,3,4,3,3,4,3,4],
-    [4,4,4,4,4,4,4,4],
-    [3,3,3,4,3,3,3,3],
-    [3,4,3,4,3,4,3,3],
+    [3,3,4,3,3,3,4,3,3,4,3,3,3,4,3,3],
+    [3,4,3,3,60,3,3,3,4,3,3,3,3,3,4,3],
+    [4,3,3,3,3,3,3,4,3,3,3,4,3,3,3,3],
+    [3,3,3,4,3,3,4,3,3,3,4,3,3,3,3,4],
+    [3,4,3,3,3,4,3,3,3,4,3,3,63,3,4,3],
+    [3,3,3,3,4,3,3,4,3,3,3,3,3,4,3,3],
+    [4,3,3,4,3,3,3,3,4,3,3,4,3,3,3,3],
+    [3,3,4,3,3,3,4,3,3,3,4,3,3,3,4,3],
+    [3,4,3,3,3,4,3,3,60,3,3,3,4,3,3,3],
+    [3,3,3,4,3,3,3,4,3,3,3,4,3,3,3,4],
+    [4,3,3,3,3,3,4,3,3,4,3,3,3,4,3,3],
+    [3,3,4,3,63,3,3,3,3,3,4,3,3,3,3,3],
+    [3,4,3,3,3,3,3,4,3,3,3,3,4,3,4,3],
+    [3,3,3,4,3,4,3,3,3,4,3,3,3,3,3,4],
+    [4,3,3,3,4,3,3,3,4,3,3,4,3,3,4,3],
+    [3,3,4,3,3,3,4,3,3,3,4,3,3,4,3,3],
   ],
   tile_water: [
-    [9,9,10,9,9,9,10,9],
-    [9,10,9,9,10,9,9,9],
-    [10,9,9,9,9,9,10,9],
-    [9,9,9,10,9,10,9,9],
-    [9,9,10,9,9,9,9,10],
-    [9,10,9,9,9,10,9,9],
-    [9,9,9,10,9,9,9,10],
-    [10,9,9,9,10,9,10,9],
+    [9,10,9,9,10,9,9,10,9,10,9,9,10,9,9,10],
+    [9,9,10,9,9,9,10,9,9,9,10,9,9,10,9,9],
+    [10,9,9,9,10,9,9,9,10,9,9,10,9,9,9,9],
+    [9,9,9,10,9,9,10,9,9,10,9,9,9,9,10,9],
+    [9,10,9,9,9,10,9,60,9,9,9,10,9,9,9,10],
+    [9,9,10,9,9,9,9,10,9,9,10,9,9,10,9,9],
+    [10,9,9,10,9,9,10,9,9,10,9,9,10,9,9,9],
+    [9,9,9,9,10,9,9,9,10,9,9,9,9,9,10,9],
+    [9,10,9,9,9,9,10,9,9,9,10,9,9,10,9,10],
+    [9,9,9,10,9,10,9,9,9,10,9,9,10,9,9,9],
+    [10,9,9,9,10,9,9,10,9,9,9,10,9,9,9,10],
+    [9,9,10,9,9,9,10,9,60,9,10,9,9,10,9,9],
+    [9,10,9,9,9,10,9,9,9,10,9,9,10,9,9,9],
+    [9,9,9,10,9,9,9,10,9,9,9,10,9,9,10,9],
+    [10,9,9,9,9,10,9,9,10,9,9,9,9,10,9,9],
+    [9,9,10,9,10,9,9,9,9,10,9,9,10,9,9,10],
   ],
   tile_path: [
-    [5,5,6,5,5,6,5,5],
-    [5,6,5,5,5,5,6,5],
-    [6,5,5,5,6,5,5,5],
-    [5,5,5,6,5,5,5,6],
-    [5,5,6,5,5,5,6,5],
-    [5,6,5,5,5,6,5,5],
-    [5,5,5,6,5,5,5,5],
-    [6,5,5,5,5,6,5,6],
+    [5,6,5,5,6,5,5,5,6,5,5,6,5,5,6,5],
+    [5,5,5,6,5,5,6,5,5,5,6,5,5,5,5,6],
+    [6,5,5,5,5,6,5,5,5,6,5,5,6,5,5,5],
+    [5,5,6,5,5,5,5,6,5,5,5,5,5,6,5,5],
+    [5,6,5,5,6,5,5,5,5,5,6,5,5,5,6,5],
+    [5,5,5,5,5,5,6,5,6,5,5,5,5,6,5,5],
+    [6,5,5,6,5,5,5,5,5,5,5,6,5,5,5,6],
+    [5,5,5,5,5,6,5,5,5,6,5,5,5,5,6,5],
+    [5,6,5,5,5,5,6,5,5,5,5,5,6,5,5,5],
+    [5,5,5,6,5,5,5,5,5,6,5,5,5,5,5,6],
+    [6,5,5,5,5,6,5,5,6,5,5,6,5,5,6,5],
+    [5,5,6,5,5,5,5,6,5,5,5,5,5,6,5,5],
+    [5,5,5,5,6,5,5,5,5,5,6,5,5,5,5,5],
+    [5,6,5,5,5,5,6,5,5,6,5,5,6,5,5,6],
+    [5,5,5,6,5,5,5,5,6,5,5,5,5,5,6,5],
+    [6,5,5,5,5,6,5,5,5,5,6,5,5,6,5,5],
   ],
   tile_door: [
-    [7,8,7,7,7,7,8,7],
-    [7,7,7,8,8,7,7,7],
-    [7,7,8,7,7,8,7,7],
-    [7,7,7,7,7,7,7,7],
-    [7,8,7,7,7,7,8,7],
-    [7,7,7,8,7,7,7,7],
-    [8,7,7,7,7,8,7,7],
-    [7,7,8,7,8,7,7,8],
+    [7,7,8,7,7,7,8,7,7,8,7,7,7,8,7,7],
+    [8,7,7,7,7,8,7,7,8,7,7,8,7,7,7,8],
+    [7,7,7,8,7,7,7,8,7,7,7,7,8,7,7,7],
+    [7,8,7,7,7,7,8,7,7,7,8,7,7,7,8,7],
+    [7,7,7,7,8,7,7,7,7,8,7,7,7,8,7,7],
+    [7,7,8,7,7,7,7,8,7,7,7,7,8,7,7,7],
+    [8,7,7,7,7,8,7,7,7,7,8,7,7,7,7,8],
+    [7,7,7,8,7,7,7,59,7,8,7,7,7,8,7,7],
+    [7,8,7,7,7,7,8,7,7,7,7,8,7,7,7,7],
+    [7,7,7,7,8,7,7,7,8,7,7,7,7,7,8,7],
+    [7,7,8,7,7,7,7,8,7,7,8,7,7,8,7,7],
+    [8,7,7,7,7,8,7,7,7,7,7,7,8,7,7,8],
+    [7,7,7,8,7,7,8,7,7,8,7,7,7,7,7,7],
+    [7,8,7,7,7,7,7,7,8,7,7,8,7,7,8,7],
+    [7,7,7,7,8,7,7,8,7,7,7,7,7,8,7,7],
+    [8,7,7,8,7,7,7,7,7,8,7,7,8,7,7,8],
   ],
   tile_floor: [
-    [11,11,12,11,11,12,11,11],
-    [11,12,11,11,11,11,12,11],
-    [12,11,11,11,12,11,11,11],
-    [11,11,11,12,11,11,11,12],
-    [11,12,11,11,11,12,11,11],
-    [11,11,12,11,11,11,11,12],
-    [11,11,11,11,12,11,12,11],
-    [12,11,11,12,11,11,11,11],
+    [11,12,11,11,12,11,11,12,11,11,12,11,11,12,11,11],
+    [11,11,12,11,11,11,12,11,11,12,11,11,11,11,12,11],
+    [12,11,11,11,11,12,11,11,12,11,11,12,11,11,11,12],
+    [11,11,11,12,11,11,11,12,11,11,11,11,12,11,11,11],
+    [11,12,11,11,12,11,11,11,11,12,11,11,11,12,11,11],
+    [11,11,11,11,11,12,11,11,12,11,11,11,12,11,11,12],
+    [12,11,12,11,11,11,12,11,11,11,12,11,11,11,11,11],
+    [11,11,11,12,11,11,11,11,12,11,11,11,11,12,11,11],
+    [11,12,11,11,11,12,11,11,11,11,11,12,11,11,12,11],
+    [11,11,11,11,12,11,11,12,11,12,11,11,11,11,11,12],
+    [12,11,11,12,11,11,12,11,11,11,12,11,12,11,11,11],
+    [11,11,12,11,11,11,11,11,12,11,11,11,11,12,11,11],
+    [11,12,11,11,11,12,11,11,11,12,11,11,11,11,12,11],
+    [11,11,11,12,11,11,12,11,11,11,11,12,11,11,11,11],
+    [12,11,11,11,12,11,11,11,12,11,11,11,12,11,11,12],
+    [11,11,12,11,11,11,11,12,11,11,12,11,11,12,11,11],
   ],
   tile_cave_wall: [
-    [13,14,13,13,14,13,13,14],
-    [13,13,14,13,13,13,14,13],
-    [14,13,13,14,13,14,13,13],
-    [13,14,13,13,13,13,14,13],
-    [13,13,14,13,14,13,13,14],
-    [14,13,13,14,13,13,14,13],
-    [13,13,14,13,13,14,13,13],
-    [13,14,13,13,14,13,13,14],
+    [13,14,13,13,14,13,14,13,13,14,13,13,14,13,13,14],
+    [13,13,14,13,13,14,13,13,14,13,13,14,13,13,14,13],
+    [14,13,13,14,13,13,13,14,13,13,14,13,13,14,13,13],
+    [13,14,13,13,13,14,13,13,13,14,13,13,14,13,13,14],
+    [13,13,13,14,13,13,14,13,14,13,13,14,13,13,14,13],
+    [14,13,14,13,13,13,13,14,13,13,14,13,13,14,13,13],
+    [13,13,13,13,14,13,13,13,13,14,13,13,14,13,13,14],
+    [13,14,13,13,13,14,13,14,13,13,13,14,13,13,14,13],
+    [14,13,13,14,13,13,14,13,13,14,13,13,13,14,13,13],
+    [13,13,14,13,13,14,13,13,14,13,13,14,13,13,13,14],
+    [13,14,13,13,14,13,13,14,13,13,14,13,14,13,14,13],
+    [14,13,13,14,13,13,14,13,13,14,13,13,13,14,13,13],
+    [13,13,14,13,13,14,13,13,14,13,13,14,13,13,14,13],
+    [13,14,13,13,14,13,13,14,13,14,13,13,14,13,13,14],
+    [14,13,13,14,13,13,14,13,13,13,14,13,13,14,13,13],
+    [13,13,14,13,14,13,13,14,13,14,13,13,14,13,14,13],
   ],
   tile_cave_floor: [
-    [15,15,16,15,15,16,15,15],
-    [15,16,15,15,15,15,16,15],
-    [16,15,15,16,15,15,15,15],
-    [15,15,15,15,16,15,16,15],
-    [15,16,15,15,15,15,15,16],
-    [15,15,16,15,16,15,15,15],
-    [15,15,15,15,15,16,15,16],
-    [16,15,16,15,15,15,16,15],
+    [15,16,15,15,16,15,15,16,15,16,15,15,16,15,15,16],
+    [15,15,16,15,15,16,15,15,16,15,15,16,15,15,16,15],
+    [16,15,15,16,15,15,15,16,15,15,16,15,15,16,15,15],
+    [15,16,15,15,15,16,15,15,15,16,15,15,16,15,15,16],
+    [15,15,15,16,15,15,16,15,16,15,15,16,15,15,16,15],
+    [16,15,16,15,15,15,15,16,15,15,16,15,15,16,15,15],
+    [15,15,15,15,16,15,15,15,15,16,15,15,16,15,15,16],
+    [15,16,15,15,15,16,15,16,15,15,15,16,15,15,16,15],
+    [16,15,15,16,15,15,16,15,15,16,15,15,15,16,15,15],
+    [15,15,16,15,15,16,15,15,16,15,15,16,15,15,15,16],
+    [15,16,15,15,16,15,15,16,15,15,16,15,16,15,16,15],
+    [16,15,15,16,15,15,16,15,15,16,15,15,15,16,15,15],
+    [15,15,16,15,15,16,15,15,16,15,15,16,15,15,16,15],
+    [15,16,15,15,16,15,15,16,15,16,15,15,16,15,15,16],
+    [16,15,15,16,15,15,16,15,15,15,16,15,15,16,15,15],
+    [15,15,16,15,16,15,15,16,15,16,15,15,16,15,16,15],
   ],
   tile_chest: [
-    [0,0,18,18,18,18,0,0],
-    [0,18,17,17,17,17,18,0],
-    [18,17,17,17,17,17,17,18],
-    [18,18,18,18,18,18,18,18],
-    [18,17,17,17,17,17,17,18],
-    [18,17,17,18,18,17,17,18],
-    [18,17,17,17,17,17,17,18],
-    [0,18,18,18,18,18,18,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,17,17,18,17,17,17,17,18,17,17,0,0,0],
+    [0,0,17,17,18,17,17,17,17,17,18,17,17,17,0,0],
+    [0,0,18,17,17,17,17,17,17,17,17,17,17,18,0,0],
+    [0,0,17,17,17,17,17,59,59,17,17,17,17,17,0,0],
+    [0,0,18,17,17,17,59,17,17,59,17,17,17,18,0,0],
+    [0,0,17,18,17,17,17,17,17,17,17,17,18,17,0,0],
+    [0,0,17,17,17,18,17,17,17,17,18,17,17,17,0,0],
+    [0,0,18,17,17,17,17,17,17,17,17,17,17,18,0,0],
+    [0,0,17,17,18,17,17,17,17,17,18,17,17,17,0,0],
+    [0,0,0,17,17,18,17,17,17,17,18,17,17,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   tile_stone_wall: [
-    [19,19,20,19,20,19,19,20],
-    [20,19,19,19,19,20,19,19],
-    [19,20,19,20,19,19,20,19],
-    [20,20,20,20,20,20,20,20],
-    [19,19,20,19,19,19,20,19],
-    [19,20,19,19,20,19,19,20],
-    [20,20,20,20,20,20,20,20],
-    [19,19,19,20,19,20,19,19],
+    [19,20,19,19,20,19,20,19,19,20,19,19,20,19,19,20],
+    [19,19,20,19,19,20,19,19,20,19,19,20,19,19,20,19],
+    [20,19,19,20,19,19,19,20,19,19,20,19,19,20,19,19],
+    [19,20,19,19,19,20,19,19,19,20,19,19,20,19,19,20],
+    [19,19,19,20,19,19,20,19,20,19,19,20,19,19,20,19],
+    [20,19,20,19,19,19,19,20,19,19,20,19,19,20,19,19],
+    [19,19,19,19,20,19,19,19,19,20,19,19,20,19,19,20],
+    [19,20,19,19,19,20,19,20,19,19,19,20,19,19,20,19],
+    [20,19,19,20,19,19,20,19,19,20,19,19,19,20,19,19],
+    [19,19,20,19,19,20,19,19,20,19,19,20,19,19,19,20],
+    [19,20,19,19,20,19,19,20,19,19,20,19,20,19,20,19],
+    [20,19,19,20,19,19,20,19,19,20,19,19,19,20,19,19],
+    [19,19,20,19,19,20,19,19,20,19,19,20,19,19,20,19],
+    [19,20,19,19,20,19,19,20,19,20,19,19,20,19,19,20],
+    [20,19,19,20,19,19,20,19,19,19,20,19,19,20,19,19],
+    [19,19,20,19,20,19,19,20,19,20,19,19,20,19,20,19],
   ],
   tile_sewer_wall: [
-    [21,22,21,21,22,21,21,22],
-    [21,21,22,21,21,21,22,21],
-    [22,21,21,22,21,22,21,21],
-    [21,22,21,21,21,21,22,21],
-    [21,21,22,21,22,21,21,22],
-    [22,21,21,22,21,21,22,21],
-    [21,21,22,21,21,22,21,21],
-    [21,22,21,21,22,21,21,22],
+    [21,22,21,21,22,21,22,21,21,22,21,21,22,21,21,22],
+    [21,21,22,21,21,22,21,21,22,21,21,22,21,21,22,21],
+    [22,21,21,22,21,21,21,22,21,21,22,21,21,22,21,21],
+    [21,22,21,64,21,22,21,21,21,22,21,21,22,21,21,22],
+    [21,21,21,22,21,21,22,21,22,21,21,22,21,21,22,21],
+    [22,21,22,21,21,21,21,22,21,21,22,21,21,22,21,21],
+    [21,21,21,21,22,21,21,21,21,22,21,21,22,21,21,22],
+    [21,22,21,21,21,22,21,22,21,21,21,22,21,21,22,21],
+    [22,21,21,22,21,21,22,21,21,22,21,21,21,22,21,21],
+    [21,21,22,21,21,22,21,21,22,21,21,22,21,21,64,22],
+    [21,22,21,21,22,21,21,22,21,21,22,21,22,21,22,21],
+    [22,21,21,22,21,21,22,21,21,22,21,21,21,22,21,21],
+    [21,21,22,21,21,22,21,21,22,21,21,22,21,21,22,21],
+    [21,22,21,21,22,21,21,22,21,22,21,21,22,21,21,22],
+    [22,21,21,22,21,21,22,21,21,21,22,21,21,22,21,21],
+    [21,21,22,21,22,21,21,22,21,22,21,21,22,21,22,21],
   ],
   tile_sewer_floor: [
-    [23,23,24,23,23,24,23,23],
-    [23,24,23,23,23,23,24,23],
-    [24,23,23,24,23,23,23,23],
-    [23,23,23,23,24,23,24,23],
-    [23,24,23,23,23,23,23,24],
-    [23,23,24,23,24,23,23,23],
-    [23,23,23,23,23,24,23,24],
-    [24,23,24,23,23,23,24,23],
+    [23,24,23,23,24,23,23,24,23,24,23,23,24,23,23,24],
+    [23,23,24,23,23,24,23,23,24,23,23,24,23,23,24,23],
+    [24,23,23,24,23,23,23,24,23,23,24,23,23,24,23,23],
+    [23,24,23,23,23,24,23,23,23,24,23,23,24,23,23,24],
+    [23,23,23,24,23,23,24,23,24,23,23,24,23,23,24,23],
+    [24,23,24,23,23,23,23,24,23,23,24,23,23,24,23,23],
+    [23,23,23,23,24,23,23,23,23,24,23,23,24,23,23,24],
+    [23,24,23,23,23,24,23,24,23,23,23,24,23,23,24,23],
+    [24,23,23,24,23,23,24,23,23,24,23,23,23,24,23,23],
+    [23,23,24,23,23,24,23,23,24,23,23,24,23,23,23,24],
+    [23,24,23,23,24,23,23,24,23,23,24,23,24,23,24,23],
+    [24,23,23,24,23,23,24,23,23,24,23,23,23,24,23,23],
+    [23,23,24,23,23,24,23,23,24,23,23,24,23,23,24,23],
+    [23,24,23,23,24,23,23,24,23,24,23,23,24,23,23,24],
+    [24,23,23,24,23,23,24,23,23,23,24,23,23,24,23,23],
+    [23,23,24,23,24,23,23,24,23,24,23,23,24,23,24,23],
   ],
   tile_sewer_water: [
-    [25,25,26,25,25,25,26,25],
-    [25,26,25,25,26,25,25,25],
-    [26,25,25,25,25,25,26,25],
-    [25,25,25,26,25,26,25,25],
-    [25,25,26,25,25,25,25,26],
-    [25,26,25,25,25,26,25,25],
-    [25,25,25,26,25,25,25,26],
-    [26,25,25,25,26,25,26,25],
+    [25,26,25,25,26,25,25,26,25,26,25,25,26,25,25,26],
+    [25,25,26,25,25,26,25,25,26,25,25,26,25,25,26,25],
+    [26,25,25,26,25,25,64,26,25,25,26,25,25,26,25,25],
+    [25,26,25,25,25,26,25,25,25,26,25,25,26,25,25,26],
+    [25,25,25,26,25,25,26,25,26,25,25,26,25,25,26,25],
+    [26,25,26,25,25,25,25,26,25,25,26,25,25,26,25,25],
+    [25,25,25,25,26,25,25,25,25,26,25,25,26,25,25,26],
+    [25,26,25,25,25,26,25,26,25,25,25,26,25,25,26,25],
+    [26,25,25,26,25,25,26,25,25,26,25,25,25,26,25,25],
+    [25,25,26,25,25,26,25,25,26,25,25,26,25,25,25,26],
+    [25,26,25,25,26,25,25,26,25,25,26,25,26,25,26,25],
+    [26,25,25,26,25,25,26,25,25,26,25,25,25,26,25,25],
+    [25,25,26,25,25,26,25,25,26,25,25,26,25,25,26,25],
+    [25,26,25,25,26,25,64,26,25,26,25,25,26,25,25,26],
+    [26,25,25,26,25,25,26,25,25,25,26,25,25,26,25,25],
+    [25,25,26,25,26,25,25,26,25,26,25,25,26,25,26,25],
   ],
-  // Sprawl tile sprites
   tile_sprawl_road: [
-    [27,27,28,27,27,28,27,27],
-    [27,28,27,27,27,27,28,27],
-    [28,27,27,27,28,27,27,27],
-    [27,27,27,28,27,27,27,28],
-    [27,28,27,27,27,28,27,27],
-    [27,27,28,27,27,27,27,28],
-    [27,27,27,27,28,27,28,27],
-    [28,27,27,28,27,27,27,27],
+    [27,28,27,27,28,27,27,28,27,28,27,27,28,27,27,28],
+    [27,27,28,27,27,28,27,27,28,27,27,28,27,27,28,27],
+    [28,27,27,28,27,27,27,28,27,27,28,27,27,28,27,27],
+    [27,28,27,27,27,28,27,27,27,28,27,27,28,27,27,28],
+    [27,27,27,28,27,27,28,27,28,27,27,28,27,27,28,27],
+    [28,27,28,27,60,27,27,28,27,27,28,27,27,28,27,27],
+    [27,27,27,27,28,27,27,27,27,28,27,27,28,27,27,28],
+    [27,28,27,27,27,28,27,28,27,27,27,28,27,27,28,27],
+    [28,27,27,28,27,27,28,27,27,28,27,27,27,28,27,27],
+    [27,27,28,27,27,28,27,27,28,27,27,28,27,27,27,28],
+    [27,28,27,27,28,27,27,28,27,27,28,27,28,27,28,27],
+    [28,27,27,28,27,27,28,27,27,28,27,27,27,28,27,27],
+    [27,27,28,27,27,28,27,27,28,27,27,28,27,27,28,27],
+    [27,28,27,27,28,27,27,28,27,28,27,27,28,27,27,28],
+    [28,27,27,28,27,27,28,27,27,27,28,27,60,28,27,27],
+    [27,27,28,27,28,27,27,28,27,28,27,27,28,27,28,27],
   ],
   tile_sprawl_fence: [
-    [29,30,29,30,29,30,29,30],
-    [29,29,29,29,29,29,29,29],
-    [30,29,30,29,30,29,30,29],
-    [30,30,30,30,30,30,30,30],
-    [29,30,29,30,29,30,29,30],
-    [29,29,29,29,29,29,29,29],
-    [30,29,30,29,30,29,30,29],
-    [30,30,30,30,30,30,30,30],
+    [29,30,29,29,30,29,30,29,29,30,29,29,30,29,29,30],
+    [29,29,30,29,29,30,29,29,30,29,29,30,29,29,30,29],
+    [30,29,29,30,29,29,29,30,29,29,30,29,29,30,29,29],
+    [29,30,29,29,29,30,29,29,29,30,29,29,30,29,29,30],
+    [29,29,29,30,29,29,30,29,30,29,29,30,29,29,30,29],
+    [30,29,30,29,29,29,29,30,29,29,30,29,29,30,29,29],
+    [29,29,29,29,30,29,29,29,29,30,29,29,30,29,29,30],
+    [29,30,29,29,29,30,29,30,29,29,29,30,29,29,30,29],
+    [30,29,29,30,29,29,30,29,29,30,29,29,29,30,29,29],
+    [29,29,30,29,29,30,29,29,30,29,29,30,29,29,29,30],
+    [29,30,29,29,30,29,29,30,29,29,30,29,30,29,30,29],
+    [30,29,29,30,29,29,30,29,29,30,29,29,29,30,29,29],
+    [29,29,30,29,29,30,29,29,30,29,29,30,29,29,30,29],
+    [29,30,29,29,30,29,29,30,29,30,29,29,30,29,29,30],
+    [30,29,29,30,29,29,30,29,29,29,30,29,29,30,29,29],
+    [29,29,30,29,30,29,29,30,29,30,29,29,30,29,30,29],
   ],
   tile_sprawl_grass: [
-    [31,31,32,31,31,31,32,31],
-    [31,32,31,31,31,32,31,31],
-    [31,31,31,31,32,31,31,31],
-    [32,31,31,32,31,31,31,32],
-    [31,31,32,31,31,31,32,31],
-    [31,31,31,31,31,32,31,31],
-    [31,32,31,31,32,31,31,31],
-    [31,31,31,32,31,31,32,31],
+    [31,32,31,31,32,31,31,32,31,32,31,31,32,31,31,32],
+    [31,31,32,31,31,32,31,31,32,31,31,32,31,31,32,31],
+    [32,31,31,32,31,31,31,32,31,31,32,31,31,32,31,31],
+    [31,32,31,31,59,32,31,31,31,32,31,31,32,31,31,32],
+    [31,31,31,32,31,31,32,31,32,31,31,32,31,31,32,31],
+    [32,31,32,31,31,31,31,32,31,31,32,31,31,32,31,31],
+    [31,31,31,31,32,31,31,31,31,32,31,31,32,31,31,32],
+    [31,32,31,31,31,32,31,32,31,31,31,32,31,31,32,31],
+    [32,31,31,32,31,31,32,31,31,32,31,31,31,32,31,31],
+    [31,31,32,31,31,32,31,31,32,31,31,32,31,31,31,32],
+    [31,32,31,31,32,31,31,32,31,31,32,31,32,31,32,31],
+    [32,31,31,32,31,31,32,31,31,32,31,31,31,32,31,31],
+    [31,31,32,31,31,32,31,31,32,31,31,32,31,31,32,31],
+    [31,32,31,31,32,31,31,32,31,32,31,31,32,31,31,32],
+    [32,31,31,32,31,31,32,31,31,31,32,31,59,32,31,31],
+    [31,31,32,31,32,31,31,32,31,32,31,31,32,31,32,31],
   ],
-  // Retail tile sprites
   tile_retail_floor: [
-    [33,33,34,33,33,34,33,33],
-    [33,34,33,33,33,33,34,33],
-    [34,33,33,33,34,33,33,33],
-    [33,33,33,34,33,33,33,34],
-    [33,34,33,33,33,34,33,33],
-    [33,33,34,33,33,33,33,34],
-    [33,33,33,33,34,33,34,33],
-    [34,33,33,34,33,33,33,33],
+    [33,34,33,33,34,33,33,34,33,34,33,33,34,33,33,34],
+    [33,33,34,33,33,34,33,33,34,33,33,34,33,33,34,33],
+    [34,33,33,34,33,33,33,34,33,33,34,33,33,34,33,33],
+    [33,34,33,33,33,34,33,33,33,34,33,33,34,33,33,34],
+    [33,33,33,34,33,33,34,33,34,33,33,34,33,33,34,33],
+    [34,33,34,33,33,33,33,34,33,33,34,33,33,34,33,33],
+    [33,33,33,33,34,33,33,33,33,34,33,33,34,33,33,34],
+    [33,34,33,33,33,34,33,34,33,33,33,34,33,33,34,33],
+    [34,33,33,34,33,33,34,33,33,34,33,33,33,34,33,33],
+    [33,33,34,33,33,34,33,33,34,33,33,34,33,33,33,34],
+    [33,34,33,33,34,33,33,34,33,33,34,33,34,33,34,33],
+    [34,33,33,34,33,33,34,33,33,34,33,33,33,34,33,33],
+    [33,33,34,33,33,34,33,33,34,33,33,34,33,33,34,33],
+    [33,34,33,33,34,33,33,34,33,34,33,33,34,33,33,34],
+    [34,33,33,34,33,33,34,33,33,33,34,33,33,34,33,33],
+    [33,33,34,33,34,33,33,34,33,34,33,33,34,33,34,33],
   ],
   tile_retail_wall: [
-    [35,35,36,35,36,35,35,36],
-    [36,35,35,35,35,36,35,35],
-    [35,36,35,36,35,35,36,35],
-    [36,36,36,36,36,36,36,36],
-    [35,35,36,35,35,35,36,35],
-    [35,36,35,35,36,35,35,36],
-    [36,36,36,36,36,36,36,36],
-    [35,35,35,36,35,36,35,35],
+    [35,36,35,35,36,35,36,35,35,36,35,35,36,35,35,36],
+    [35,35,36,35,35,36,35,35,36,35,35,36,35,35,36,35],
+    [36,35,35,36,35,35,35,36,35,35,36,35,35,36,35,35],
+    [35,36,35,35,35,36,35,35,35,36,35,35,36,35,35,36],
+    [35,35,35,36,35,35,36,35,36,35,35,36,35,35,36,35],
+    [36,35,36,35,35,35,35,36,35,35,36,35,35,36,35,35],
+    [35,35,35,35,36,35,35,35,35,36,35,35,36,35,35,36],
+    [35,36,35,35,35,36,35,36,35,35,35,36,35,35,36,35],
+    [36,35,35,36,35,35,36,35,35,36,35,35,35,36,35,35],
+    [35,35,36,35,35,36,35,35,36,35,35,36,35,35,35,36],
+    [35,36,35,35,36,35,35,36,35,35,36,35,36,35,36,35],
+    [36,35,35,36,35,35,36,35,35,36,35,35,35,36,35,35],
+    [35,35,36,35,35,36,35,35,36,35,35,36,35,35,36,35],
+    [35,36,35,35,36,35,35,36,35,36,35,35,36,35,35,36],
+    [36,35,35,36,35,35,36,35,35,35,36,35,35,36,35,35],
+    [35,35,36,35,36,35,35,36,35,36,35,35,36,35,36,35],
   ],
   tile_retail_shelf: [
-    [37,38,37,37,38,37,37,38],
-    [37,37,38,37,37,37,38,37],
-    [38,37,37,38,37,38,37,37],
-    [38,38,38,38,38,38,38,38],
-    [37,38,37,37,37,37,38,37],
-    [37,37,38,37,38,37,37,38],
-    [38,38,38,38,38,38,38,38],
-    [37,37,37,38,37,38,37,37],
+    [37,38,37,37,38,37,38,37,37,38,37,37,38,37,37,38],
+    [37,37,38,37,37,38,37,37,38,37,37,38,37,37,38,37],
+    [38,37,37,38,37,37,37,38,37,37,38,37,37,38,37,37],
+    [37,38,37,37,37,38,37,37,37,38,37,37,38,37,37,38],
+    [37,37,37,38,37,37,38,37,38,37,37,38,37,37,38,37],
+    [38,37,38,37,59,37,37,38,37,37,38,37,37,38,37,37],
+    [37,37,37,37,38,37,37,37,37,38,37,37,38,37,37,38],
+    [37,38,37,37,37,38,37,38,37,37,37,38,37,37,38,37],
+    [38,37,37,38,37,37,38,37,37,38,37,37,37,38,37,37],
+    [37,37,38,37,37,38,37,37,38,37,37,38,37,37,37,38],
+    [37,38,37,37,38,37,37,38,37,37,38,37,38,37,38,37],
+    [38,37,37,38,37,37,38,37,37,38,37,37,37,38,37,37],
+    [37,37,38,37,37,38,37,37,38,37,37,38,37,37,38,37],
+    [37,38,37,37,38,37,37,38,37,38,37,37,38,37,37,38],
+    [38,37,37,38,37,37,38,37,37,37,38,37,37,38,37,37],
+    [37,37,38,37,38,37,37,38,37,38,37,37,38,37,38,37],
   ],
-  // Gym tile sprites
   tile_gym_floor: [
-    [39,39,40,39,39,40,39,39],
-    [39,40,39,39,39,39,40,39],
-    [40,39,39,39,40,39,39,39],
-    [39,39,39,40,39,39,39,40],
-    [39,40,39,39,39,40,39,39],
-    [39,39,40,39,39,39,39,40],
-    [39,39,39,39,40,39,40,39],
-    [40,39,39,40,39,39,39,39],
+    [39,40,39,39,40,39,39,40,39,40,39,39,40,39,39,40],
+    [39,39,40,39,39,40,39,39,40,39,39,40,39,39,40,39],
+    [40,39,39,40,39,39,39,40,39,39,40,39,39,40,39,39],
+    [39,40,39,39,39,40,39,39,39,40,39,39,40,39,39,40],
+    [39,39,39,40,39,39,40,39,40,39,39,40,39,39,40,39],
+    [40,39,40,39,39,39,39,40,39,39,40,39,39,40,39,39],
+    [39,39,39,39,40,39,39,39,39,40,39,39,40,39,39,40],
+    [39,40,39,39,39,40,39,40,39,39,39,40,39,39,40,39],
+    [40,39,39,40,39,39,40,39,39,40,39,39,39,40,39,39],
+    [39,39,40,39,39,40,39,39,40,39,39,40,39,39,39,40],
+    [39,40,39,39,40,39,39,40,39,39,40,39,40,39,40,39],
+    [40,39,39,40,39,39,40,39,39,40,39,39,39,40,39,39],
+    [39,39,40,39,39,40,39,39,40,39,39,40,39,39,40,39],
+    [39,40,39,39,40,39,39,40,39,40,39,39,40,39,39,40],
+    [40,39,39,40,39,39,40,39,39,39,40,39,39,40,39,39],
+    [39,39,40,39,40,39,39,40,39,40,39,39,40,39,40,39],
   ],
   tile_gym_wall: [
-    [41,42,41,41,42,41,41,42],
-    [41,41,42,41,41,41,42,41],
-    [42,41,41,42,41,42,41,41],
-    [41,42,41,41,41,41,42,41],
-    [41,41,42,41,42,41,41,42],
-    [42,41,41,42,41,41,42,41],
-    [41,41,42,41,41,42,41,41],
-    [41,42,41,41,42,41,41,42],
+    [41,42,41,41,42,41,42,41,41,42,41,41,42,41,41,42],
+    [41,41,42,41,41,42,41,41,42,41,41,42,41,41,42,41],
+    [42,41,41,42,41,41,41,42,41,41,42,41,41,42,41,41],
+    [41,42,41,41,41,42,41,41,41,42,41,41,42,41,41,42],
+    [41,41,41,42,41,41,42,41,42,41,41,42,41,41,42,41],
+    [42,41,42,41,61,41,41,42,41,41,42,41,41,42,41,41],
+    [41,41,41,41,42,41,41,41,41,42,41,41,42,41,41,42],
+    [41,42,41,41,41,42,41,42,41,41,41,42,41,41,42,41],
+    [42,41,41,42,41,41,42,41,41,42,41,41,41,42,41,41],
+    [41,41,42,41,41,42,41,41,42,41,41,42,41,41,41,42],
+    [41,42,41,41,42,41,41,42,41,41,42,41,42,41,42,41],
+    [42,41,41,42,41,41,42,41,41,42,41,41,41,42,41,41],
+    [41,41,42,41,41,42,41,41,42,41,41,42,41,41,42,41],
+    [41,42,41,41,42,41,41,42,41,42,41,41,42,41,41,42],
+    [42,41,41,42,41,41,42,41,41,41,42,41,41,42,41,41],
+    [41,41,42,41,42,41,41,42,41,42,41,41,42,41,42,41],
   ],
   tile_gym_equipment: [
-    [43,44,43,44,43,44,43,44],
-    [43,43,44,43,43,43,44,43],
-    [44,43,43,44,43,44,43,43],
-    [44,44,44,44,44,44,44,44],
-    [43,43,44,43,43,43,44,43],
-    [43,44,43,43,44,43,43,44],
-    [44,44,44,44,44,44,44,44],
-    [43,43,43,44,43,44,43,43],
+    [43,44,43,43,44,43,44,43,43,44,43,43,44,43,43,44],
+    [43,43,44,43,43,44,43,43,44,43,43,44,43,43,44,43],
+    [44,43,43,44,43,43,43,44,43,43,44,43,43,44,43,43],
+    [43,44,43,43,43,44,43,43,43,44,43,43,44,43,43,44],
+    [43,43,43,44,43,43,44,43,44,43,43,44,43,43,44,43],
+    [44,43,44,43,43,43,43,44,43,43,44,43,43,44,43,43],
+    [43,43,43,43,44,43,43,43,43,44,43,43,44,43,43,44],
+    [43,44,43,43,43,44,43,44,43,43,43,44,43,43,44,43],
+    [44,43,43,44,43,43,44,43,43,44,43,43,43,44,43,43],
+    [43,43,44,43,43,44,43,43,44,43,43,44,43,43,43,44],
+    [43,44,43,43,44,43,43,44,43,43,44,43,44,43,44,43],
+    [44,43,43,44,43,43,44,43,43,44,43,43,43,44,43,43],
+    [43,43,44,43,43,44,43,43,44,43,43,44,43,43,44,43],
+    [43,44,43,43,44,43,43,44,43,44,43,43,44,43,43,44],
+    [44,43,43,44,43,43,44,43,43,43,44,43,43,44,43,43],
+    [43,43,44,43,44,43,43,44,43,44,43,43,44,43,44,43],
   ],
-  // Lab tile sprites
   tile_lab_floor: [
-    [45,45,46,45,45,46,45,45],
-    [45,46,45,45,45,45,46,45],
-    [46,45,45,45,46,45,45,45],
-    [45,45,45,46,45,45,45,46],
-    [45,46,45,45,45,46,45,45],
-    [45,45,46,45,45,45,45,46],
-    [45,45,45,45,46,45,46,45],
-    [46,45,45,46,45,45,45,45],
+    [45,46,45,45,46,45,45,46,45,46,45,45,46,45,45,46],
+    [45,45,46,45,45,46,45,45,46,45,45,46,45,45,46,45],
+    [46,45,45,46,45,45,45,46,45,45,46,45,45,46,45,45],
+    [45,46,45,45,65,46,45,45,45,46,45,45,46,45,45,46],
+    [45,45,45,46,45,45,46,45,46,45,45,46,45,45,46,45],
+    [46,45,46,45,45,45,45,46,45,45,46,45,45,46,45,45],
+    [45,45,45,45,46,45,45,45,45,46,45,45,46,45,45,46],
+    [45,46,45,45,45,46,45,46,45,45,45,46,45,45,46,45],
+    [46,45,45,46,45,45,46,45,45,46,45,45,45,46,45,45],
+    [45,45,46,45,45,46,45,45,46,45,45,46,45,45,45,46],
+    [45,46,45,45,46,45,45,46,45,45,46,45,46,45,46,45],
+    [46,45,45,46,45,45,46,45,45,46,45,45,45,46,45,45],
+    [45,45,46,45,45,46,45,45,46,45,45,46,45,45,46,45],
+    [45,46,45,45,46,45,45,46,45,46,45,45,46,45,45,46],
+    [46,45,45,46,45,45,46,45,45,45,46,45,65,46,45,45],
+    [45,45,46,45,46,45,45,46,45,46,45,45,46,45,46,45],
   ],
   tile_lab_wall: [
-    [47,47,48,47,48,47,47,48],
-    [48,47,47,47,47,48,47,47],
-    [47,48,47,48,47,47,48,47],
-    [48,48,48,48,48,48,48,48],
-    [47,47,48,47,47,47,48,47],
-    [47,48,47,47,48,47,47,48],
-    [48,48,48,48,48,48,48,48],
-    [47,47,47,48,47,48,47,47],
+    [47,48,47,47,48,47,48,47,47,48,47,47,48,47,47,48],
+    [47,47,48,47,47,48,47,47,48,47,47,48,47,47,48,47],
+    [48,47,47,48,47,47,47,48,47,47,48,47,47,48,47,47],
+    [47,48,47,47,47,48,47,47,47,48,47,47,48,47,47,48],
+    [47,47,47,48,47,47,48,47,48,47,47,48,47,47,48,47],
+    [48,47,48,47,47,60,47,48,47,47,48,47,47,48,47,47],
+    [47,47,47,47,48,47,47,47,47,48,47,47,48,47,47,48],
+    [47,48,47,47,47,48,47,48,47,47,47,48,47,47,48,47],
+    [48,47,47,48,47,47,48,47,47,48,47,47,47,48,47,47],
+    [47,47,48,47,47,48,47,47,48,47,47,48,47,47,47,48],
+    [47,48,47,47,48,47,47,48,47,47,48,47,48,47,48,47],
+    [48,47,47,48,47,47,48,47,47,48,47,47,47,48,47,47],
+    [47,47,48,47,47,48,47,47,48,47,47,48,47,47,48,47],
+    [47,48,47,47,48,47,63,48,47,48,47,47,48,47,47,48],
+    [48,47,47,48,47,47,48,47,47,47,48,47,47,48,47,47],
+    [47,47,48,47,48,47,47,48,47,48,47,47,48,47,48,47],
   ],
   tile_lab_tank: [
-    [49,50,49,49,50,49,49,50],
-    [49,49,50,49,49,49,50,49],
-    [50,49,49,50,49,50,49,49],
-    [49,50,49,49,49,49,50,49],
-    [49,49,50,49,50,49,49,50],
-    [50,49,49,50,49,49,50,49],
-    [49,49,50,49,49,50,49,49],
-    [49,50,49,49,50,49,49,50],
+    [49,50,49,49,50,49,50,49,49,50,49,49,50,49,49,50],
+    [49,49,50,49,49,50,49,49,50,49,49,50,49,49,50,49],
+    [50,49,49,50,49,49,49,50,49,49,50,49,49,50,49,49],
+    [49,50,49,49,65,50,49,49,49,50,49,49,50,49,49,50],
+    [49,49,49,50,49,49,50,49,50,49,49,50,49,49,50,49],
+    [50,49,50,49,49,49,49,50,49,49,50,49,49,50,49,49],
+    [49,49,49,49,50,49,49,49,49,50,49,49,50,49,49,50],
+    [49,50,49,49,49,50,49,50,49,49,49,50,49,49,50,49],
+    [50,49,49,50,49,49,50,49,49,50,49,49,49,50,49,49],
+    [49,49,50,49,49,50,49,49,50,49,49,50,49,49,49,50],
+    [49,50,49,49,50,49,49,50,49,49,50,49,50,49,50,49],
+    [50,49,49,50,49,49,50,49,49,50,49,49,49,50,49,49],
+    [49,49,50,49,49,50,49,49,50,49,49,50,49,49,50,49],
+    [49,50,49,49,50,49,49,50,49,50,49,65,50,49,49,50],
+    [50,49,49,50,49,49,50,49,49,49,50,49,49,50,49,49],
+    [49,49,50,49,50,49,49,50,49,50,49,49,50,49,50,49],
   ],
-  // Island tile sprites
   tile_island_floor: [
-    [51,51,52,51,51,52,51,51],
-    [51,52,51,51,51,51,52,51],
-    [52,51,51,51,52,51,51,51],
-    [51,51,51,52,51,51,51,52],
-    [51,52,51,51,51,52,51,51],
-    [51,51,52,51,51,51,51,52],
-    [51,51,51,51,52,51,52,51],
-    [52,51,51,52,51,51,51,51],
+    [51,52,51,51,52,51,51,52,51,52,51,51,52,51,51,52],
+    [51,51,52,51,51,52,51,51,52,51,51,52,51,51,52,51],
+    [52,51,51,52,51,51,51,52,51,51,52,51,51,52,51,51],
+    [51,52,51,51,51,52,51,51,51,52,51,51,52,51,51,52],
+    [51,51,51,52,51,51,52,51,52,51,51,52,51,51,52,51],
+    [52,51,52,51,51,51,51,52,51,51,52,51,51,52,51,51],
+    [51,51,51,51,52,51,51,51,51,52,51,51,52,51,51,52],
+    [51,52,51,51,51,52,51,52,51,51,51,52,51,51,52,51],
+    [52,51,51,52,51,51,52,51,51,52,51,51,51,52,51,51],
+    [51,51,52,51,51,52,51,51,52,51,51,52,51,51,51,52],
+    [51,52,51,51,52,51,51,52,51,51,52,51,52,51,52,51],
+    [52,51,51,52,51,51,52,51,51,52,51,51,51,52,51,51],
+    [51,51,52,51,51,52,51,51,52,51,51,52,51,51,52,51],
+    [51,52,51,51,52,51,51,52,51,52,51,51,52,51,51,52],
+    [52,51,51,52,51,51,52,51,51,51,52,51,51,52,51,51],
+    [51,51,52,51,52,51,51,52,51,52,51,51,52,51,52,51],
   ],
   tile_island_wall: [
-    [53,53,54,53,54,53,53,54],
-    [54,53,53,53,53,54,53,53],
-    [53,54,53,54,53,53,54,53],
-    [54,54,54,54,54,54,54,54],
-    [53,53,54,53,53,53,54,53],
-    [53,54,53,53,54,53,53,54],
-    [54,54,54,54,54,54,54,54],
-    [53,53,53,54,53,54,53,53],
+    [53,54,53,53,54,53,54,53,53,54,53,53,54,53,53,54],
+    [53,53,54,53,53,54,53,53,54,53,53,54,53,53,54,53],
+    [54,53,53,54,53,53,53,54,53,53,54,53,53,54,53,53],
+    [53,54,53,53,53,54,53,53,53,54,53,53,54,53,53,54],
+    [53,53,53,54,53,53,54,53,54,53,53,54,53,53,54,53],
+    [54,53,54,53,60,53,53,54,53,53,54,53,53,54,53,53],
+    [53,53,53,53,54,53,53,53,53,54,53,53,54,53,53,54],
+    [53,54,53,53,53,54,53,54,53,53,53,54,53,53,54,53],
+    [54,53,53,54,53,53,54,53,53,54,53,53,53,54,53,53],
+    [53,53,54,53,53,54,53,53,54,53,53,54,53,53,53,54],
+    [53,54,53,53,54,53,53,54,53,53,54,53,54,53,54,53],
+    [54,53,53,54,53,53,54,53,53,54,53,53,53,54,53,53],
+    [53,53,54,53,53,54,53,53,54,53,53,54,53,53,54,53],
+    [53,54,53,53,54,53,63,54,53,54,53,53,54,53,53,54],
+    [54,53,53,54,53,53,54,53,53,53,54,53,53,54,53,53],
+    [53,53,54,53,54,53,53,54,53,54,53,53,54,53,54,53],
   ],
   tile_temple_floor: [
-    [55,55,56,55,55,56,55,55],
-    [55,56,55,55,55,55,56,55],
-    [56,55,55,55,56,55,55,55],
-    [55,55,55,56,55,55,55,56],
-    [55,56,55,55,55,56,55,55],
-    [55,55,56,55,55,55,55,56],
-    [55,55,55,55,56,55,56,55],
-    [56,55,55,56,55,55,55,55],
+    [55,56,55,55,56,55,55,56,55,56,55,55,56,55,55,56],
+    [55,55,56,55,55,56,55,55,56,55,55,56,55,55,56,55],
+    [56,55,55,56,55,55,66,56,55,55,56,55,55,56,55,55],
+    [55,56,55,55,55,56,55,55,55,56,55,55,56,55,55,56],
+    [55,55,55,56,55,55,56,55,56,55,55,56,55,55,56,55],
+    [56,55,56,55,55,55,55,56,55,55,56,55,55,56,55,55],
+    [55,55,55,55,56,55,55,55,55,56,55,55,56,55,55,56],
+    [55,56,55,55,55,56,55,56,55,55,55,56,55,55,56,55],
+    [56,55,55,56,55,55,56,55,55,56,55,55,55,56,55,55],
+    [55,55,56,55,55,56,55,55,56,55,55,56,55,55,55,56],
+    [55,56,55,55,56,55,55,56,55,55,56,55,56,55,56,55],
+    [56,55,55,56,55,55,56,55,55,56,55,55,55,56,55,55],
+    [55,55,56,55,55,56,55,55,56,55,55,56,55,55,56,55],
+    [55,56,55,55,56,55,55,56,55,56,55,55,56,55,55,56],
+    [56,55,55,56,55,55,56,55,55,55,56,55,66,56,55,55],
+    [55,55,56,55,56,55,55,56,55,56,55,55,56,55,56,55],
   ],
   tile_temple_wall: [
-    [57,58,57,57,58,57,57,58],
-    [57,57,58,57,57,57,58,57],
-    [58,57,57,58,57,58,57,57],
-    [57,58,57,57,57,57,58,57],
-    [57,57,58,57,58,57,57,58],
-    [58,57,57,58,57,57,58,57],
-    [57,57,58,57,57,58,57,57],
-    [57,58,57,57,58,57,57,58],
+    [57,58,57,57,58,57,58,57,57,58,57,57,58,57,57,58],
+    [57,57,58,57,57,58,57,57,58,57,57,58,57,57,58,57],
+    [58,57,57,58,57,57,57,58,57,57,58,57,57,58,57,57],
+    [57,58,57,57,67,58,57,57,57,58,57,57,58,57,57,58],
+    [57,57,57,58,57,57,58,57,58,57,57,58,57,57,58,57],
+    [58,57,58,57,57,57,57,58,57,57,58,57,57,58,57,57],
+    [57,57,57,57,58,57,57,57,57,58,57,57,58,57,57,58],
+    [57,58,57,57,57,58,57,58,57,57,57,58,57,57,58,57],
+    [58,57,57,58,57,57,58,57,57,58,57,57,57,58,57,57],
+    [57,57,58,57,57,58,57,57,58,57,57,58,57,57,57,58],
+    [57,58,57,57,58,57,57,58,57,57,58,57,58,57,58,57],
+    [58,57,57,58,57,57,58,57,57,58,57,57,57,58,57,57],
+    [57,57,58,57,57,58,57,57,58,57,57,58,57,57,58,57],
+    [57,58,57,57,58,57,57,58,57,58,57,67,58,57,57,58],
+    [58,57,57,58,57,57,58,57,57,57,58,57,57,58,57,57],
+    [57,57,58,57,58,57,57,58,57,58,57,57,58,57,58,57],
   ],
 };
 
-// Map tile IDs (from tiles.json) to sprite keys
+// Map tile IDs to sprite keys
 export const TILE_SPRITE_MAP = {
-  0: null,                // void — no sprite, use black
-  1: 'tile_grass',
-  2: 'tile_wall',
-  3: 'tile_water',
-  4: 'tile_path',
-  5: 'tile_door',
-  6: 'tile_floor',
-  7: 'tile_cave_wall',
-  8: 'tile_cave_floor',
-  9: 'tile_chest',
-  10: 'tile_stone_wall',
-  11: 'tile_sewer_wall',
-  12: 'tile_sewer_floor',
-  13: 'tile_sewer_water',
-  14: 'tile_sprawl_road',
-  15: 'tile_sprawl_fence',
-  16: 'tile_sprawl_grass',
-  17: 'tile_retail_floor',
-  18: 'tile_retail_wall',
-  19: 'tile_retail_shelf',
-  20: 'tile_gym_floor',
-  21: 'tile_gym_wall',
-  22: 'tile_gym_equipment',
-  23: 'tile_lab_floor',
-  24: 'tile_lab_wall',
-  25: 'tile_lab_tank',
-  26: 'tile_island_floor',
-  27: 'tile_island_wall',
-  28: 'tile_temple_floor',
-  29: 'tile_temple_wall',
+  0: null,
+  1: 'tile_grass', 2: 'tile_wall', 3: 'tile_water', 4: 'tile_path',
+  5: 'tile_door', 6: 'tile_floor', 7: 'tile_cave_wall', 8: 'tile_cave_floor',
+  9: 'tile_chest', 10: 'tile_stone_wall', 11: 'tile_sewer_wall', 12: 'tile_sewer_floor',
+  13: 'tile_sewer_water', 14: 'tile_sprawl_road', 15: 'tile_sprawl_fence', 16: 'tile_sprawl_grass',
+  17: 'tile_retail_floor', 18: 'tile_retail_wall', 19: 'tile_retail_shelf',
+  20: 'tile_gym_floor', 21: 'tile_gym_wall', 22: 'tile_gym_equipment',
+  23: 'tile_lab_floor', 24: 'tile_lab_wall', 25: 'tile_lab_tank',
+  26: 'tile_island_floor', 27: 'tile_island_wall',
+  28: 'tile_temple_floor', 29: 'tile_temple_wall',
 };
 
-// Map enemy types to sprite keys
 export const ENEMY_SPRITE_MAP = {
-  bat: 'bat',
-  slime: 'slime',
-  goblin: 'goblin',
-  shadow_bat: 'shadow_bat',
-  poison_slime: 'poison_slime',
-  cave_troll: 'cave_troll',
-  fire_imp: 'fire_imp',
-  dark_knight: 'dark_knight',
-  crystal_spider: 'crystal_spider',
-  ancient_golem: 'ancient_golem',
-  chaos_wraith: 'chaos_wraith',
-  sewer_king: 'sewer_king',
-  sewer_rat: 'sewer_rat',
-  toxic_slime: 'toxic_slime',
-  // Sprawl
-  feral_dog: 'feral_dog',
-  feral_rat: 'feral_rat',
-  goblin_archer: 'goblin_archer',
-  hoa_enforcer: 'hoa_enforcer',
-  // Retail
-  retail_bot: 'retail_bot',
-  price_scanner: 'price_scanner',
-  shopping_cart_golem: 'shopping_cart_golem',
-  corrupted_cashier: 'corrupted_cashier',
+  bat: 'bat', slime: 'slime', goblin: 'goblin',
+  shadow_bat: 'shadow_bat', poison_slime: 'poison_slime',
+  cave_troll: 'cave_troll', fire_imp: 'fire_imp',
+  dark_knight: 'dark_knight', crystal_spider: 'crystal_spider',
+  ancient_golem: 'ancient_golem', chaos_wraith: 'chaos_wraith',
+  sewer_king: 'sewer_king', sewer_rat: 'sewer_rat', toxic_slime: 'toxic_slime',
+  ghost_intern: 'ghost_intern', gatekeeper: 'gatekeeper',
+  feral_dog: 'feral_dog', feral_rat: 'feral_rat',
+  goblin_archer: 'goblin_archer', hoa_enforcer: 'hoa_enforcer',
+  retail_bot: 'retail_bot', price_scanner: 'price_scanner',
+  shopping_cart_golem: 'shopping_cart_golem', corrupted_cashier: 'corrupted_cashier',
   the_manager: 'the_manager',
-  // Gym
-  protein_junkie: 'protein_junkie',
-  swole_beast: 'swole_beast',
-  gym_bro: 'gym_bro',
-  treadmill_monster: 'treadmill_monster',
-  the_alpha: 'the_alpha',
-  // Labs
-  lab_chimera: 'lab_chimera',
-  bio_mutant: 'bio_mutant',
-  experiment_pod: 'experiment_pod',
-  rogue_ai: 'rogue_ai',
-  the_specimen: 'the_specimen',
-  // Island
-  elite_guard: 'elite_guard',
-  security_drone: 'security_drone',
-  cult_acolyte: 'cult_acolyte',
-  void_wraith: 'void_wraith',
-  the_consultant: 'the_consultant',
-  // Tutorial
+  protein_junkie: 'protein_junkie', swole_beast: 'swole_beast',
+  gym_bro: 'gym_bro', treadmill_monster: 'treadmill_monster', the_alpha: 'the_alpha',
+  lab_chimera: 'lab_chimera', bio_mutant: 'bio_mutant',
+  experiment_pod: 'experiment_pod', rogue_ai: 'rogue_ai', the_specimen: 'the_specimen',
+  elite_guard: 'elite_guard', security_drone: 'security_drone',
+  cult_acolyte: 'cult_acolyte', void_wraith: 'void_wraith', the_consultant: 'the_consultant',
   raccoon: 'raccoon',
 };
 
-// Map shop types to sprite keys
 export const SHOP_SPRITE_MAP = {
   general_store: 'npc_potion',
   gear_shop: 'npc_gear',
   spell_shop: 'npc_wizard',
+};
+
+// NPC sprite map: npcId → sprite key
+export const NPC_SPRITE_MAP = {
+  innkeeper: 'npc_potion',
+  potion_seller: 'npc_potion',
+  gear_merchant: 'npc_gear',
+  spell_vendor: 'npc_wizard',
+  guild_master: 'npc_wizard',
+  underworld_merchant: 'npc_gear',
+  mayor: 'npc_mayor',
+  gus: 'npc_gear',
+  marvin: 'npc_mayor',
+  destiny: 'npc_princess_destiny',
+  jasmine: 'npc_princess_jasmine',
+  crystal: 'npc_princess_crystal',
+  mercedes: 'npc_princess_mercedes',
+  tiffany: 'npc_princess_tiffany',
+  angelica: 'npc_princess_angelica',
+  brianna: 'npc_princess_brianna',
+  valentina: 'npc_princess_valentina',
 };

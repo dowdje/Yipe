@@ -6,7 +6,7 @@ GRIDLOCK is a retro tile-based RPG built with vanilla JS + HTML5 Canvas. No buil
 
 The game has 3 classes (Bruiser, Fixer, Hacker), tick-based combat, equipment with proc effects, a crafting system, NPC dialogue, quests, a danger meter, perks every 5 levels, an underworld death system, a monster compendium, Web Audio SFX, and an ending sequence.
 
-**Current state:** All phases (1–8B) complete. ~70 rooms across 8 regions (Grymhold, Caves, Underworld, Sewer, Sprawl, Retail Ruins, Gym District, Labs, Consultant's Island). 5 bosses, ~40 enemy types, 8 princess quests, title screen, ending sequence with multiple endings based on princess rescue count.
+**Current state:** All phases (1–8B) complete + balance/polish pass. ~70 rooms across 8 regions (Grymhold, Caves, Underworld, Sewer, Sprawl, Retail Ruins, Gym District, Labs, Consultant's Island). 5 bosses, ~40 enemy types, 8 princess quests, title screen, ending sequence with multiple endings based on princess rescue count. Royal Court (town_8) displays rescued princesses. Salvage system, stat training, epic/masterwork equipment tiers.
 
 ## How to Run
 
@@ -75,29 +75,29 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 | `js/config.js` | All constants: tile size, game states, ~40 enemy types across 8 regions, player defaults, colors, shop inventories (incl. underworld_shop), damage types, resistances, rarity colors, danger thresholds, level scaling |
 | `js/data/classes.js` | 3 classes: Bruiser (Pump resource), Fixer (Combo Points), Hacker (Overclock) |
 | `js/data/class-abilities.js` | All class combat abilities with damage formulas. Hacker abilities use `stats.int` |
-| `js/data/items.js` | Full item DB: consumables, weapons, armor, accessories, crafted, uniques, key items, NFT drives, damned items, legendary accessories. Also `rollLoot()` and `rollUniqueLoot()` |
+| `js/data/items.js` | Full item DB: consumables, weapons, armor, accessories, crafted, uniques (5 tiers), epic, masterwork, key items, NFT drives, damned items, legendary accessories. Also `rollLoot(enemyType, level, lootMod)`, `rollUniqueLoot()`, `salvageItem(player, item)` |
 | `js/data/spells.js` | 5 utility spells (Heal, Health Siphon, Shield Aura, Invisibility, Resurrect) |
 | `js/data/perks.js` | Perk table: 10 milestones (Lv 5–50), 3-4 options each |
 | `js/data/quests.js` | Quest definitions (main + 7 princess quests) |
 | `js/data/npcs.js` | NPC definitions + dialogue trees (~15 NPCs incl. 8 princesses, innkeeper, guild master, merchants) |
 | `js/data/materials.js` | 8 crafting materials |
-| `js/data/sprites.js` | 8×8 inline pixel art + palettes for all enemies, tiles, NPCs |
+| `js/data/sprites.js` | 16×16 inline pixel art + palettes for all enemies, tiles, NPCs. 8 unique princess palette variants. Exports `NPC_SPRITE_MAP` for NPC→sprite mapping |
 | `js/data/tips.js` | 25 rotating gameplay tips shown on combat victory |
 
 ### Engine
 | File | Purpose |
 |---|---|
-| `js/main.js` | Game loop, all state transitions, cross-module wiring, input routing, NPC dialogue handlers, journal state, zone-change danger reduction (~1400 lines) |
+| `js/main.js` | Game loop, all state transitions, cross-module wiring, input routing, NPC dialogue handlers (incl. `trainStat`), salvage S key, journal state, zone-change danger reduction (~1500 lines) |
 | `js/engine/input.js` | Keyboard (WASD/arrows) + click-to-move |
 | `js/engine/renderer.js` | Canvas primitives, sprite cache, tile/entity/player drawing |
-| `js/engine/save.js` | localStorage save/load with migration support. Exports `hasSave()`, `getSaveInfo()` for title screen |
+| `js/engine/save.js` | localStorage save/load with migration support. Saves `trainCount` for stat training persistence. Exports `hasSave()`, `getSaveInfo()` for title screen |
 | `js/engine/audio.js` | Web Audio API SFX: weakness flash, hit, crit, phase transition, level up, enemy death, boss defeat, damage taken, menu select/navigate, heal, status |
 
 ### Game Logic
 | File | Purpose |
 |---|---|
 | `js/game/player.js` | Player state, movement tween, inventory, equip/unequip |
-| `js/game/world.js` | Room loading/caching, tile collision, exits (incl. key/lock doors via isExitLocked), NPC/campfire/shop tracking, room hazards |
+| `js/game/world.js` | Room loading/caching, tile collision, exits (incl. key/lock doors via isExitLocked), NPC/campfire/shop tracking, room hazards. Attaches `spriteId` to NPCs from `NPC_SPRITE_MAP`. Dynamically injects rescued princesses into Royal Court (town_8) |
 | `js/game/combat.js` | Full combat engine (~1400 lines): timeline, damage calc, abilities, status effects, procs, material drops, compendium recording, boss target system, minion management, phase transitions |
 | `js/game/boss-ai.js` | Boss definitions (BOSS_DEFS) for 5 bosses (Sewer King, The Manager, The Alpha, The Specimen, The Consultant), phase system, weighted ability selection, cooldowns, minion spawning, wave system, multi-head system, executeBossTurn() |
 | `js/game/enemies.js` | Enemy spawning with level-based scaling + fixedEnemies mode for dungeons + difficulty multiplier (setDifficulty/getDifficulty/applyDifficultyScaling) + roaming enemy system (spawnRandomEnemy/moveRoamingEnemies/getRoamingEnemyCount) + boss 2×2 tile size (size=2 for isBoss enemies, getEnemyAt checks all 4 tiles) |
@@ -106,9 +106,9 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 | `js/game/status-effects.js` | 10 status effects (burn, chill, paralyze, poison, enfeeble, ATK/DEF up, haste, regen, shield) |
 | `js/game/shop.js` | Shop state, buy/sell logic |
 | `js/game/chests.js` | Chest loot + persistent opened-chest tracking |
-| `js/game/danger.js` | Danger meter: 5 thresholds, enemy stat/loot modifiers |
+| `js/game/danger.js` | Danger meter: 5 thresholds (statMod: 0/0/0.30/0.60/0.90), lootMod wired to rollLoot |
 | `js/game/procs.js` | Equipment proc framework: 6 effect types (applyStatus, bonusDamage, healPercent, healFlat, damageReflect, selfBuff) |
-| `js/game/crafting.js` | ~20 recipes, material checking, recipe discovery |
+| `js/game/crafting.js` | ~22 recipes (incl. masterwork: omega_edge, colossus_armor), material checking, recipe discovery. Gold costs 3× base values |
 | `js/game/perks.js` | Perk selection, application, stat modifier queries |
 | `js/game/quests.js` | Quest tracking, objective checking |
 | `js/game/compendium.js` | Monster kill tracking, resistance discovery, region completion tracking, classified conspiracy notes (unlocked at 100% region discovery) |
@@ -176,6 +176,26 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 2. Add result item to `js/data/items.js`
 3. Ensure required materials exist in `js/data/materials.js`
 
+### Salvage System
+Items can be salvaged in the character menu (S key) on Equipment panel (panel 0) or Items panel (panel 2). `salvageItem()` in `items.js` removes the item and grants tier-scaled materials + gold:
+- T1-2 (common/uncommon): 1 common material + 25g
+- T3-4 (rare/unique/epic): 1 uncommon + 1 common material + 40g
+- T5 (legendary/masterwork): 1 rare + 1 uncommon material + 50g
+
+### Stat Training
+Guild Master NPC offers permanent +1 to ATK/DEF/SPD/INT/LCK. Cost: 200g base, doubles each purchase per stat. Tracked in `player.trainCount = { stat: count }`. Handled via `trainStat` action in `handleDialogueChoice()`.
+
+### Equipment Tiers
+- **Epic** (T4, Lv 16+): void_reaper, inferno_blade, titan_plate, circuit_crown_mk2 — drop from UNIQUE_LOOT_TABLE T4
+- **Masterwork** (T5, Lv 21+): omega_edge, colossus_armor — craft-only (expensive recipes requiring rare materials)
+- Rarity colors: epic = `#cc66ff`, masterwork = `#ffaa00`
+
+### NPC Sprite System
+All NPCs render with unique sprites via `NPC_SPRITE_MAP` in `sprites.js` (maps npcId → sprite key). 8 princess palette variants with unique hair/dress/skin colors. `world.js` attaches `spriteId` to NPC objects on room load. Rendering in `main.js` uses `npc.spriteId || NPC_SPRITE_MAP[npc.npcId]`.
+
+### Royal Court (town_8)
+Rescued princesses appear dynamically in the Royal Court room. `world.js loadRoom()` checks quest flags and injects princess NPCs at predefined positions. Princesses use `post_rescue` dialogue when in the Royal Court (`isRoyalCourt: true` flag).
+
 ## Important Notes
 
 - **No build step** — serve directory, open in browser
@@ -183,7 +203,7 @@ Auto-saves to localStorage after each movement. Key: `gridlock_save_v1`. Saves f
 - **INT stat** — boosts Hacker ability damage and spell scaling (not Bruiser/Fixer abilities)
 - **Abilities are free** — no MP cost. Balance comes from enemy pressure, not resource management
 - **Equipment serialization** — save stores equipment as `{ id }` refs, rehydrated from `ITEMS` on load
-- **Danger meter** — increments on room transitions (+1) and combat (+2/+5), resets in safe rooms, reduced by campfires (-15), reduced by 20 when changing zones (area prefix before `/` differs)
+- **Danger meter** — increments on room transitions (+1) and combat (+2/+5), resets in safe rooms, reduced by campfires (-15), reduced by 20 when changing zones. statMod values: 0/0/0.30/0.60/0.90. lootMod now wired to `rollLoot()` — reduces null-weight in drop tables at high danger
 - **Death flow** — defeat → death screen → underworld/gate → pay fee (level×10 gold) or fight Marvin or grind ghost interns → revive at last safe room with full heal
 - **Perk selection** — triggers after combat victory if player leveled to a perk milestone (5, 10, 15…50). Cannot be skipped.
 - **Recipe discovery** — recipes appear in crafting UI when player has ≥1 of any required material

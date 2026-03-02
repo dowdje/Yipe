@@ -1310,8 +1310,9 @@ export function checkVictory() {
     }
   }
 
-  // Loot drops
-  const lootResult = rollLoot(enemy.type, player.level);
+  // Loot drops — higher danger increases drop quality
+  const dangerThreshold = getDangerLevel(player.dangerMeter || 0);
+  const lootResult = rollLoot(enemy.type, player.level, dangerThreshold.lootMod);
   if (lootResult) {
     addToInventory(player, lootResult.item);
     combat.lootDrops = [lootResult.item.name];

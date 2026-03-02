@@ -60,28 +60,28 @@ export function renderDebug() {
 
   // Title
   ctx.fillStyle = '#FF4444';
-  ctx.font = 'bold 14px monospace';
+  ctx.font = 'bold 24px monospace';
   ctx.textBaseline = 'top';
   ctx.textAlign = 'center';
-  ctx.fillText('DEBUG MENU (TEMP)', CANVAS_WIDTH / 2, 12);
+  ctx.fillText('DEBUG MENU (TEMP)', CANVAS_WIDTH / 2, 24);
   ctx.textAlign = 'left';
 
   // Options
-  const startY = 42;
+  const startY = 84;
   for (let i = 0; i < DEBUG_OPTIONS.length; i++) {
     const opt = DEBUG_OPTIONS[i];
-    const y = startY + i * 22;
+    const y = startY + i * 44;
     const selected = i === debugState.selectedIndex;
 
     if (selected) {
       ctx.fillStyle = 'rgba(255, 68, 68, 0.15)';
-      ctx.fillRect(CANVAS_WIDTH / 2 - 100, y - 4, 200, 20);
+      ctx.fillRect(CANVAS_WIDTH / 2 - 200, y - 8, 400, 40);
       ctx.fillStyle = '#FF6666';
     } else {
       ctx.fillStyle = '#AAAAAA';
     }
 
-    ctx.font = '12px monospace';
+    ctx.font = '20px monospace';
     ctx.textAlign = 'center';
     const prefix = selected ? '▸ ' : '  ';
     ctx.fillText(`${prefix}${opt.label}`, CANVAS_WIDTH / 2, y);
@@ -90,13 +90,13 @@ export function renderDebug() {
   // Message
   if (debugState.message && performance.now() - debugState.messageTimer < 1500) {
     ctx.fillStyle = '#44FF44';
-    ctx.font = '11px monospace';
-    ctx.fillText(debugState.message, CANVAS_WIDTH / 2, CANVAS_HEIGHT - 30);
+    ctx.font = '18px monospace';
+    ctx.fillText(debugState.message, CANVAS_WIDTH / 2, CANVAS_HEIGHT - 60);
   }
 
   // Controls
   ctx.fillStyle = '#666666';
-  ctx.font = '9px monospace';
-  ctx.fillText('↑↓ Select   Enter Apply   Esc Close', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 10);
+  ctx.font = '14px monospace';
+  ctx.fillText('↑↓ Select   Enter Apply   Esc Close', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 20);
   ctx.textAlign = 'left';
 }

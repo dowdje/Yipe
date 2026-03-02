@@ -61,8 +61,8 @@ export function renderTitle(now) {
   // Animated background grid lines (subtle)
   ctx.strokeStyle = 'rgba(30, 40, 80, 0.3)';
   ctx.lineWidth = 1;
-  const gridSize = 32;
-  const offset = (titleAnimT * 8) % gridSize;
+  const gridSize = 64;
+  const offset = (titleAnimT * 16) % gridSize;
   for (let x = -gridSize + offset; x < CANVAS_WIDTH; x += gridSize) {
     ctx.beginPath();
     ctx.moveTo(x, 0);
@@ -77,14 +77,14 @@ export function renderTitle(now) {
   }
 
   // Title text with glow
-  const titleY = 80;
+  const titleY = 160;
   const pulse = 0.8 + 0.2 * Math.sin(titleAnimT * 2);
 
   // Glow
   ctx.shadowColor = `rgba(255, 215, 0, ${0.4 * pulse})`;
-  ctx.shadowBlur = 20;
+  ctx.shadowBlur = 40;
   ctx.fillStyle = '#FFD700';
-  ctx.font = 'bold 36px monospace';
+  ctx.font = 'bold 72px monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('GRIDLOCK', CANVAS_WIDTH / 2, titleY);
@@ -92,11 +92,11 @@ export function renderTitle(now) {
   // Subtitle
   ctx.shadowBlur = 0;
   ctx.fillStyle = '#556688';
-  ctx.font = '12px monospace';
-  ctx.fillText('A Dungeon Contracting RPG', CANVAS_WIDTH / 2, titleY + 30);
+  ctx.font = '20px monospace';
+  ctx.fillText('A Dungeon Contracting RPG', CANVAS_WIDTH / 2, titleY + 60);
 
   // Menu options
-  const menuY = 200;
+  const menuY = 400;
   const saveExists = hasSave();
   const options = [];
 
@@ -107,21 +107,21 @@ export function renderTitle(now) {
 
   for (let i = 0; i < options.length; i++) {
     const opt = options[i];
-    const y = menuY + i * 32;
+    const y = menuY + i * 64;
     const selected = i === menuIndex;
 
     if (selected) {
       // Selection highlight
       ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
-      ctx.fillRect(CANVAS_WIDTH / 2 - 80, y - 10, 160, 24);
+      ctx.fillRect(CANVAS_WIDTH / 2 - 160, y - 20, 320, 48);
 
       ctx.fillStyle = '#FFD700';
-      ctx.font = 'bold 16px monospace';
-      ctx.fillText(`▸ ${opt.label} ◂`, CANVAS_WIDTH / 2, y + 2);
+      ctx.font = 'bold 28px monospace';
+      ctx.fillText(`▸ ${opt.label} ◂`, CANVAS_WIDTH / 2, y + 4);
     } else {
       ctx.fillStyle = '#667799';
-      ctx.font = '16px monospace';
-      ctx.fillText(opt.label, CANVAS_WIDTH / 2, y + 2);
+      ctx.font = '28px monospace';
+      ctx.fillText(opt.label, CANVAS_WIDTH / 2, y + 4);
     }
   }
 
@@ -129,31 +129,31 @@ export function renderTitle(now) {
   if (saveExists && menuIndex === 0) {
     const info = getSaveInfo();
     if (info) {
-      const previewY = menuY + options.length * 32 + 20;
+      const previewY = menuY + options.length * 64 + 40;
       ctx.fillStyle = '#1a1a3e';
-      ctx.fillRect(CANVAS_WIDTH / 2 - 100, previewY - 4, 200, 52);
+      ctx.fillRect(CANVAS_WIDTH / 2 - 200, previewY - 8, 400, 104);
       ctx.strokeStyle = '#333366';
       ctx.lineWidth = 1;
-      ctx.strokeRect(CANVAS_WIDTH / 2 - 100, previewY - 4, 200, 52);
+      ctx.strokeRect(CANVAS_WIDTH / 2 - 200, previewY - 8, 400, 104);
 
       const cls = CLASSES[info.classId];
       const className = cls ? cls.name : 'Unknown';
       const playmins = Math.floor((info.playtime || 0) / 60);
 
       ctx.fillStyle = cls ? cls.color : '#AABBCC';
-      ctx.font = '11px monospace';
-      ctx.fillText(`${className} Lv.${info.level}`, CANVAS_WIDTH / 2, previewY + 10);
+      ctx.font = '18px monospace';
+      ctx.fillText(`${className} Lv.${info.level}`, CANVAS_WIDTH / 2, previewY + 20);
 
       ctx.fillStyle = '#556677';
-      ctx.font = '10px monospace';
-      ctx.fillText(`${playmins}m played`, CANVAS_WIDTH / 2, previewY + 26);
+      ctx.font = '16px monospace';
+      ctx.fillText(`${playmins}m played`, CANVAS_WIDTH / 2, previewY + 52);
     }
   }
 
   // Controls hint
   ctx.fillStyle = '#3a3a5a';
-  ctx.font = '10px monospace';
-  ctx.fillText('↑↓ Choose    Enter Select', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 20);
+  ctx.font = '16px monospace';
+  ctx.fillText('↑↓ Choose    Enter Select', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 40);
 
   // Fade overlay
   if (fadeAlpha > 0) {

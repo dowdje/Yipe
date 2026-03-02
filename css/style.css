@@ -5,7 +5,7 @@
 }
 
 body {
-  background: #111;
+  background: #0a0a12;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,7 +20,7 @@ canvas {
   max-height: 100vh;
   width: auto;
   height: auto;
-  aspect-ratio: 512 / 384;
+  aspect-ratio: 1024 / 768;
 }
 
 @media (min-width: 1024px) {
@@ -30,9 +30,9 @@ canvas {
   }
 }
 
-@media (min-width: 1536px) {
+@media (min-width: 2048px) {
   canvas {
-    width: 1536px;
-    height: 1152px;
+    width: 2048px;
+    height: 1536px;
   }
 }

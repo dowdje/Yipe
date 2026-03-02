@@ -36,6 +36,7 @@ export function saveGame(roomId, playerX, playerY, player) {
     compendium: player.compendium || {},
     dangerMeter: player.dangerMeter || 0,
     knownRecipes: player.knownRecipes || [],
+    trainCount: player.trainCount || {},
     lastSafeRoom: player.lastSafeRoom || null,
     difficulty: player.difficulty || 1.0,
     playtime: player.playtime || 0,

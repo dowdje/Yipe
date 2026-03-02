@@ -1,7 +1,7 @@
 // renderer.js — Canvas drawing primitives + sprite rendering
 
 import { TILE_SIZE, CANVAS_WIDTH, CANVAS_HEIGHT, COLORS } from '../config.js';
-import { PALETTES, SPRITE_DATA, TILE_SPRITE_MAP, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP } from '../data/sprites.js';
+import { PALETTES, SPRITE_DATA, TILE_SPRITE_MAP, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP, NPC_SPRITE_MAP } from '../data/sprites.js';
 
 let ctx = null;
 
@@ -179,4 +179,4 @@ export function getCtx() {
 }
 
 // Export sprite map lookups for use by other modules
-export { ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP };
+export { ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP, NPC_SPRITE_MAP };

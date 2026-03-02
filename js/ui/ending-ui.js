@@ -73,14 +73,14 @@ export function renderEnding(now) {
     ctx.globalAlpha = alpha;
 
     ctx.fillStyle = '#FFD700';
-    ctx.font = 'bold 20px monospace';
-    ctx.fillText('CONTRACT COMPLETE', CANVAS_WIDTH / 2, 60);
+    ctx.font = 'bold 36px monospace';
+    ctx.fillText('CONTRACT COMPLETE', CANVAS_WIDTH / 2, 120);
 
     ctx.fillStyle = '#AABBCC';
-    ctx.font = '12px monospace';
-    ctx.fillText('The NFT drives have been recovered.', CANVAS_WIDTH / 2, 110);
-    ctx.fillText("The Consultant's operation is dismantled.", CANVAS_WIDTH / 2, 130);
-    ctx.fillText('Grymhold can breathe again.', CANVAS_WIDTH / 2, 150);
+    ctx.font = '20px monospace';
+    ctx.fillText('The NFT drives have been recovered.', CANVAS_WIDTH / 2, 220);
+    ctx.fillText("The Consultant's operation is dismantled.", CANVAS_WIDTH / 2, 260);
+    ctx.fillText('Grymhold can breathe again.', CANVAS_WIDTH / 2, 300);
 
     ctx.globalAlpha = 1;
 
@@ -90,8 +90,8 @@ export function renderEnding(now) {
     }
 
     ctx.fillStyle = '#556677';
-    ctx.font = '10px monospace';
-    ctx.fillText('Press Enter to continue', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 30);
+    ctx.font = '16px monospace';
+    ctx.fillText('Press Enter to continue', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 60);
   } else if (endingPhase === 1) {
     // Princess count and ending title
     const alpha = Math.min(elapsed / 1.5, 1);
@@ -100,16 +100,16 @@ export function renderEnding(now) {
     const ending = ENDINGS[Math.min(princessCount, 8)] || ENDINGS[0];
 
     ctx.fillStyle = '#FFD700';
-    ctx.font = 'bold 16px monospace';
-    ctx.fillText(`Ending: ${ending.title}`, CANVAS_WIDTH / 2, 60);
+    ctx.font = 'bold 28px monospace';
+    ctx.fillText(`Ending: ${ending.title}`, CANVAS_WIDTH / 2, 120);
 
     ctx.fillStyle = '#AABBCC';
-    ctx.font = '12px monospace';
-    ctx.fillText(ending.desc, CANVAS_WIDTH / 2, 100);
+    ctx.font = '20px monospace';
+    ctx.fillText(ending.desc, CANVAS_WIDTH / 2, 200);
 
     ctx.fillStyle = '#88AACC';
-    ctx.font = '14px monospace';
-    ctx.fillText(`Princesses rescued: ${princessCount} / 8`, CANVAS_WIDTH / 2, 150);
+    ctx.font = '24px monospace';
+    ctx.fillText(`Princesses rescued: ${princessCount} / 8`, CANVAS_WIDTH / 2, 300);
 
     ctx.globalAlpha = 1;
 
@@ -120,42 +120,42 @@ export function renderEnding(now) {
     }
 
     ctx.fillStyle = '#556677';
-    ctx.font = '10px monospace';
-    ctx.fillText('Press Enter to continue', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 30);
+    ctx.font = '16px monospace';
+    ctx.fillText('Press Enter to continue', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 60);
   } else if (endingPhase === 2) {
     // Credits scroll
-    scrollY = CANVAS_HEIGHT - elapsed * 30;
+    scrollY = CANVAS_HEIGHT - elapsed * 40;
 
-    ctx.font = '12px monospace';
+    ctx.font = '20px monospace';
     for (let i = 0; i < CREDITS.length; i++) {
-      const y = scrollY + i * 24;
-      if (y < -20 || y > CANVAS_HEIGHT + 20) continue;
+      const y = scrollY + i * 48;
+      if (y < -40 || y > CANVAS_HEIGHT + 40) continue;
 
       if (CREDITS[i] === 'GRIDLOCK') {
         ctx.fillStyle = '#FFD700';
-        ctx.font = 'bold 24px monospace';
+        ctx.font = 'bold 40px monospace';
       } else if (CREDITS[i].startsWith('- ')) {
         ctx.fillStyle = '#334455';
-        ctx.font = '12px monospace';
+        ctx.font = '20px monospace';
       } else if (CREDITS[i] === 'THE CONSPIRACY CONTINUES...') {
         ctx.fillStyle = '#CC2222';
-        ctx.font = 'bold 14px monospace';
+        ctx.font = 'bold 24px monospace';
       } else if (CREDITS[i] === 'Thanks for playing!') {
         ctx.fillStyle = '#FFD700';
-        ctx.font = 'bold 16px monospace';
+        ctx.font = 'bold 28px monospace';
       } else {
         ctx.fillStyle = '#8899AA';
-        ctx.font = '12px monospace';
+        ctx.font = '20px monospace';
       }
 
       ctx.fillText(CREDITS[i], CANVAS_WIDTH / 2, y);
     }
 
     // End of credits
-    const lastLineY = scrollY + CREDITS.length * 24;
-    if (lastLineY < -40) {
+    const lastLineY = scrollY + CREDITS.length * 48;
+    if (lastLineY < -80) {
       ctx.fillStyle = '#556677';
-      ctx.font = '10px monospace';
+      ctx.font = '16px monospace';
       ctx.fillText('Press Enter to return to title', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
     }
   }

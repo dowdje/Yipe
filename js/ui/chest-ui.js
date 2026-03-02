@@ -37,9 +37,9 @@ export function renderChestPopup() {
   const ctx = getCtx();
   const items = chestPopup.items;
 
-  const popW = 220;
-  const lineH = 18;
-  const popH = 40 + items.length * lineH + 20;
+  const popW = 440;
+  const lineH = 36;
+  const popH = 80 + items.length * lineH + 40;
   const popX = (CANVAS_WIDTH - popW) / 2;
   const popY = (CANVAS_HEIGHT - popH) / 2;
 
@@ -51,35 +51,35 @@ export function renderChestPopup() {
   ctx.fillStyle = '#16213e';
   ctx.fillRect(popX, popY, popW, popH);
   ctx.strokeStyle = '#FFD700';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(popX + 1, popY + 1, popW - 2, popH - 2);
+  ctx.lineWidth = 3;
+  ctx.strokeRect(popX + 2, popY + 2, popW - 4, popH - 4);
 
   // Title
   ctx.fillStyle = '#FFD700';
-  ctx.font = '13px monospace';
+  ctx.font = '22px monospace';
   ctx.textBaseline = 'top';
   ctx.textAlign = 'center';
-  ctx.fillText('TREASURE!', popX + popW / 2, popY + 10);
+  ctx.fillText('TREASURE!', popX + popW / 2, popY + 20);
 
   // Items
   ctx.textAlign = 'left';
-  ctx.font = '11px monospace';
-  let ly = popY + 34;
+  ctx.font = '18px monospace';
+  let ly = popY + 68;
 
   if (items.length === 0) {
     ctx.fillStyle = COLORS.combat.textDim;
-    ctx.fillText('The chest is empty...', popX + 14, ly);
+    ctx.fillText('The chest is empty...', popX + 28, ly);
   } else {
     for (const item of items) {
       if (item.isGold) {
         ctx.fillStyle = COLORS.hud.gold;
-        ctx.fillText(`+ ${item.name}`, popX + 14, ly);
+        ctx.fillText(`+ ${item.name}`, popX + 28, ly);
       } else {
         const isUnique = item.rarity === 'unique';
         ctx.fillStyle = isUnique ? COLORS.item.unique : '#FFFFFF';
         let label = `+ ${item.name}`;
         if (item.qty > 1) label += ` x${item.qty}`;
-        ctx.fillText(label, popX + 14, ly);
+        ctx.fillText(label, popX + 28, ly);
       }
       ly += lineH;
     }
@@ -87,8 +87,8 @@ export function renderChestPopup() {
 
   // Hint
   ctx.fillStyle = COLORS.combat.textDim;
-  ctx.font = '10px monospace';
+  ctx.font = '16px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('Press Enter', popX + popW / 2, popY + popH - 16);
+  ctx.fillText('Press Enter', popX + popW / 2, popY + popH - 32);
   ctx.textAlign = 'left';
 }

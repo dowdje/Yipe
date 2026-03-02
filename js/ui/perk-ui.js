@@ -64,22 +64,22 @@ export function renderPerkSelection() {
 
   // Title
   ctx.fillStyle = '#FFD700';
-  ctx.font = 'bold 16px monospace';
+  ctx.font = 'bold 28px monospace';
   ctx.textBaseline = 'top';
   ctx.textAlign = 'center';
-  ctx.fillText('CHOOSE A PERK', CANVAS_WIDTH / 2, 30);
+  ctx.fillText('CHOOSE A PERK', CANVAS_WIDTH / 2, 60);
 
   ctx.fillStyle = '#AABBCC';
-  ctx.font = '10px monospace';
-  ctx.fillText('This choice is permanent', CANVAS_WIDTH / 2, 52);
+  ctx.font = '16px monospace';
+  ctx.fillText('This choice is permanent', CANVAS_WIDTH / 2, 104);
 
   // Perk options as cards
-  const cardW = 140;
-  const cardH = 180;
-  const gap = 12;
+  const cardW = 280;
+  const cardH = 360;
+  const gap = 24;
   const totalW = perkState.options.length * cardW + (perkState.options.length - 1) * gap;
   const startX = (CANVAS_WIDTH - totalW) / 2;
-  const cardY = 80;
+  const cardY = 160;
 
   for (let i = 0; i < perkState.options.length; i++) {
     const perk = perkState.options[i];
@@ -90,27 +90,27 @@ export function renderPerkSelection() {
     ctx.fillStyle = selected ? '#1e2d4a' : '#16213e';
     ctx.fillRect(cx, cardY, cardW, cardH);
     ctx.strokeStyle = selected ? '#FFD700' : '#0f3460';
-    ctx.lineWidth = selected ? 2 : 1;
+    ctx.lineWidth = selected ? 3 : 2;
     ctx.strokeRect(cx + 0.5, cardY + 0.5, cardW - 1, cardH - 1);
 
     // Perk name
     ctx.fillStyle = selected ? '#FFD700' : '#FFFFFF';
-    ctx.font = 'bold 11px monospace';
+    ctx.font = 'bold 18px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(perk.name, cx + cardW / 2, cardY + 16);
+    ctx.fillText(perk.name, cx + cardW / 2, cardY + 32);
 
     // Description with word wrap
     ctx.fillStyle = '#CCDDEE';
-    ctx.font = '10px monospace';
+    ctx.font = '16px monospace';
     const words = perk.desc.split(' ');
     let line = '';
-    let ly = cardY + 40;
+    let ly = cardY + 80;
     for (const word of words) {
       const test = line + (line ? ' ' : '') + word;
-      if (ctx.measureText(test).width > cardW - 16 && line) {
+      if (ctx.measureText(test).width > cardW - 32 && line) {
         ctx.fillText(line, cx + cardW / 2, ly);
         line = word;
-        ly += 14;
+        ly += 28;
       } else {
         line = test;
       }
@@ -120,38 +120,38 @@ export function renderPerkSelection() {
     // Class requirement
     if (perk.classReq) {
       ctx.fillStyle = '#888899';
-      ctx.font = '9px monospace';
-      ctx.fillText(`(${perk.classReq} only)`, cx + cardW / 2, cardY + cardH - 16);
+      ctx.font = '14px monospace';
+      ctx.fillText(`(${perk.classReq} only)`, cx + cardW / 2, cardY + cardH - 32);
     }
 
     // Selection indicator
     if (selected) {
       ctx.fillStyle = '#FFD700';
-      ctx.font = '10px monospace';
-      ctx.fillText('▸ SELECT ◂', cx + cardW / 2, cardY + cardH - 4);
+      ctx.font = '16px monospace';
+      ctx.fillText('▸ SELECT ◂', cx + cardW / 2, cardY + cardH - 8);
     }
   }
 
   // Confirmation overlay
   if (perkState.confirming) {
-    const boxW = 250;
-    const boxH = 60;
+    const boxW = 500;
+    const boxH = 120;
     const boxX = (CANVAS_WIDTH - boxW) / 2;
-    const boxY = cardY + cardH + 20;
+    const boxY = cardY + cardH + 40;
 
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(boxX, boxY, boxW, boxH);
     ctx.strokeStyle = '#FFD700';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.strokeRect(boxX + 0.5, boxY + 0.5, boxW - 1, boxH - 1);
 
     const selected = perkState.options[perkState.selectedIndex];
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '11px monospace';
-    ctx.fillText(`Choose "${selected.name}"?`, CANVAS_WIDTH / 2, boxY + 18);
+    ctx.font = '18px monospace';
+    ctx.fillText(`Choose "${selected.name}"?`, CANVAS_WIDTH / 2, boxY + 36);
     ctx.fillStyle = '#AABBCC';
-    ctx.font = '10px monospace';
-    ctx.fillText('Enter: Confirm   Esc: Cancel', CANVAS_WIDTH / 2, boxY + 40);
+    ctx.font = '16px monospace';
+    ctx.fillText('Enter: Confirm   Esc: Cancel', CANVAS_WIDTH / 2, boxY + 80);
   }
 
   ctx.textAlign = 'left';

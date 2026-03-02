@@ -1,7 +1,7 @@
 // main.js — Game initialization and loop
 
 import { GAME_STATES, TRANSITION_MS, xpForLevel, ENEMY_TYPES, GRID_COLS, GRID_ROWS } from './config.js';
-import { initRenderer, clear, drawTileGrid, drawPlayer, drawPlayerLerp, drawEntity, drawBossEntity, drawFade, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP } from './engine/renderer.js';
+import { initRenderer, clear, drawTileGrid, drawPlayer, drawPlayerLerp, drawEntity, drawBossEntity, drawFade, ENEMY_SPRITE_MAP, SHOP_SPRITE_MAP, NPC_SPRITE_MAP } from './engine/renderer.js';
 import { initInput, consumeInput, setInputEnabled } from './engine/input.js';
 import { loadTileDefs, getTileDefs, loadRoom, getCurrentRoom, isWalkable, getExit, getEntryPosition, getActiveShops, getActiveNpcs, getActiveCampfires, isSafeRoom, initWorldPlayerRef, getShopAt, getNpcAt, getCampfireAt, getChestAt } from './game/world.js';
 import { getPlayer, setPlayerPos, tryMove, updateMovement, getMoveTween, equipItem, unequipSlot, removeFromInventory, initClass, grantAbilitiesUpToLevel, addToInventory } from './game/player.js';
@@ -56,7 +56,7 @@ async function init() {
   initItemsRef(ITEMS_MODULE);
   initPlayerRef(PLAYER_MODULE);
   initCharItemsRef(ITEMS_MODULE);
-  initWorldPlayerRef(() => getPlayer().level);
+  initWorldPlayerRef(() => getPlayer().level, () => getPlayer());
   initBossAiRef(BOSS_AI);
 
   // Dynamically load spells module if available
@@ -136,6 +136,7 @@ async function loadSavedGame() {
     player.compendium = ps.compendium || {};
     player.dangerMeter = ps.dangerMeter || 0;
     player.knownRecipes = ps.knownRecipes || [];
+    player.trainCount = ps.trainCount || {};
     player.lastSafeRoom = ps.lastSafeRoom || null;
     player.difficulty = ps.difficulty || 1.0;
     player.playtime = ps.playtime || 0;
@@ -353,7 +354,7 @@ function renderOverworld(now) {
   // Draw NPCs
   const npcs = getActiveNpcs();
   for (const npc of npcs) {
-    drawEntity(npc.x, npc.y, '#FFD700', 6, null);
+    drawEntity(npc.x, npc.y, '#FFD700', 6, npc.spriteId || NPC_SPRITE_MAP[npc.npcId] || null);
   }
 
   // Draw campfires
@@ -461,7 +462,7 @@ function renderTransition(now) {
   // Draw NPCs
   const tNpcs = getActiveNpcs();
   for (const npc of tNpcs) {
-    drawEntity(npc.x, npc.y, '#FFD700', 6, null);
+    drawEntity(npc.x, npc.y, '#FFD700', 6, npc.spriteId || NPC_SPRITE_MAP[npc.npcId] || null);
   }
 
   // Draw campfires
@@ -667,6 +668,18 @@ function handleNpcInteraction(npc) {
   const npcDef = NPC_DEFS[npc.npcId];
   if (!npcDef) return;
 
+  // Royal Court princesses always use post_rescue dialogue
+  if (npc.isRoyalCourt && npcDef.dialogue.post_rescue) {
+    const dialogue = npcDef.dialogue.post_rescue;
+    startDialogue(npcDef.name, dialogue.text, dialogue.choices, (choice) => {
+      handleDialogueChoice(npc, npcDef, dialogue, choice);
+    });
+    state = GAME_STATES.DIALOGUE;
+    setInputEnabled(false);
+    setTimeout(() => setInputEnabled(true), 200);
+    return;
+  }
+
   // Determine which dialogue to use based on quest state
   let dialogueKey = 'default';
   if (npc.npcId === 'jasmine') {
@@ -841,6 +854,31 @@ function handleDialogueChoice(npc, npcDef, dialogue, choice) {
     } else {
       startDialogue(npcDef.name, "No gold? Fight me or grind the ghost interns.", npcDef.dialogue.cant_pay?.choices || null, (c) => {
         handleDialogueChoice(npc, npcDef, npcDef.dialogue.cant_pay || {}, c);
+      });
+      state = GAME_STATES.DIALOGUE;
+    }
+    return;
+  }
+
+  if (choice.action === 'trainStat') {
+    if (!player.trainCount) player.trainCount = {};
+    const stat = choice.stat;
+    const timesTrained = player.trainCount[stat] || 0;
+    const cost = 200 * Math.pow(2, timesTrained);
+    if (player.gold >= cost) {
+      player.gold -= cost;
+      player[stat] += 1;
+      player.trainCount[stat] = timesTrained + 1;
+      startDialogue(npcDef.name, `${stat.toUpperCase()} permanently increased! (Cost: ${cost}g → next: ${cost * 2}g)`, null, () => {
+        state = GAME_STATES.OVERWORLD;
+        setInputEnabled(true);
+        saveAfterDelay();
+      });
+      state = GAME_STATES.DIALOGUE;
+    } else {
+      startDialogue(npcDef.name, `Training ${stat.toUpperCase()} costs ${cost}g. You don't have enough.`, null, () => {
+        state = GAME_STATES.OVERWORLD;
+        setInputEnabled(true);
       });
       state = GAME_STATES.DIALOGUE;
     }
@@ -1065,6 +1103,36 @@ function handleMenuInput(key) {
       const consumables = getConsumableItems(player);
       if (consumables.length > 0) {
         menu.selectedIndex = (menu.selectedIndex + 1) % consumables.length;
+      }
+    }
+  } else if (key === 's' || key === 'S') {
+    // Salvage: works on equipped item in Equipment panel, or consumable in Items panel
+    if (menu.activePanel === 0) {
+      const slot = EQUIPMENT_SLOTS[menu.selectedIndex];
+      const equipped = player.equipment[slot];
+      if (equipped) {
+        const itemDef = ITEMS_MODULE.ITEMS[equipped.id];
+        if (itemDef && itemDef.type !== 'quest') {
+          unequipSlot(player, slot);
+          const msg = ITEMS_MODULE.salvageItem(player, itemDef);
+          menu.useMessage = msg;
+          menu.useMessageTimer = performance.now();
+        }
+      }
+    } else if (menu.activePanel === 2) {
+      const consumables = getConsumableItems(player);
+      if (consumables.length > 0 && menu.selectedIndex < consumables.length) {
+        const invItem = consumables[menu.selectedIndex];
+        const itemDef = ITEMS_MODULE.ITEMS[invItem.id];
+        if (itemDef && itemDef.type !== 'quest') {
+          const msg = ITEMS_MODULE.salvageItem(player, itemDef);
+          menu.useMessage = msg;
+          menu.useMessageTimer = performance.now();
+          const remaining = getConsumableItems(player);
+          if (menu.selectedIndex >= remaining.length && remaining.length > 0) {
+            menu.selectedIndex = remaining.length - 1;
+          }
+        }
       }
     }
   } else if (key === 'Enter' || key === ' ') {

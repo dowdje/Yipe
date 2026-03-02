@@ -4,6 +4,7 @@ import { GRID_COLS, GRID_ROWS, SHOP_TYPES } from '../config.js';
 import { spawnEnemies } from './enemies.js';
 import { spawnChests, getChestAt as _getChestAt } from './chests.js';
 import { resetDanger } from './danger.js';
+import { NPC_SPRITE_MAP } from '../data/sprites.js';
 
 let tileDefs = {};
 let currentRoom = null;
@@ -14,7 +15,11 @@ let activeCampfires = [];
 
 // Lazy player level getter to avoid circular deps
 let _getPlayerLevel = null;
-export function initWorldPlayerRef(fn) { _getPlayerLevel = fn; }
+let _getPlayerRef = null;
+export function initWorldPlayerRef(fn, playerFn) {
+  _getPlayerLevel = fn;
+  if (playerFn) _getPlayerRef = playerFn;
+}
 
 // Map room IDs to file paths
 function roomIdToPath(id) {
@@ -55,11 +60,45 @@ export async function loadRoom(roomId) {
     name: SHOP_TYPES[def.type]?.name || 'Shop',
   }));
 
-  // Load NPCs
-  activeNpcs = (currentRoom.npcs || []).map(def => ({ ...def }));
+  // Load NPCs — attach spriteId from NPC_SPRITE_MAP
+  activeNpcs = (currentRoom.npcs || []).map(def => ({
+    ...def,
+    spriteId: NPC_SPRITE_MAP[def.npcId] || null,
+  }));
 
   // Load campfires
   activeCampfires = (currentRoom.campfires || []).map(def => ({ ...def }));
+
+  // Inject rescued princesses into Royal Court (town_8)
+  if (currentRoom.id === 'grymhold/town_8' && currentRoom.princess_positions && _getPlayerRef) {
+    const player = _getPlayerRef();
+    const flags = player.questFlags || {};
+    const completed = player.completedQuests || [];
+    const princessChecks = [
+      { npcId: 'destiny',   rescued: !!flags.destiny_rescued },
+      { npcId: 'jasmine',   rescued: completed.includes('jasmine_samples') },
+      { npcId: 'crystal',   rescued: completed.includes('crystal_keycard') },
+      { npcId: 'mercedes',  rescued: !!flags.mercedes_rewarded },
+      { npcId: 'tiffany',   rescued: completed.includes('tiffany_antidote') },
+      { npcId: 'angelica',  rescued: !!flags.angelica_rescued },
+      { npcId: 'brianna',   rescued: !!flags.brianna_met },
+      { npcId: 'valentina', rescued: !!flags.valentina_freed },
+    ];
+    const positions = currentRoom.princess_positions;
+    let posIdx = 0;
+    for (const p of princessChecks) {
+      if (p.rescued && posIdx < positions.length) {
+        activeNpcs.push({
+          npcId: p.npcId,
+          x: positions[posIdx].x,
+          y: positions[posIdx].y,
+          spriteId: NPC_SPRITE_MAP[p.npcId] || null,
+          isRoyalCourt: true,
+        });
+        posIdx++;
+      }
+    }
+  }
 
   // Safe rooms (towns) reset danger
   if (currentRoom.safe) {

@@ -45,53 +45,53 @@ export function renderDeath() {
 
   // Vignette border
   ctx.strokeStyle = '#441111';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(2, 2, CANVAS_WIDTH - 4, CANVAS_HEIGHT - 4);
+  ctx.lineWidth = 8;
+  ctx.strokeRect(4, 4, CANVAS_WIDTH - 8, CANVAS_HEIGHT - 8);
 
   // Title
   ctx.fillStyle = '#CC2222';
-  ctx.font = '18px monospace';
+  ctx.font = '32px monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText('YOU HAVE FALLEN', CANVAS_WIDTH / 2, 40);
+  ctx.fillText('YOU HAVE FALLEN', CANVAS_WIDTH / 2, 80);
 
   // Gatekeeper dialog
   ctx.fillStyle = '#887766';
-  ctx.font = '12px monospace';
-  ctx.fillText('The Gatekeeper appears before you...', CANVAS_WIDTH / 2, 80);
+  ctx.font = '20px monospace';
+  ctx.fillText('The Gatekeeper appears before you...', CANVAS_WIDTH / 2, 160);
 
   ctx.fillStyle = '#CCBBAA';
-  ctx.font = '13px monospace';
+  ctx.font = '22px monospace';
 
   if (canPay) {
-    ctx.fillText(`"I can return you to the living..."`, CANVAS_WIDTH / 2, 120);
-    ctx.fillText(`"...for a fee of ${fee} gold."`, CANVAS_WIDTH / 2, 142);
+    ctx.fillText(`"I can return you to the living..."`, CANVAS_WIDTH / 2, 240);
+    ctx.fillText(`"...for a fee of ${fee} gold."`, CANVAS_WIDTH / 2, 284);
 
     ctx.fillStyle = '#FFD700';
-    ctx.font = '12px monospace';
-    ctx.fillText(`Your gold: ${player.gold}G`, CANVAS_WIDTH / 2, 180);
+    ctx.font = '20px monospace';
+    ctx.fillText(`Your gold: ${player.gold}G`, CANVAS_WIDTH / 2, 360);
     ctx.fillStyle = '#CC3333';
-    ctx.fillText(`Fee: ${fee}G`, CANVAS_WIDTH / 2, 200);
+    ctx.fillText(`Fee: ${fee}G`, CANVAS_WIDTH / 2, 400);
   } else {
-    ctx.fillText(`"You cannot afford my fee of ${fee} gold..."`, CANVAS_WIDTH / 2, 120);
-    ctx.fillText(`"I'll take everything you have."`, CANVAS_WIDTH / 2, 142);
+    ctx.fillText(`"You cannot afford my fee of ${fee} gold..."`, CANVAS_WIDTH / 2, 240);
+    ctx.fillText(`"I'll take everything you have."`, CANVAS_WIDTH / 2, 284);
 
     ctx.fillStyle = '#FFD700';
-    ctx.font = '12px monospace';
-    ctx.fillText(`Your gold: ${player.gold}G`, CANVAS_WIDTH / 2, 180);
+    ctx.font = '20px monospace';
+    ctx.fillText(`Your gold: ${player.gold}G`, CANVAS_WIDTH / 2, 360);
     ctx.fillStyle = '#CC3333';
-    ctx.fillText(`Lost: ALL gold`, CANVAS_WIDTH / 2, 200);
+    ctx.fillText(`Lost: ALL gold`, CANVAS_WIDTH / 2, 400);
   }
 
   // Death flavor message
   ctx.fillStyle = '#664444';
-  ctx.font = '10px monospace';
-  ctx.fillText(currentDeathMsg, CANVAS_WIDTH / 2, 235);
+  ctx.font = '16px monospace';
+  ctx.fillText(currentDeathMsg, CANVAS_WIDTH / 2, 470);
 
   // Prompt
   ctx.fillStyle = '#888888';
-  ctx.font = '11px monospace';
-  ctx.fillText('Press Enter to revive', CANVAS_WIDTH / 2, 270);
+  ctx.font = '18px monospace';
+  ctx.fillText('Press Enter to revive', CANVAS_WIDTH / 2, 540);
 
   ctx.textAlign = 'left';
 }

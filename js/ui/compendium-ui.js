@@ -48,16 +48,16 @@ export function renderCompendium(player) {
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   ctx.fillStyle = '#FFD700';
-  ctx.font = '14px monospace';
+  ctx.font = '24px monospace';
   ctx.textBaseline = 'top';
   ctx.textAlign = 'center';
-  ctx.fillText('COMPENDIUM', CANVAS_WIDTH / 2, 8);
+  ctx.fillText('COMPENDIUM', CANVAS_WIDTH / 2, 16);
   ctx.textAlign = 'left';
 
-  const listX = 12;
-  const listY = 30;
-  const listW = 160;
-  const listH = CANVAS_HEIGHT - 42;
+  const listX = 24;
+  const listY = 60;
+  const listW = 320;
+  const listH = CANVAS_HEIGHT - 84;
 
   // Left: monster list
   ctx.fillStyle = c.panel;
@@ -68,30 +68,30 @@ export function renderCompendium(player) {
 
   if (compState.entries.length === 0) {
     ctx.fillStyle = c.textDim;
-    ctx.font = '11px monospace';
-    ctx.fillText('No entries yet', listX + 8, listY + 16);
+    ctx.font = '18px monospace';
+    ctx.fillText('No entries yet', listX + 16, listY + 32);
   } else {
     for (let i = 0; i < compState.entries.length; i++) {
       const entry = compState.entries[i];
-      const ey = listY + 10 + i * 18;
+      const ey = listY + 20 + i * 36;
       const selected = i === compState.selectedIndex;
 
       ctx.fillStyle = selected ? '#FFD700' : c.text;
-      ctx.font = '11px monospace';
+      ctx.font = '18px monospace';
       const prefix = selected ? '▸ ' : '  ';
-      ctx.fillText(`${prefix}${entry.def.name}`, listX + 4, ey);
+      ctx.fillText(`${prefix}${entry.def.name}`, listX + 8, ey);
 
       ctx.fillStyle = c.textDim;
-      ctx.font = '9px monospace';
+      ctx.font = '14px monospace';
       ctx.textAlign = 'right';
-      ctx.fillText(`×${entry.data.kills}`, listX + listW - 6, ey);
+      ctx.fillText(`×${entry.data.kills}`, listX + listW - 12, ey);
       ctx.textAlign = 'left';
     }
   }
 
   // Right: selected monster details
-  const detX = listX + listW + 8;
-  const detW = CANVAS_WIDTH - detX - 12;
+  const detX = listX + listW + 16;
+  const detW = CANVAS_WIDTH - detX - 24;
 
   ctx.fillStyle = c.panel;
   ctx.fillRect(detX, listY, detW, listH);
@@ -101,26 +101,26 @@ export function renderCompendium(player) {
   if (compState.entries.length > 0 && compState.selectedIndex < compState.entries.length) {
     const entry = compState.entries[compState.selectedIndex];
     const { def, data, id } = entry;
-    let dy = listY + 14;
+    let dy = listY + 28;
 
     ctx.fillStyle = def.color;
-    ctx.font = 'bold 13px monospace';
-    ctx.fillText(def.name, detX + 10, dy);
-    dy += 20;
+    ctx.font = 'bold 22px monospace';
+    ctx.fillText(def.name, detX + 20, dy);
+    dy += 40;
 
     ctx.fillStyle = c.text;
-    ctx.font = '10px monospace';
-    ctx.fillText(`Kills: ${data.kills}`, detX + 10, dy);
-    dy += 14;
-    ctx.fillText(`HP: ${def.maxHp}  ATK: ${def.atk}  DEF: ${def.def}`, detX + 10, dy);
-    dy += 14;
-    ctx.fillText(`SPD: ${def.spd}  Gold: ${def.gold}  EXP: ${def.exp}`, detX + 10, dy);
-    dy += 20;
+    ctx.font = '16px monospace';
+    ctx.fillText(`Kills: ${data.kills}`, detX + 20, dy);
+    dy += 28;
+    ctx.fillText(`HP: ${def.maxHp}  ATK: ${def.atk}  DEF: ${def.def}`, detX + 20, dy);
+    dy += 28;
+    ctx.fillText(`SPD: ${def.spd}  Gold: ${def.gold}  EXP: ${def.exp}`, detX + 20, dy);
+    dy += 40;
 
     // Resistances
     ctx.fillStyle = c.textDim;
-    ctx.fillText('Resistances:', detX + 10, dy);
-    dy += 16;
+    ctx.fillText('Resistances:', detX + 20, dy);
+    dy += 32;
 
     const types = ['physical', 'fire', 'ice', 'lightning'];
     const labels = ['PHY', 'FIR', 'ICE', 'LTN'];
@@ -132,33 +132,33 @@ export function renderCompendium(player) {
       const info = RESISTANCE_LABELS[resist] || RESISTANCE_LABELS[0];
 
       ctx.fillStyle = DAMAGE_TYPE_COLORS[types[i]];
-      ctx.font = '10px monospace';
-      ctx.fillText(labels[i], detX + 10 + i * 60, dy);
+      ctx.font = '16px monospace';
+      ctx.fillText(labels[i], detX + 20 + i * 120, dy);
 
       if (known) {
         ctx.fillStyle = info.color;
-        ctx.fillText(info.symbol + ' ' + info.label, detX + 36 + i * 60, dy);
+        ctx.fillText(info.symbol + ' ' + info.label, detX + 72 + i * 120, dy);
       } else {
         ctx.fillStyle = c.textDim;
-        ctx.fillText('???', detX + 36 + i * 60, dy);
+        ctx.fillText('???', detX + 72 + i * 120, dy);
       }
     }
-    dy += 16;
+    dy += 32;
 
     if (fully) {
       ctx.fillStyle = '#44CC44';
-      ctx.font = '9px monospace';
-      ctx.fillText('Fully discovered!', detX + 10, dy);
+      ctx.font = '14px monospace';
+      ctx.fillText('Fully discovered!', detX + 20, dy);
     } else {
       ctx.fillStyle = c.textDim;
-      ctx.font = '9px monospace';
-      ctx.fillText(`${5 - data.kills} more kills to discover all`, detX + 10, dy);
+      ctx.font = '14px monospace';
+      ctx.fillText(`${5 - data.kills} more kills to discover all`, detX + 20, dy);
     }
   }
 
   ctx.fillStyle = c.textDim;
-  ctx.font = '9px monospace';
+  ctx.font = '14px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('↑↓ Browse  Esc Close', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 6);
+  ctx.fillText('↑↓ Browse  Esc Close', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 12);
   ctx.textAlign = 'left';
 }

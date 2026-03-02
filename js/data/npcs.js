@@ -57,6 +57,10 @@ export const NPC_DEFS = {
         text: "You're the best contractor in Grymhold!",
         choices: null,
       },
+      post_rescue: {
+        text: "The Royal Court is lovely! I've been organizing the other princesses. We're stronger together.",
+        choices: null,
+      },
     },
   },
   jasmine: {
@@ -81,6 +85,10 @@ export const NPC_DEFS = {
       },
       done: {
         text: "The research is going well. Thanks again!",
+        choices: null,
+      },
+      post_rescue: {
+        text: "My research is thriving here at court. Did you know Toxic Goo has medicinal properties? Fascinating!",
         choices: null,
       },
     },
@@ -130,6 +138,10 @@ export const NPC_DEFS = {
         text: "Freedom feels amazing! Good luck out there!",
         choices: null,
       },
+      post_rescue: {
+        text: "I've been cracking the security codes around here. The deeper you go, the more encrypted things get.",
+        choices: null,
+      },
     },
   },
   mercedes: {
@@ -149,6 +161,10 @@ export const NPC_DEFS = {
       },
       done: {
         text: "The gym is safe again. You're stronger than you look!",
+        choices: null,
+      },
+      post_rescue: {
+        text: "I've been training the others in self-defense. A princess should know how to throw a punch!",
         choices: null,
       },
     },
@@ -177,6 +193,10 @@ export const NPC_DEFS = {
         text: "Feeling much better now. Science is terrifying.",
         choices: null,
       },
+      post_rescue: {
+        text: "I've set up a small lab in the corner. The mutagen exposure gave me... insights. Don't worry, I'm fine. Mostly.",
+        choices: null,
+      },
     },
   },
   angelica: {
@@ -200,6 +220,10 @@ export const NPC_DEFS = {
         text: "The Underworld gives me the creeps. Stay safe.",
         choices: null,
       },
+      post_rescue: {
+        text: "After what I saw down there... the surface world feels like paradise. Thank you for bringing me back.",
+        choices: null,
+      },
     },
   },
   brianna: {
@@ -221,6 +245,10 @@ export const NPC_DEFS = {
         ],
         reward: { gold: 300 },
       },
+      post_rescue: {
+        text: "Business is booming at the Royal Court! I've been sourcing rare materials. Check the shops for new stock!",
+        choices: null,
+      },
     },
   },
   valentina: {
@@ -234,6 +262,10 @@ export const NPC_DEFS = {
       },
       done: {
         text: "Be careful. They're watching everything.",
+        choices: null,
+      },
+      post_rescue: {
+        text: "The conspiracy runs deep. But here, surrounded by the others, I feel safer. You should know — The Consultant wasn't working alone.",
         choices: null,
       },
     },
@@ -269,9 +301,19 @@ export const NPC_DEFS = {
     sprite: 'npc_wizard',
     dialogue: {
       default: {
-        text: "Welcome to the Contractors Guild. Check the quest board for work.",
+        text: "Welcome to the Contractors Guild. I can train your stats — for a price.",
         choices: [
-          { label: 'View quests', action: 'close' },
+          { label: 'Train ATK', action: 'trainStat', stat: 'atk' },
+          { label: 'Train DEF', action: 'trainStat', stat: 'def' },
+          { label: 'Train SPD', action: 'trainStat', stat: 'spd' },
+          { label: 'Train INT', action: 'trainStat', stat: 'int' },
+        ],
+      },
+      default2: {
+        text: "More training? Or perhaps a different stat?",
+        choices: [
+          { label: 'Train LCK', action: 'trainStat', stat: 'lck' },
+          { label: 'Nevermind', action: 'close' },
         ],
       },
     },
